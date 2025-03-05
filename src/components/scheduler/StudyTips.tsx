@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { LightbulbIcon, CheckCircle2, Clock, Brain, BookOpenCheck, Sparkles } from 'lucide-react';
 
 interface StudyTip {
   title: string;
@@ -30,3 +31,32 @@ const StudyTips: React.FC<StudyTipsProps> = ({ tips }) => {
 };
 
 export default StudyTips;
+
+// Common study tips for reuse
+export const commonStudyTips: StudyTip[] = [
+  {
+    title: "Active Learning",
+    description: "Engage actively with the material by taking notes, asking questions, and discussing concepts.",
+    icon: <Brain className="w-5 h-5 text-blue" />
+  },
+  {
+    title: "Spaced Repetition",
+    description: "Review material at increasing intervals to improve long-term retention.",
+    icon: <Clock className="w-5 h-5 text-blue" />
+  },
+  {
+    title: "Regular Practice",
+    description: "Apply concepts through regular practice problems to reinforce understanding.",
+    icon: <CheckCircle2 className="w-5 h-5 text-blue" />
+  },
+  {
+    title: "Connect Concepts",
+    description: "Link new information with previously learned knowledge to build a stronger mental framework.",
+    icon: <Sparkles className="w-5 h-5 text-blue" />
+  },
+  {
+    title: "Teach Others",
+    description: "Explaining concepts to others is one of the best ways to solidify your own understanding.",
+    icon: <BookOpenCheck className="w-5 h-5 text-blue" />
+  }
+];

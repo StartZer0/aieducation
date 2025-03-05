@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Trophy } from 'lucide-react';
+import { Trophy, Flame } from 'lucide-react';
 
 interface StudyStreakProps {
   streak: number;
@@ -12,7 +12,10 @@ const StudyStreak: React.FC<StudyStreakProps> = ({ streak }) => {
   return (
     <div className="p-4">
       <div className="flex flex-col items-center justify-center mb-6">
-        <span className="text-7xl font-bold text-blue">{streak}</span>
+        <div className="flex items-center">
+          <Flame className="w-7 h-7 text-amber-500 mr-2" />
+          <span className="text-7xl font-bold text-blue">{streak}</span>
+        </div>
         <span className="text-muted-foreground">day streak</span>
       </div>
       

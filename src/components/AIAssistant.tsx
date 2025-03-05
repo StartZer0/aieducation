@@ -1,6 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, X, Maximize2, Minimize2, Bot } from 'lucide-react';
+import { Send, X, Minimize2, Bot, Maximize2, BookOpen, Sparkles } from 'lucide-react';
+import { Button } from './ui/button';
 
 interface Message {
   id: string;
@@ -22,7 +23,7 @@ const AIAssistant = () => {
       // Add welcome message when opening for the first time if no messages
       if (messages.length === 0) {
         setTimeout(() => {
-          addBotMessage("Hi there! I'm your AI tutor. How can I help you with your studies today?");
+          addBotMessage("Hi there! I'm your AI tutor. How can I help you with your studies today? Ask me anything about the current topic you're studying.");
         }, 600);
       }
     }
@@ -73,17 +74,28 @@ const AIAssistant = () => {
       setMessages(prev => [...prev, newMessage]);
       setInputValue('');
       
-      // Simulate AI response
-      setTimeout(() => {
-        const responses = [
+      // Get current page context to provide more relevant responses
+      const currentTopic = window.location.pathname.split('/').pop() || '';
+      const contextBasedResponses: Record<string, string[]> = {
+        'quadratic-functions': [
+          "For quadratic functions, remember that the standard form is ax² + bx + c where a ≠ 0. The graph is always a parabola.",
+          "The discriminant (b² - 4ac) tells us about the nature of the roots: positive means two distinct real roots, zero means one repeated root, negative means no real roots.",
+          "To find the vertex of a quadratic function f(x) = ax² + bx + c, use the formula x = -b/(2a) for the x-coordinate, then calculate f(-b/(2a)) for the y-coordinate.",
+          "When analyzing the graph of a quadratic function, pay attention to: the direction it opens (based on the sign of a), the vertex position, and where it crosses the axes.",
+        ],
+        'default': [
           "I can help you understand that concept. Let's break it down step by step...",
           "Great question! The key to solving this problem is to understand that...",
           "That's an interesting topic. Here's what you need to know...",
           "Let me explain this in a simpler way. Think of it like...",
           "I'd recommend focusing on the fundamental principles first. Let's start with...",
-        ];
-        
-        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        ]
+      };
+      
+      // Generate a contextual response based on the current topic
+      setTimeout(() => {
+        const topicResponses = contextBasedResponses[currentTopic] || contextBasedResponses.default;
+        const randomResponse = topicResponses[Math.floor(Math.random() * topicResponses.length)];
         addBotMessage(randomResponse);
       }, 800);
     }
@@ -101,21 +113,21 @@ const AIAssistant = () => {
       isMinimized ? 'w-16 h-16' : 'w-[380px] h-[520px] max-w-[calc(100vw-40px)] max-h-[calc(100vh-160px)]'
     }`}>
       {isMinimized ? (
-        <button 
+        <Button 
           onClick={toggleMinimized}
-          className="w-16 h-16 rounded-full bg-gradient-to-br from-blue to-teal flex items-center justify-center shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 active:scale-95"
+          className="w-16 h-16 rounded-full bg-gradient-to-br from-blue to-teal hover:shadow-lg hover:shadow-blue/20 p-0 flex items-center justify-center"
         >
-          <Bot className="w-8 h-8 text-white" />
-        </button>
+          <BookOpen className="w-7 h-7 text-white" />
+        </Button>
       ) : (
-        <div className="glass-card h-full flex flex-col rounded-2xl shadow-xl overflow-hidden">
+        <div className="h-full flex flex-col rounded-xl shadow-xl overflow-hidden border border-border bg-card">
           {/* Header */}
           <div className="bg-gradient-to-r from-blue to-teal p-4 flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                <Bot className="w-5 h-5 text-white" />
+                <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <h3 className="text-white font-medium">AI Tutor</h3>
+              <h3 className="text-white font-medium">AI Study Assistant</h3>
             </div>
             <div className="flex items-center space-x-2">
               <button 
@@ -143,7 +155,7 @@ const AIAssistant = () => {
                 <div className={`max-w-[80%] rounded-xl p-3 ${
                   message.isUser 
                     ? 'bg-blue text-white rounded-tr-none' 
-                    : 'bg-card border border-border rounded-tl-none'
+                    : 'bg-muted border border-border rounded-tl-none'
                 }`}>
                   <p className="text-sm">{message.content}</p>
                 </div>
@@ -152,7 +164,7 @@ const AIAssistant = () => {
             
             {isTyping && (
               <div className="flex justify-start">
-                <div className="bg-card rounded-xl rounded-tl-none p-3 border border-border">
+                <div className="bg-muted rounded-xl rounded-tl-none p-3 border border-border">
                   <div className="flex space-x-1">
                     <div className="w-2 h-2 rounded-full bg-blue/60 animate-pulse"></div>
                     <div className="w-2 h-2 rounded-full bg-blue/60 animate-pulse" style={{ animationDelay: '0.2s' }}></div>
@@ -172,21 +184,22 @@ const AIAssistant = () => {
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask your AI tutor..."
+                placeholder="Ask me anything about this topic..."
                 className="flex-1 max-h-24 min-h-[42px] rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue/20 resize-none"
                 rows={1}
               />
-              <button 
+              <Button 
                 onClick={handleSendMessage}
                 disabled={!inputValue.trim()}
-                className={`h-10 w-10 rounded-lg flex items-center justify-center transition-colors ${
+                size="icon"
+                className={`h-10 w-10 rounded-lg ${
                   inputValue.trim() 
                     ? 'bg-blue text-white hover:bg-blue-600' 
                     : 'bg-muted text-muted-foreground cursor-not-allowed'
                 }`}
               >
                 <Send className="w-4 h-4" />
-              </button>
+              </Button>
             </div>
           </div>
         </div>
