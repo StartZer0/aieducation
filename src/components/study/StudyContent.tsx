@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,8 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { ContentRenderer } from './ContentRenderer';
-
-// Removed import for HighlightedTerm
+import { InteractiveFunctionGraph } from './InteractiveFunctionGraph';
 
 interface StudyContentProps {
   title: string;
@@ -34,10 +32,7 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
   const [explanationLevel, setExplanationLevel] = useState('medium');
   const [activeTab, setActiveTab] = useState('content');
   
-  // Get content for this topic
   const getContent = () => {
-    // For now we'll return default content, but in a real app
-    // this would load the appropriate content for the topic
     if (subjectId === 'mathematics' && topicId === 'quadratic-functions') {
       return (
         <div className="space-y-6">
@@ -67,18 +62,10 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
             </p>
           </div>
           
-          <div className="my-6 w-full aspect-[4/3] bg-white rounded-lg flex flex-col border">
+          <div className="my-6 w-full bg-white dark:bg-card rounded-lg flex flex-col border">
             <h3 className="p-4 text-xl font-semibold border-b">Interactive Function Explorer</h3>
-            <div className="flex-1 w-full">
-              <iframe
-                src="https://www.desmos.com/calculator/isyj5kqeme?embed"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                title="Interactive Quadratic Function Graph"
-                className="rounded-b-lg"
-                allow="fullscreen"
-              ></iframe>
+            <div className="flex-1 w-full p-4">
+              <InteractiveFunctionGraph containerId="main-interactive-graph" />
             </div>
           </div>
           
@@ -135,14 +122,49 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 mt-0.5">
                 <HelpCircle className="w-5 h-5 text-primary" />
               </div>
-              <h4 className="text-lg font-semibold">Reflection Question</h4>
+              <h4 className="text-lg font-semibold">Reflection Questions</h4>
             </div>
-            <p className="mb-3">
-              How would the graph of f(x) = 2x² - 4x + 5 differ from the graph of g(x) = -2x² - 4x + 5? Think about the shape, direction, and key points.
-            </p>
-            <Button variant="outline" className="text-sm">
-              Show Answer
-            </Button>
+            <div className="space-y-4">
+              <div>
+                <p className="mb-2 font-medium">Question 1:</p>
+                <p className="mb-3">
+                  How would the graph of f(x) = 2x² - 4x + 5 differ from the graph of g(x) = -2x² - 4x + 5? Think about the shape, direction, and key points.
+                </p>
+                <Button variant="outline" className="text-sm">
+                  Show Answer
+                </Button>
+              </div>
+              
+              <div>
+                <p className="mb-2 font-medium">Question 2:</p>
+                <p className="mb-3">
+                  If you change the value of c in a quadratic function, how does it affect the graph? Does it change the vertex? The axis of symmetry?
+                </p>
+                <Button variant="outline" className="text-sm">
+                  Show Answer
+                </Button>
+              </div>
+              
+              <div>
+                <p className="mb-2 font-medium">Question 3:</p>
+                <p className="mb-3">
+                  Describe how you would find the range of a quadratic function using its graph or algebraic form.
+                </p>
+                <Button variant="outline" className="text-sm">
+                  Show Answer
+                </Button>
+              </div>
+              
+              <div>
+                <p className="mb-2 font-medium">Question 4:</p>
+                <p className="mb-3">
+                  How does the discriminant help us understand the behavior of a quadratic function graphically?
+                </p>
+                <Button variant="outline" className="text-sm">
+                  Show Answer
+                </Button>
+              </div>
+            </div>
           </Card>
         </div>
       );
@@ -278,21 +300,21 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
             <h4 className="text-center mb-3 text-sm font-medium">How well did you know this?</h4>
             <div className="flex justify-between gap-3">
               <button 
-                className={`flex-1 py-4 rounded-md flex flex-col items-center justify-center ${knowledgeLevelColors.none.bg} ${knowledgeLevelColors.none.hover} ${knowledgeLevelColors.none.text} transition-colors`}
+                className={`flex-1 py-4 rounded-md flex flex-col items-center justify-center shadow-sm ${knowledgeLevelColors.none.bg} ${knowledgeLevelColors.none.hover} ${knowledgeLevelColors.none.text} transition-colors`}
                 onClick={() => setKnowledgeLevel('none')}
               >
                 <span className="text-2xl mb-1">😕</span>
                 <span className="text-sm font-medium">Not Known</span>
               </button>
               <button 
-                className={`flex-1 py-4 rounded-md flex flex-col items-center justify-center ${knowledgeLevelColors.somewhat.bg} ${knowledgeLevelColors.somewhat.hover} ${knowledgeLevelColors.somewhat.text} transition-colors`}
+                className={`flex-1 py-4 rounded-md flex flex-col items-center justify-center shadow-sm ${knowledgeLevelColors.somewhat.bg} ${knowledgeLevelColors.somewhat.hover} ${knowledgeLevelColors.somewhat.text} transition-colors`}
                 onClick={() => setKnowledgeLevel('somewhat')}
               >
                 <span className="text-2xl mb-1">😐</span>
                 <span className="text-sm font-medium">Somewhat</span>
               </button>
               <button 
-                className={`flex-1 py-4 rounded-md flex flex-col items-center justify-center ${knowledgeLevelColors.well.bg} ${knowledgeLevelColors.well.hover} ${knowledgeLevelColors.well.text} transition-colors`}
+                className={`flex-1 py-4 rounded-md flex flex-col items-center justify-center shadow-sm ${knowledgeLevelColors.well.bg} ${knowledgeLevelColors.well.hover} ${knowledgeLevelColors.well.text} transition-colors`}
                 onClick={() => setKnowledgeLevel('well')}
               >
                 <span className="text-2xl mb-1">😊</span>
@@ -337,12 +359,41 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
           Show Answer
         </Button>
       </Card>
+      
+      <Card className="p-6">
+        <div className="flex items-start mb-3">
+          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 mt-0.5">
+            <HelpCircle className="w-5 h-5 text-primary" />
+          </div>
+          <h4 className="text-lg font-semibold">Question 3</h4>
+        </div>
+        <p className="mb-3">
+          If a parabola passes through the points (1, 4), (2, 7), and (3, 12), determine the quadratic function in the form f(x) = ax² + bx + c.
+        </p>
+        <Button variant="outline" className="text-sm">
+          Show Answer
+        </Button>
+      </Card>
+      
+      <Card className="p-6">
+        <div className="flex items-start mb-3">
+          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 mt-0.5">
+            <HelpCircle className="w-5 h-5 text-primary" />
+          </div>
+          <h4 className="text-lg font-semibold">Question 4</h4>
+        </div>
+        <p className="mb-3">
+          A ball is thrown upward with an initial velocity of 20 m/s from a height of 1.5 m. Its height h in meters after t seconds is given by h(t) = -4.9t² + 20t + 1.5. Find the maximum height reached by the ball and when it hits the ground.
+        </p>
+        <Button variant="outline" className="text-sm">
+          Show Answer
+        </Button>
+      </Card>
     </div>
   );
   
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* Breadcrumbs */}
       <nav className="flex items-center space-x-1 p-4 border-b border-border text-sm">
         {breadcrumbs.map((crumb, index) => (
           <React.Fragment key={crumb.id}>
@@ -357,7 +408,6 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
         ))}
       </nav>
       
-      {/* Content Header with Level Selector */}
       <div className="border-b border-border p-4 flex justify-between items-center">
         <h1 className="text-2xl md:text-3xl font-bold">{title}</h1>
         
@@ -376,7 +426,6 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
         </div>
       </div>
       
-      {/* Tabs */}
       <div className="flex flex-col flex-grow overflow-hidden">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
           <div className="border-b border-border">
@@ -400,7 +449,6 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
             </TabsList>
           </div>
           
-          {/* Tab Content */}
           <div className="flex-1 overflow-hidden p-6">
             <div className="max-w-3xl mx-auto h-full">
               <TabsContent value="content" className="mt-0 h-full">
@@ -423,7 +471,6 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
         </Tabs>
       </div>
       
-      {/* Navigation Buttons */}
       <div className="mt-auto p-4 border-t border-border flex items-center justify-between">
         {prevTopic ? (
           <Button 
