@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -6,7 +5,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { ContentRenderer } from './ContentRenderer';
-import { HighlightedTerm } from './HighlightedTerm';
+
+// Removed import for HighlightedTerm
 
 interface StudyContentProps {
   title: string;
@@ -41,7 +41,7 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
       return (
         <div className="space-y-6">
           <p>
-            In this lesson, we'll explore quadratic functions and how they form the foundation of many mathematical concepts. A <HighlightedTerm id="function">function</HighlightedTerm> is a mathematical relationship that assigns exactly one output value to each input value.
+            In this lesson, we'll explore quadratic functions and how they form the foundation of many mathematical concepts. A function is a mathematical relationship that assigns exactly one output value to each input value.
           </p>
           
           <h2 className="text-2xl font-semibold mt-6 mb-4">Quadratic Functions</h2>
@@ -49,16 +49,16 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
           <div className="p-5 bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900 rounded-lg mb-6">
             <h3 className="text-xl font-semibold mb-3">The General Form</h3>
             <p className="mb-3">
-              A quadratic function can be written in the form f(x) = ax² + bx + c, where a, b, and c are constants, and a ≠ 0. This is known as the standard form, and it is the most commonly used representation in A-level mathematics. The value of a determines the opening direction and steepness of the <HighlightedTerm id="parabola" color="green">parabola</HighlightedTerm>, while b and c influence its position on the coordinate plane.
+              A quadratic function can be written in the form f(x) = ax² + bx + c, where a, b, and c are constants, and a ≠ 0. This is known as the standard form, and it is the most commonly used representation in A-level mathematics. The value of a determines the opening direction and steepness of the parabola, while b and c influence its position on the coordinate plane.
             </p>
             
             <h3 className="text-xl font-semibold mb-3 mt-5">Key Features of Quadratic Graphs</h3>
             <p className="mb-3">
-              The graph of a quadratic function always forms a parabola. When a is positive, the parabola opens upward, creating a U-shape. The function has a <HighlightedTerm id="minimum-value" color="orange">minimum value</HighlightedTerm> at its lowest point. Conversely, when a is negative, the parabola opens downward in an inverted U-shape, and the function reaches a <HighlightedTerm id="maximum-value" color="orange">maximum value</HighlightedTerm> at its highest point. The magnitude of a influences the width of the parabola - a larger absolute value of a results in a narrower parabola, while a smaller absolute value creates a wider curve.
+              The graph of a quadratic function always forms a parabola. When a is positive, the parabola opens upward, creating a U-shape. The function has a minimum value at its lowest point. Conversely, when a is negative, the parabola opens downward in an inverted U-shape, and the function reaches a maximum value at its highest point. The magnitude of a influences the width of the parabola - a larger absolute value of a results in a narrower parabola, while a smaller absolute value creates a wider curve.
             </p>
             
             <p className="mb-3">
-              Every parabola has an <HighlightedTerm id="axis-of-symmetry">axis of symmetry</HighlightedTerm>, which is a vertical line that passes through the <HighlightedTerm id="vertex">vertex</HighlightedTerm>. The axis of symmetry divides the parabola into two mirror-image halves. For a quadratic function in standard form, the axis of symmetry occurs at x = -b/(2a). This is a crucial feature when analyzing the behavior of quadratic functions.
+              Every parabola has an axis of symmetry, which is a vertical line that passes through the vertex. The axis of symmetry divides the parabola into two mirror-image halves. For a quadratic function in standard form, the axis of symmetry occurs at x = -b/(2a). This is a crucial feature when analyzing the behavior of quadratic functions.
             </p>
             
             <p>
@@ -67,23 +67,27 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
           </div>
           
           <div className="my-6 w-full h-64 bg-muted rounded-lg flex items-center justify-center">
-            <div className="text-center">
-              <div className="mb-2 text-lg font-medium">Interactive Graph</div>
-              <div className="text-muted-foreground text-sm">Visualization of y = x² + 2x - 3</div>
-            </div>
+            <iframe
+              src="https://www.desmos.com/calculator/bcikoysf8h?embed"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              title="Interactive Quadratic Function Graph"
+              className="rounded-lg"
+            ></iframe>
           </div>
           
           <h3 className="text-xl font-semibold mt-6 mb-4">Key Features of Quadratic Functions</h3>
           
           <ul className="space-y-3">
             <li>
-              <strong>Shape and Direction:</strong> When a &gt; 0, the parabola opens upward (U-shaped) and has a <HighlightedTerm id="minimum-value" color="orange">minimum value</HighlightedTerm>. When a &lt; 0, the parabola opens downward (inverted U-shaped) and has a <HighlightedTerm id="maximum-value" color="orange">maximum value</HighlightedTerm>.
+              <strong>Shape and Direction:</strong> When a &gt; 0, the parabola opens upward (U-shaped) and has a minimum value. When a &lt; 0, the parabola opens downward (inverted U-shaped) and has a maximum value.
             </li>
             <li>
-              <strong>Vertex:</strong> The <HighlightedTerm id="vertex">vertex</HighlightedTerm> is the point where the parabola changes direction. For a quadratic function in the form f(x) = ax² + bx + c, the x-coordinate of the vertex is x = -b/(2a).
+              <strong>Vertex:</strong> The vertex is the point where the parabola changes direction. For a quadratic function in the form f(x) = ax² + bx + c, the x-coordinate of the vertex is x = -b/(2a).
             </li>
             <li>
-              <strong>Axis of Symmetry:</strong> The parabola is symmetric about a vertical line passing through the vertex, called the <HighlightedTerm id="axis-of-symmetry">axis of symmetry</HighlightedTerm>.
+              <strong>Axis of Symmetry:</strong> The parabola is symmetric about a vertical line passing through the vertex, called the axis of symmetry.
             </li>
             <li>
               <strong>y-intercept:</strong> The y-intercept is the point where the parabola crosses the y-axis, which is at (0, c).
@@ -96,7 +100,7 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
           <h3 className="text-xl font-semibold mt-6 mb-4">Solving Quadratic Equations</h3>
           
           <p>
-            To find the roots of a quadratic equation (where the function equals zero), we can use the <HighlightedTerm id="quadratic-formula" color="orange">quadratic formula</HighlightedTerm>:
+            To find the roots of a quadratic equation (where the function equals zero), we can use the quadratic formula:
           </p>
           
           <div className="my-4 p-4 bg-primary/5 border border-primary/10 rounded-lg text-center">
