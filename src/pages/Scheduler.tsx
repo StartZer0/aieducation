@@ -60,31 +60,31 @@ const performanceData = {
     score: 78, 
     timeSpent: 9.5, 
     recommendedExtra: 1.5,
-    priority: "high"
+    priority: "high" as const
   },
   "Science": { 
     score: 85, 
     timeSpent: 7, 
     recommendedExtra: 0.5,
-    priority: "medium" 
+    priority: "medium" as const
   },
   "English": { 
     score: 92, 
     timeSpent: 6, 
     recommendedExtra: 0,
-    priority: "low" 
+    priority: "low" as const
   },
   "History": { 
     score: 68, 
     timeSpent: 4.5, 
     recommendedExtra: 2,
-    priority: "high" 
+    priority: "high" as const
   },
   "Computer Science": { 
     score: 88, 
     timeSpent: 7, 
     recommendedExtra: 1,
-    priority: "medium" 
+    priority: "medium" as const
   }
 };
 
