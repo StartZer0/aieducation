@@ -134,8 +134,8 @@ const StudyContent = ({ title, content, breadcrumbs, prevLesson, nextLesson }: S
       'quadratic-formula': 'The formula x = (-b ± √(b² - 4ac)) / 2a used to solve quadratic equations in the form ax² + bx + c = 0.',
       'function': 'A mathematical relationship that assigns exactly one output value to each input value, usually written as f(x).',
       'parabola': 'A U-shaped curve that represents the graph of a quadratic function, such as y = x².',
-      'minimum-value': 'The lowest point on a parabola when it opens upward (a {">"} 0).',
-      'maximum-value': 'The highest point on a parabola when it opens downward (a {"<"} 0).',
+      'minimum-value': 'The lowest point on a parabola when it opens upward (a > 0).',
+      'maximum-value': 'The highest point on a parabola when it opens downward (a < 0).',
       'vertex': 'The point where a parabola changes direction, representing either a minimum or maximum value.',
       'axis-of-symmetry': 'A vertical line passing through the vertex of a parabola about which the parabola is symmetric.'
     };
