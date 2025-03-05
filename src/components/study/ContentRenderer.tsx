@@ -69,6 +69,12 @@ export function ContentRenderer({ content }: ContentRendererProps) {
     setShowDetailedExplanation(false);
   };
   
+  const getDetailedExplanationContent = (term: string) => {
+    // This would ideally come from your content database
+    // For now we'll just return null and let the DetailedExplanation component use its default content
+    return null;
+  };
+  
   const getExplanation = (term: string) => {
     if (highlightedTerms[term as keyof typeof highlightedTerms]) {
       return highlightedTerms[term as keyof typeof highlightedTerms].shortDefinition;
@@ -139,8 +145,8 @@ export function ContentRenderer({ content }: ContentRendererProps) {
           title={currentTerm.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
           onBack={closeDetailedExplanation}
           onClose={closeDetailedExplanation}
-          term={currentTerm} 
-          content={null} 
+          term={currentTerm}
+          content={getDetailedExplanationContent(currentTerm)}
         />
       )}
     </ScrollArea>

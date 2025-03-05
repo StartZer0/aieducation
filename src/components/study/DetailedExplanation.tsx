@@ -13,8 +13,11 @@ interface DetailedExplanationProps {
 }
 
 export function DetailedExplanation({ title, onBack, term, content, onClose }: DetailedExplanationProps) {
+  // Use onClose if provided, otherwise fallback to onBack
+  const handleClose = onClose || onBack;
+
   return (
-    <div className="h-full flex flex-col overflow-hidden bg-background">
+    <div className="fixed inset-0 z-50 bg-background flex flex-col overflow-hidden">
       {/* Header */}
       <div className="p-4 border-b flex items-center justify-between">
         <div className="flex items-center gap-2">
@@ -23,7 +26,7 @@ export function DetailedExplanation({ title, onBack, term, content, onClose }: D
           </Button>
           <h2 className="font-semibold">{title}</h2>
         </div>
-        <Button variant="ghost" size="icon" onClick={onBack}>
+        <Button variant="ghost" size="icon" onClick={handleClose}>
           <X className="h-4 w-4" />
         </Button>
       </div>
