@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -123,6 +122,50 @@
   /* Canvas styling for p5.js */
   canvas {
     @apply block;
+  }
+  
+  /* Print styles */
+  @media print {
+    header, .no-print {
+      display: none !important;
+    }
+    
+    body {
+      background-color: white;
+      color: black;
+    }
+    
+    .container {
+      max-width: 100% !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    
+    .glass-card {
+      box-shadow: none !important;
+      background: white !important;
+      border: 1px solid #ddd !important;
+    }
+    
+    /* Ensure table is visible on print */
+    table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+    }
+    
+    th, td {
+      border: 1px solid #ddd !important;
+      padding: 8px !important;
+    }
+    
+    /* Add page break rules */
+    .page-break-before {
+      page-break-before: always;
+    }
+    
+    .page-break-after {
+      page-break-after: always;
+    }
   }
 }
 

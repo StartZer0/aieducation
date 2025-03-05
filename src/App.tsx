@@ -8,6 +8,7 @@ import Header from "./components/Header";
 import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Study from "./pages/Study";
+import Scheduler from "./pages/Scheduler";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/study/:subjectId?/:topicId?" element={<Study />} />
+            <Route path="/scheduler" element={<Scheduler />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
