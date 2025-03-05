@@ -12,10 +12,16 @@ import { subjectsData } from '@/data/subjects';
 
 interface StudyLayoutProps {
   subjects?: typeof subjectsData; // Optional to override default data
+  currentSubjectId?: string;
+  currentTopicId?: string;
 }
 
-export function StudyLayout({ subjects = subjectsData }: StudyLayoutProps) {
-  const { subjectId = 'mathematics', topicId = 'quadratic-functions' } = useParams();
+export function StudyLayout({ 
+  subjects = subjectsData,
+  currentSubjectId,
+  currentTopicId
+}: StudyLayoutProps) {
+  const { subjectId = currentSubjectId || 'mathematics', topicId = currentTopicId || 'quadratic-functions' } = useParams();
   const navigate = useNavigate();
   
   const [showTools, setShowTools] = useState(false);
