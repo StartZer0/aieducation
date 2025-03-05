@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote, CircleHelp, Medal, CheckCircle, SlidersHorizontal } from 'lucide-react';
 import { Button } from './ui/button';
@@ -136,8 +137,8 @@ const StudyContent = ({ title, content, breadcrumbs, prevLesson, nextLesson }: S
       'quadratic-formula': 'The formula x = (-b ± √(b² - 4ac)) / 2a used to solve quadratic equations in the form ax² + bx + c = 0.',
       'function': 'A mathematical relationship that assigns exactly one output value to each input value, usually written as f(x).',
       'parabola': 'A U-shaped curve that represents the graph of a quadratic function, such as y = x².',
-      'minimum-value': 'The lowest point on a parabola when it opens upward (a > 0).',
-      'maximum-value': 'The highest point on a parabola when it opens downward (a < 0).',
+      'minimum-value': 'The lowest point on a parabola when it opens upward (a {">"}$ 0).',
+      'maximum-value': 'The highest point on a parabola when it opens downward (a {"<"} 0).',
       'vertex': 'The point where a parabola changes direction, representing either a minimum or maximum value.',
       'axis-of-symmetry': 'A vertical line passing through the vertex of a parabola about which the parabola is symmetric.'
     };
@@ -156,7 +157,7 @@ const StudyContent = ({ title, content, breadcrumbs, prevLesson, nextLesson }: S
           </li>
           <li className="flex items-start">
             <CheckCircle className="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-            <span>The graph of a quadratic function is a parabola, opening upward when a > 0 and downward when a < 0.</span>
+            <span>The graph of a quadratic function is a parabola, opening upward when a {">"}$ 0 and downward when a {"<"} 0.</span>
           </li>
           <li className="flex items-start">
             <CheckCircle className="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" />
@@ -452,7 +453,7 @@ const StudyContent = ({ title, content, breadcrumbs, prevLesson, nextLesson }: S
                 
                 <ul className="space-y-3">
                   <li>
-                    <strong>Shape and Direction:</strong> When a > 0, the parabola opens upward (U-shaped) and has a <HighlightTerm id="minimum-value" color="orange">minimum value</HighlightTerm>. When a < 0, the parabola opens downward (inverted U-shaped) and has a <HighlightTerm id="maximum-value" color="orange">maximum value</HighlightTerm>.
+                    <strong>Shape and Direction:</strong> When a {">"} 0, the parabola opens upward (U-shaped) and has a <HighlightTerm id="minimum-value" color="orange">minimum value</HighlightTerm>. When a {"<"} 0, the parabola opens downward (inverted U-shaped) and has a <HighlightTerm id="maximum-value" color="orange">maximum value</HighlightTerm>.
                   </li>
                   <li>
                     <strong>Vertex:</strong> The <HighlightTerm id="vertex">vertex</HighlightTerm> is the point where the parabola changes direction. For a quadratic function in the form f(x) = ax² + bx + c, the x-coordinate of the vertex is x = -b/(2a).
@@ -491,9 +492,9 @@ const StudyContent = ({ title, content, breadcrumbs, prevLesson, nextLesson }: S
                 </p>
                 
                 <ul className="space-y-2">
-                  <li>If b² - 4ac > 0, the equation has two distinct real roots.</li>
+                  <li>If b² - 4ac {">"} 0, the equation has two distinct real roots.</li>
                   <li>If b² - 4ac = 0, the equation has exactly one real root (a repeated root).</li>
-                  <li>If b² - 4ac < 0, the equation has no real roots (but two complex conjugate roots).</li>
+                  <li>If b² - 4ac {"<"} 0, the equation has no real roots (but two complex conjugate roots).</li>
                 </ul>
                 
                 <div className="mt-8 bg-card border border-border rounded-lg p-5">
