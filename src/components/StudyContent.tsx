@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote, CircleHelp, Medal, CheckCircle, SlidersHorizontal } from 'lucide-react';
 import { Button } from './ui/button';
@@ -41,7 +40,6 @@ const StudyContent = ({ title, content, breadcrumbs, prevLesson, nextLesson }: S
       return newState;
     });
     
-    // Record that this term has been viewed
     setHighlightedTerms(prev => ({
       ...prev,
       [termId]: true
@@ -132,12 +130,11 @@ const StudyContent = ({ title, content, breadcrumbs, prevLesson, nextLesson }: S
   };
   
   const getExplanation = (id: string) => {
-    // Default explanations for common terms
     const explanations: Record<string, string> = {
       'quadratic-formula': 'The formula x = (-b ± √(b² - 4ac)) / 2a used to solve quadratic equations in the form ax² + bx + c = 0.',
       'function': 'A mathematical relationship that assigns exactly one output value to each input value, usually written as f(x).',
       'parabola': 'A U-shaped curve that represents the graph of a quadratic function, such as y = x².',
-      'minimum-value': 'The lowest point on a parabola when it opens upward (a {">"}$ 0).',
+      'minimum-value': 'The lowest point on a parabola when it opens upward (a {">"} 0).',
       'maximum-value': 'The highest point on a parabola when it opens downward (a {"<"} 0).',
       'vertex': 'The point where a parabola changes direction, representing either a minimum or maximum value.',
       'axis-of-symmetry': 'A vertical line passing through the vertex of a parabola about which the parabola is symmetric.'
@@ -146,35 +143,33 @@ const StudyContent = ({ title, content, breadcrumbs, prevLesson, nextLesson }: S
     return explanations[id] || `Definition for ${id.replace(/-/g, ' ')}`;
   };
   
-  const renderSummary = () => {
-    return (
-      <div className="p-4 border border-border rounded-lg bg-muted/20">
-        <h3 className="text-xl font-medium mb-3">Summary: {title}</h3>
-        <ul className="space-y-2">
-          <li className="flex items-start">
-            <CheckCircle className="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-            <span>A quadratic function has the form f(x) = ax² + bx + c where a ≠ 0.</span>
-          </li>
-          <li className="flex items-start">
-            <CheckCircle className="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-            <span>The graph of a quadratic function is a parabola, opening upward when a {">"}$ 0 and downward when a {"<"} 0.</span>
-          </li>
-          <li className="flex items-start">
-            <CheckCircle className="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-            <span>The vertex is at (-b/2a, f(-b/2a)) and represents either a minimum or maximum.</span>
-          </li>
-          <li className="flex items-start">
-            <CheckCircle className="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-            <span>The axis of symmetry is the vertical line x = -b/2a.</span>
-          </li>
-          <li className="flex items-start">
-            <CheckCircle className="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" />
-            <span>The discriminant b² - 4ac determines the number of roots: two distinct real roots if positive, one real root if zero, or no real roots if negative.</span>
-          </li>
-        </ul>
-      </div>
-    );
-  };
+  const renderSummary = () => (
+    <div className="p-4 border border-border rounded-lg bg-muted/20">
+      <h3 className="text-xl font-medium mb-3">Summary: {title}</h3>
+      <ul className="space-y-2">
+        <li className="flex items-start">
+          <CheckCircle className="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" />
+          <span>A quadratic function has the form f(x) = ax² + bx + c where a ≠ 0.</span>
+        </li>
+        <li className="flex items-start">
+          <CheckCircle className="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" />
+          <span>The graph of a quadratic function is a parabola, opening upward when a {">"} 0 and downward when a {"<"} 0.</span>
+        </li>
+        <li className="flex items-start">
+          <CheckCircle className="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" />
+          <span>The vertex is at (-b/2a, f(-b/2a)) and represents either a minimum or maximum.</span>
+        </li>
+        <li className="flex items-start">
+          <CheckCircle className="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" />
+          <span>The axis of symmetry is the vertical line x = -b/2a.</span>
+        </li>
+        <li className="flex items-start">
+          <CheckCircle className="w-5 h-5 text-green-500 mr-2 shrink-0 mt-0.5" />
+          <span>The discriminant b² - 4ac determines the number of roots: two distinct real roots if positive, one real root if zero, or no real roots if negative.</span>
+        </li>
+      </ul>
+    </div>
+  );
   
   const renderFlashcards = () => {
     return (
@@ -362,7 +357,6 @@ const StudyContent = ({ title, content, breadcrumbs, prevLesson, nextLesson }: S
   
   return (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* Breadcrumbs */}
       <nav className="flex items-center space-x-1 p-4 border-b border-border text-sm">
         {breadcrumbs.map((crumb, index) => (
           <React.Fragment key={crumb.id}>
@@ -377,7 +371,6 @@ const StudyContent = ({ title, content, breadcrumbs, prevLesson, nextLesson }: S
         ))}
       </nav>
       
-      {/* Content Header with Level Selector */}
       <div className="border-b border-border p-4 flex justify-between items-center">
         <h1 className="text-2xl md:text-3xl font-bold">{title}</h1>
         
@@ -398,7 +391,6 @@ const StudyContent = ({ title, content, breadcrumbs, prevLesson, nextLesson }: S
         </div>
       </div>
       
-      {/* Tabs */}
       <div className="border-b border-border">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="pl-4">
@@ -418,11 +410,14 @@ const StudyContent = ({ title, content, breadcrumbs, prevLesson, nextLesson }: S
               <HelpCircle className="w-4 h-4 mr-2" />
               Questions
             </TabsTrigger>
+            <TabsTrigger value="detailed-explanation" className="flex items-center">
+              <CircleHelp className="w-4 h-4 mr-2" />
+              Details
+            </TabsTrigger>
           </TabsList>
         </Tabs>
       </div>
       
-      {/* Content */}
       <div className="flex-1 overflow-y-auto p-6 md:p-8">
         <div className="max-w-3xl">
           <TabsContent value="content" className="mt-0">
@@ -533,7 +528,6 @@ const StudyContent = ({ title, content, breadcrumbs, prevLesson, nextLesson }: S
         </div>
       </div>
       
-      {/* Navigation Buttons */}
       <div className="p-4 border-t border-border flex items-center justify-between">
         {prevLesson ? (
           <a 
