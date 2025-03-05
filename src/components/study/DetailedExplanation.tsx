@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, ThumbsUp, ThumbsDown, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -18,6 +18,20 @@ export function DetailedExplanation({ term, onClose, content }: DetailedExplanat
     console.log(`User ${type}d the explanation for ${term}`);
     setLikeStatus(type === 'like' ? 'liked' : 'disliked');
   };
+  
+  useEffect(() => {
+    // Add event listener to handle escape key
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+    
+    document.addEventListener('keydown', handleEscapeKey);
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [onClose]);
   
   return (
     <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm overflow-hidden">
@@ -56,14 +70,44 @@ export function DetailedExplanation({ term, onClose, content }: DetailedExplanat
                   <h2 className="text-2xl font-semibold mb-4">What is a Function?</h2>
                   <p className="mb-4">A function is a special relationship between inputs and outputs where each input has exactly one output. Think of a function as a machine that takes an input value, processes it according to a specific rule, and produces an output value.</p>
                   
-                  <div className="flex items-center justify-center gap-4 my-6 flex-wrap">
-                    <div className="p-3 border rounded-md text-center min-w-[80px]">Input (x)</div>
-                    <div className="text-primary">→</div>
-                    <div className="p-4 bg-primary/10 border border-primary/20 rounded-md text-center min-w-[120px]">
-                      Function f(x)
+                  <div className="function-machine flex items-center justify-center gap-4 my-6 flex-wrap">
+                    <div className="input-box border-2 border-gray-600 rounded-md text-center p-2 min-w-[80px]" id="input-value">x</div>
+                    <div className="arrow relative w-[80px] h-[20px] bg-gray-700">
+                      <div className="absolute right-[-15px] top-[-10px] border-l-[20px] border-l-gray-700 border-y-[20px] border-y-transparent"></div>
                     </div>
-                    <div className="text-primary">→</div>
-                    <div className="p-3 border rounded-md text-center min-w-[80px]">Output y</div>
+                    <div className="function-box min-w-[150px] h-[100px] bg-blue-500 text-white flex items-center justify-center rounded-lg font-bold text-lg">
+                      f(x) = 2x + 3
+                    </div>
+                    <div className="arrow relative w-[80px] h-[20px] bg-gray-700">
+                      <div className="absolute right-[-15px] top-[-10px] border-l-[20px] border-l-gray-700 border-y-[20px] border-y-transparent"></div>
+                    </div>
+                    <div className="output-box border-2 border-gray-600 rounded-md text-center p-2 min-w-[80px]" id="output-value">?</div>
+                  </div>
+                  
+                  <div className="interactive-section bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg my-4">
+                    <h3 className="font-semibold mb-2">Try it yourself!</h3>
+                    <p className="mb-2">Enter a value for x and see what output the function produces:</p>
+                    <div className="function-controls flex flex-wrap gap-4 items-center justify-center">
+                      <div>
+                        <label htmlFor="input-number" className="mr-2">Input (x):</label>
+                        <input 
+                          type="number" 
+                          id="input-number" 
+                          defaultValue="0" 
+                          className="w-[60px] text-center border rounded p-1"
+                          onChange={(e) => {
+                            const x = parseFloat(e.target.value || "0");
+                            const result = 2 * x + 3;
+                            document.getElementById('result-value')!.textContent = result.toString();
+                            document.getElementById('input-value')!.textContent = x.toString();
+                            document.getElementById('output-value')!.textContent = result.toString();
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <p>Output f(x): <span id="result-value" className="font-bold">3</span></p>
+                      </div>
+                    </div>
                   </div>
                   
                   <p>In mathematics, a function is defined as a relation between a set of inputs (domain) and a set of permissible outputs (range) with the property that each input is related to exactly one output.</p>
@@ -82,6 +126,83 @@ export function DetailedExplanation({ term, onClose, content }: DetailedExplanat
                   <p className="text-sm text-muted-foreground mt-2">
                     Interactive graph showing y = 2x + 3. You can modify the function by adjusting the parameters.
                   </p>
+                </div>
+
+                <div className="section p-6 bg-card rounded-lg border">
+                  <h2 className="text-2xl font-semibold mb-4">Exploring Different Functions</h2>
+                  
+                  <div className="function-selector mb-4">
+                    <label htmlFor="function-select" className="block mb-2">Select a function type:</label>
+                    <select 
+                      id="function-select" 
+                      className="w-full p-2 border rounded-md"
+                      onChange={() => {
+                        // Would implement function type switching in a real application
+                      }}
+                    >
+                      <option value="linear">Linear: f(x) = mx + b</option>
+                      <option value="quadratic">Quadratic: f(x) = ax² + bx + c</option>
+                      <option value="cubic">Cubic: f(x) = ax³ + bx² + cx + d</option>
+                      <option value="exponential">Exponential: f(x) = aˣ</option>
+                    </select>
+                  </div>
+                  
+                  <div className="linear-controls flex flex-wrap gap-4 justify-center mb-4">
+                    <div className="function-control bg-gray-100 dark:bg-gray-800 p-4 rounded-md min-w-[150px]">
+                      <label htmlFor="linear-m" className="block mb-1">m (slope):</label>
+                      <input 
+                        type="range" 
+                        id="linear-m" 
+                        min="-5" 
+                        max="5" 
+                        step="0.5" 
+                        defaultValue="1" 
+                        className="w-full"
+                      />
+                      <span id="linear-m-value" className="block text-center">1</span>
+                    </div>
+                    <div className="function-control bg-gray-100 dark:bg-gray-800 p-4 rounded-md min-w-[150px]">
+                      <label htmlFor="linear-b" className="block mb-1">b (y-intercept):</label>
+                      <input 
+                        type="range" 
+                        id="linear-b" 
+                        min="-5" 
+                        max="5" 
+                        step="0.5" 
+                        defaultValue="0" 
+                        className="w-full"
+                      />
+                      <span id="linear-b-value" className="block text-center">0</span>
+                    </div>
+                  </div>
+                  
+                  <div className="aspect-video border rounded-lg bg-gray-50 dark:bg-gray-900 mb-4">
+                    <div className="w-full h-full flex items-center justify-center">
+                      <p className="text-muted-foreground text-center">Interactive function graph would appear here</p>
+                    </div>
+                  </div>
+                  
+                  <p id="current-function-equation" className="text-center font-medium mb-4">f(x) = 1x + 0</p>
+                  
+                  <div className="interactive-section bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg">
+                    <h3 className="font-semibold mb-2">Function Tester</h3>
+                    <p className="mb-2">Enter a value for x to test the current function:</p>
+                    <div className="flex flex-wrap gap-4 items-center justify-center">
+                      <div>
+                        <label htmlFor="test-input" className="mr-2">Input (x):</label>
+                        <input 
+                          type="number" 
+                          id="test-input" 
+                          defaultValue="0" 
+                          className="w-[60px] text-center border rounded p-1"
+                        />
+                      </div>
+                      <Button variant="secondary" size="sm">Calculate</Button>
+                      <div>
+                        <p>Output f(x): <span id="test-result" className="font-bold">0</span></p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 
                 <div className="section p-6 bg-card rounded-lg border">
@@ -137,9 +258,46 @@ export function DetailedExplanation({ term, onClose, content }: DetailedExplanat
                 </div>
                 
                 <div className="section p-6 bg-card rounded-lg border">
+                  <h2 className="text-2xl font-semibold mb-4">Real-World Examples</h2>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="p-4 border rounded-md">
+                      <h3 className="font-medium mb-2">Temperature Conversion</h3>
+                      <p className="mb-2">The function F(C) = (9/5)C + 32 converts temperature from Celsius to Fahrenheit.</p>
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <label htmlFor="celsius-input">Celsius:</label>
+                        <input 
+                          type="number" 
+                          id="celsius-input" 
+                          defaultValue="0" 
+                          className="w-[60px] text-center border rounded p-1"
+                        />
+                        <Button variant="secondary" size="sm">Convert</Button>
+                        <span>= <span id="fahrenheit-result" className="font-bold">32</span>°F</span>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 border rounded-md">
+                      <h3 className="font-medium mb-2">Distance-Time Relationship</h3>
+                      <p className="mb-2">If you travel at a constant speed of 60 km/h, the function d(t) = 60t gives the distance traveled in t hours.</p>
+                      <div className="flex flex-wrap gap-2 items-center">
+                        <label htmlFor="time-input">Time (hours):</label>
+                        <input 
+                          type="number" 
+                          id="time-input" 
+                          defaultValue="1" 
+                          min="0" 
+                          step="0.5" 
+                          className="w-[60px] text-center border rounded p-1"
+                        />
+                        <Button variant="secondary" size="sm">Calculate</Button>
+                        <span>= <span id="distance-result" className="font-bold">60</span> km</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="section p-6 bg-card rounded-lg border">
                   <h2 className="text-2xl font-semibold mb-4">Educational Video Resources</h2>
-                  <p className="mb-4">These educational videos will help enhance your understanding of functions:</p>
-                  
                   <div className="space-y-3">
                     <a href="https://www.youtube.com/watch?v=kvGsIo1TmsM" 
                        className="block p-3 border rounded-md hover:bg-accent transition-colors" 
