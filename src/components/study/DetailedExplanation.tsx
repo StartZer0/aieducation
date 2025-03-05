@@ -115,16 +115,16 @@ export function DetailedExplanation({ term, onClose, content }: DetailedExplanat
                 
                 <div className="section p-6 bg-card rounded-lg border">
                   <h2 className="text-2xl font-semibold mb-4">Interactive Function Graph</h2>
-                  <div className="aspect-video border rounded-lg mb-4 bg-gray-50 dark:bg-gray-900">
+                  <div className="aspect-video border rounded-lg mb-4 bg-white">
                     <iframe 
-                      src="https://www.desmos.com/calculator/1obkpkkpn4?embed" 
+                      src="https://www.desmos.com/calculator/auiouemwm2?embed" 
                       className="w-full h-full border-0 rounded-lg"
                       title="Interactive Function Graph"
                       loading="lazy"
                     ></iframe>
                   </div>
                   <p className="text-sm text-muted-foreground mt-2">
-                    Interactive graph showing different function types. You can modify the functions by adjusting the parameters in the Desmos calculator.
+                    Interactive graph showing different function types. Adjust the sliders to see how parameters affect the graph.
                   </p>
                 </div>
 
@@ -176,10 +176,13 @@ export function DetailedExplanation({ term, onClose, content }: DetailedExplanat
                     </div>
                   </div>
                   
-                  <div className="aspect-video border rounded-lg bg-gray-50 dark:bg-gray-900 mb-4">
-                    <div className="w-full h-full flex items-center justify-center">
-                      <p className="text-muted-foreground text-center">Interactive function graph would appear here</p>
-                    </div>
+                  <div className="aspect-video border rounded-lg bg-white mb-4">
+                    <iframe 
+                      src="https://www.desmos.com/calculator/hnxwskogt0?embed" 
+                      className="w-full h-full border-0 rounded-lg"
+                      title="Interactive Function Graph Controls"
+                      loading="lazy"
+                    ></iframe>
                   </div>
                   
                   <p id="current-function-equation" className="text-center font-medium mb-4">f(x) = 1x + 0</p>
@@ -317,69 +320,104 @@ export function DetailedExplanation({ term, onClose, content }: DetailedExplanat
                 
                 <div className="section p-6 bg-card rounded-lg border">
                   <h2 className="text-2xl font-semibold mb-4">Check Your Understanding</h2>
-                  <div className="p-4 border rounded-md mb-4">
-                    <h3 className="font-medium mb-2">Question 1:</h3>
-                    <p className="mb-3">If f(x) = 3x + 4, what is f(2)?</p>
-                    <div className="space-y-2">
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) 7</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) 8</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer bg-blue-100 dark:bg-blue-900/30">c) 10</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) 14</div>
+                  <div className="space-y-4">
+                    <div className="p-4 border rounded-md mb-4">
+                      <h3 className="font-medium mb-2">Question 1:</h3>
+                      <p className="mb-3">If f(x) = 3x + 4, what is f(2)?</p>
+                      <div className="space-y-2">
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) 7</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) 8</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer bg-blue-100 dark:bg-blue-900/30">c) 10</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) 14</div>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="p-4 border rounded-md mb-4">
-                    <h3 className="font-medium mb-2">Question 2:</h3>
-                    <p className="mb-3">Which of the following is NOT a function?</p>
-                    <div className="space-y-2">
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) y = x²</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) y = |x|</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">c) x = y²</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) y = 2ˣ</div>
+                    
+                    <div className="p-4 border rounded-md mb-4">
+                      <h3 className="font-medium mb-2">Question 2:</h3>
+                      <p className="mb-3">Which of the following is NOT a function?</p>
+                      <div className="space-y-2">
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) y = x²</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) y = |x|</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">c) x = y²</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) y = 2ˣ</div>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="p-4 border rounded-md mb-4">
-                    <h3 className="font-medium mb-2">Question 3:</h3>
-                    <p className="mb-3">For the function f(x) = x² - 3x + 2, what is f(-1)?</p>
-                    <div className="space-y-2">
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) -2</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) 0</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">c) 6</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) 8</div>
+                    
+                    <div className="p-4 border rounded-md mb-4">
+                      <h3 className="font-medium mb-2">Question 3:</h3>
+                      <p className="mb-3">For the function f(x) = x² - 3x + 2, what is f(-1)?</p>
+                      <div className="space-y-2">
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) -2</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) 0</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">c) 6</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) 8</div>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="p-4 border rounded-md mb-4">
-                    <h3 className="font-medium mb-2">Question 4:</h3>
-                    <p className="mb-3">Which of the following statements is true about a linear function of the form f(x) = mx + b?</p>
-                    <div className="space-y-2">
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) The graph is always a parabola</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) The parameter m represents the y-intercept</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">c) The parameter m represents the slope of the line</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) The domain of the function is always restricted</div>
+                    
+                    <div className="p-4 border rounded-md mb-4">
+                      <h3 className="font-medium mb-2">Question 4:</h3>
+                      <p className="mb-3">Which of the following statements is true about a linear function of the form f(x) = mx + b?</p>
+                      <div className="space-y-2">
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) The graph is always a parabola</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) The parameter m represents the y-intercept</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">c) The parameter m represents the slope of the line</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) The domain of the function is always restricted</div>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="p-4 border rounded-md mb-4">
-                    <h3 className="font-medium mb-2">Question 5:</h3>
-                    <p className="mb-3">If f(3) = 7 and f(5) = 11, what is the slope of this linear function?</p>
-                    <div className="space-y-2">
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) 1</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) 2</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">c) 3</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) 4</div>
+                    
+                    <div className="p-4 border rounded-md mb-4">
+                      <h3 className="font-medium mb-2">Question 5:</h3>
+                      <p className="mb-3">If f(3) = 7 and f(5) = 11, what is the slope of this linear function?</p>
+                      <div className="space-y-2">
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) 1</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) 2</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">c) 3</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) 4</div>
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="p-4 border rounded-md">
-                    <h3 className="font-medium mb-2">Question 6:</h3>
-                    <p className="mb-3">Consider f(x) = 2x - 3 and g(x) = x² + 1. What is (f ∘ g)(2)?</p>
-                    <div className="space-y-2">
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) 3</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) 5</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">c) 7</div>
-                      <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) 9</div>
+                    
+                    <div className="p-4 border rounded-md">
+                      <h3 className="font-medium mb-2">Question 6:</h3>
+                      <p className="mb-3">Consider f(x) = 2x - 3 and g(x) = x² + 1. What is (f ∘ g)(2)?</p>
+                      <div className="space-y-2">
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) 3</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) 5</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">c) 7</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) 9</div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 border rounded-md">
+                      <h3 className="font-medium mb-2">Question 7:</h3>
+                      <p className="mb-3">What is the domain of the function f(x) = 1/(x-2)?</p>
+                      <div className="space-y-2">
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) All real numbers</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) All real numbers except x = 0</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">c) All real numbers except x = 2</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) All real numbers greater than 2</div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 border rounded-md">
+                      <h3 className="font-medium mb-2">Question 8:</h3>
+                      <p className="mb-3">If h(x) = f(g(x)), where f(x) = x² and g(x) = 3x + 1, what is h(2)?</p>
+                      <div className="space-y-2">
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) 25</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) 36</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">c) 49</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) 64</div>
+                      </div>
+                    </div>
+                    
+                    <div className="p-4 border rounded-md">
+                      <h3 className="font-medium mb-2">Question 9:</h3>
+                      <p className="mb-3">Which of the following best describes the relationship between a function and its inverse?</p>
+                      <div className="space-y-2">
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">a) They have the same domain and range</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">b) The domain of f is the range of f⁻¹, and the range of f is the domain of f⁻¹</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">c) They always have a vertical asymptote</div>
+                        <div className="p-2 border rounded-md hover:bg-accent/50 cursor-pointer">d) Their graphs are symmetric about the y-axis</div>
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -67,11 +67,11 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
             </p>
           </div>
           
-          <div className="my-6 w-full aspect-[4/3] bg-muted rounded-lg flex flex-col">
-            <h3 className="p-4 text-xl font-semibold">Interactive Function Explorer</h3>
+          <div className="my-6 w-full aspect-[4/3] bg-white rounded-lg flex flex-col border">
+            <h3 className="p-4 text-xl font-semibold border-b">Interactive Function Explorer</h3>
             <div className="flex-1 w-full">
               <iframe
-                src="https://www.desmos.com/calculator/hnxwskogt0?embed"
+                src="https://www.desmos.com/calculator/isyj5kqeme?embed"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -183,31 +183,127 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
     </Card>
   );
   
-  const renderFlashcards = () => (
-    <div className="space-y-4">
-      <Card className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <div className="font-medium text-muted-foreground">TERM</div>
-          <Button variant="ghost" size="sm" className="text-xs">Flip</Button>
-        </div>
-        <div className="text-xl font-medium">What is a quadratic function?</div>
-        <div className="mt-4 pt-4 border-t border-border text-muted-foreground text-sm">
-          Click to reveal answer
-        </div>
-      </Card>
-      
-      <Card className="p-6">
-        <div className="flex justify-between items-center mb-4">
-          <div className="font-medium text-muted-foreground">FORMULA</div>
-          <Button variant="ghost" size="sm" className="text-xs">Flip</Button>
-        </div>
-        <div className="text-xl font-medium">What is the quadratic formula?</div>
-        <div className="mt-4 pt-4 border-t border-border text-muted-foreground text-sm">
-          Click to reveal answer
-        </div>
-      </Card>
-    </div>
-  );
+  const renderFlashcards = () => {
+    const [currentFlashcard, setCurrentFlashcard] = useState(0);
+    const [flipped, setFlipped] = useState(false);
+    const [knowledgeLevel, setKnowledgeLevel] = useState<'none' | 'somewhat' | 'well'>('none');
+    
+    const flashcards = [
+      {
+        question: "What is a quadratic function?",
+        answer: "A quadratic function is a polynomial function of the form f(x) = ax² + bx + c, where a ≠ 0, which forms a parabola when graphed.",
+        type: "TERM"
+      },
+      {
+        question: "What is the quadratic formula?",
+        answer: "x = (-b ± √(b² - 4ac)) / 2a, used to find the roots of a quadratic equation ax² + bx + c = 0.",
+        type: "FORMULA"
+      },
+      {
+        question: "What does the discriminant tell us?",
+        answer: "The discriminant (b² - 4ac) indicates the number and type of roots of a quadratic equation: >0 means two distinct real roots, =0 means one repeated root, <0 means no real roots.",
+        type: "CONCEPT"
+      }
+    ];
+    
+    const knowledgeLevelColors = {
+      none: {
+        bg: "bg-red-500",
+        hover: "hover:bg-red-600",
+        text: "text-white"
+      },
+      somewhat: {
+        bg: "bg-orange-400",
+        hover: "hover:bg-orange-500",
+        text: "text-white"
+      },
+      well: {
+        bg: "bg-green-500",
+        hover: "hover:bg-green-600",
+        text: "text-white"
+      }
+    };
+
+    return (
+      <div className="space-y-6">
+        <Card className={`p-6 relative min-h-[15rem] transition-all duration-700 ${flipped ? 'bg-blue-50 dark:bg-blue-900/20' : 'bg-white dark:bg-card'}`}>
+          <div className="flex justify-between items-center mb-4">
+            <div className={`font-medium text-xs px-2 py-1 rounded ${
+              flashcards[currentFlashcard].type === "TERM" ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300" :
+              flashcards[currentFlashcard].type === "FORMULA" ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300" :
+              "bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300"
+            }`}>
+              {flashcards[currentFlashcard].type}
+            </div>
+            <Button variant="ghost" size="sm" className="text-xs" onClick={() => setFlipped(!flipped)}>
+              {flipped ? "Show Question" : "Flip"}
+            </Button>
+          </div>
+          
+          <div className="text-xl font-medium mb-8">
+            {flipped 
+              ? flashcards[currentFlashcard].answer 
+              : flashcards[currentFlashcard].question}
+          </div>
+          
+          <div className="mt-8 pt-4 border-t border-border text-center">
+            <div className="flex justify-between items-center">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setCurrentFlashcard(prev => (prev === 0 ? flashcards.length - 1 : prev - 1))}
+                disabled={currentFlashcard === 0}
+                className="text-xs"
+              >
+                Previous
+              </Button>
+              <span className="text-sm text-muted-foreground">
+                {currentFlashcard + 1} of {flashcards.length}
+              </span>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={() => setCurrentFlashcard(prev => (prev === flashcards.length - 1 ? 0 : prev + 1))}
+                disabled={currentFlashcard === flashcards.length - 1}
+                className="text-xs"
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </Card>
+        
+        {flipped && (
+          <div className="animate-fade-in">
+            <h4 className="text-center mb-3 text-sm font-medium">How well did you know this?</h4>
+            <div className="flex justify-between gap-3">
+              <button 
+                className={`flex-1 py-4 rounded-md flex flex-col items-center justify-center ${knowledgeLevelColors.none.bg} ${knowledgeLevelColors.none.hover} ${knowledgeLevelColors.none.text} transition-colors`}
+                onClick={() => setKnowledgeLevel('none')}
+              >
+                <span className="text-2xl mb-1">😕</span>
+                <span className="text-sm font-medium">Not Known</span>
+              </button>
+              <button 
+                className={`flex-1 py-4 rounded-md flex flex-col items-center justify-center ${knowledgeLevelColors.somewhat.bg} ${knowledgeLevelColors.somewhat.hover} ${knowledgeLevelColors.somewhat.text} transition-colors`}
+                onClick={() => setKnowledgeLevel('somewhat')}
+              >
+                <span className="text-2xl mb-1">😐</span>
+                <span className="text-sm font-medium">Somewhat</span>
+              </button>
+              <button 
+                className={`flex-1 py-4 rounded-md flex flex-col items-center justify-center ${knowledgeLevelColors.well.bg} ${knowledgeLevelColors.well.hover} ${knowledgeLevelColors.well.text} transition-colors`}
+                onClick={() => setKnowledgeLevel('well')}
+              >
+                <span className="text-2xl mb-1">😊</span>
+                <span className="text-sm font-medium">Well Known</span>
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
   
   const renderQuestions = () => (
     <div className="space-y-4">
