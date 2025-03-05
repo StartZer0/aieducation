@@ -1,4 +1,21 @@
 
+// Type definitions
+export interface Topic {
+  id: string;
+  title: string;
+  description?: string;
+  subtopics?: Topic[];
+}
+
+export interface Subject {
+  id: string;
+  title: string;
+  description?: string;
+  color?: string;
+  icon?: string;
+  topics: Topic[];
+}
+
 export const subjectsData = {
   mathematics: {
     id: 'mathematics',
