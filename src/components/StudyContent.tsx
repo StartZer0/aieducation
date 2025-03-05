@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote, CircleHelp, Medal, CheckCircle, SlidersHorizontal } from 'lucide-react';
 import { Button } from './ui/button';
