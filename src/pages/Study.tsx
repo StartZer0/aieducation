@@ -7,7 +7,10 @@ const Study = () => {
   const { subjectId, topicId } = useParams();
   
   return (
-    <StudyLayout />
+    <StudyLayout 
+      subjectId={subjectId || 'mathematics'}
+      topicId={topicId || 'quadratic-functions'}
+    />
   );
 };
 

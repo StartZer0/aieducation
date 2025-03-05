@@ -47,9 +47,25 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
           
           <h2 className="text-2xl font-semibold mt-6 mb-4">Quadratic Functions</h2>
           
-          <p>
-            A quadratic function has the form f(x) = ax² + bx + c, where a, b, and c are constants and a ≠ 0. The graph of a quadratic function is called a <HighlightedTerm id="parabola" color="green">parabola</HighlightedTerm>.
-          </p>
+          <div className="p-5 bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900 rounded-lg mb-6">
+            <h3 className="text-xl font-semibold mb-3">The General Form</h3>
+            <p className="mb-3">
+              A quadratic function can be written in the form f(x) = ax² + bx + c, where a, b, and c are constants, and a ≠ 0. This is known as the standard form, and it is the most commonly used representation in A-level mathematics. The value of a determines the opening direction and steepness of the <HighlightedTerm id="parabola" color="green">parabola</HighlightedTerm>, while b and c influence its position on the coordinate plane.
+            </p>
+            
+            <h3 className="text-xl font-semibold mb-3 mt-5">Key Features of Quadratic Graphs</h3>
+            <p className="mb-3">
+              The graph of a quadratic function always forms a parabola. When a is positive, the parabola opens upward, creating a U-shape. The function has a <HighlightedTerm id="minimum-value" color="orange">minimum value</HighlightedTerm> at its lowest point. Conversely, when a is negative, the parabola opens downward in an inverted U-shape, and the function reaches a <HighlightedTerm id="maximum-value" color="orange">maximum value</HighlightedTerm> at its highest point. The magnitude of a influences the width of the parabola - a larger absolute value of a results in a narrower parabola, while a smaller absolute value creates a wider curve.
+            </p>
+            
+            <p className="mb-3">
+              Every parabola has an <HighlightedTerm id="axis-of-symmetry">axis of symmetry</HighlightedTerm>, which is a vertical line that passes through the <HighlightedTerm id="vertex">vertex</HighlightedTerm>. The axis of symmetry divides the parabola into two mirror-image halves. For a quadratic function in standard form, the axis of symmetry occurs at x = -b/(2a). This is a crucial feature when analyzing the behavior of quadratic functions.
+            </p>
+            
+            <p>
+              The vertex of the parabola represents either the minimum or maximum point of the function. Its coordinates can be calculated as (-b/(2a), f(-b/(2a))). Alternatively, the y-coordinate can be found using the formula c - b²/(4a). The vertex is an essential point to identify when sketching quadratic graphs or solving optimization problems involving quadratic functions.
+            </p>
+          </div>
           
           <div className="my-6 w-full h-64 bg-muted rounded-lg flex items-center justify-center">
             <div className="text-center">

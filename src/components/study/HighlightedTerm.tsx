@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { CircleHelp } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { DetailedExplanation } from './DetailedExplanation';
 
 interface HighlightedTermProps {
   id: string;
@@ -12,6 +13,7 @@ interface HighlightedTermProps {
 
 export function HighlightedTerm({ id, children, color = 'blue', explanation }: HighlightedTermProps) {
   const [showDefinition, setShowDefinition] = useState(false);
+  const [showDetailedExplanation, setShowDetailedExplanation] = useState(false);
   const [isHighlighted, setIsHighlighted] = useState(false);
   
   const colorClasses = {
@@ -28,6 +30,16 @@ export function HighlightedTerm({ id, children, color = 'blue', explanation }: H
   const closeDefinition = (e: React.MouseEvent) => {
     e.stopPropagation();
     setShowDefinition(false);
+  };
+  
+  const openDetailedExplanation = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowDefinition(false);
+    setShowDetailedExplanation(true);
+  };
+  
+  const closeDetailedExplanation = () => {
+    setShowDetailedExplanation(false);
   };
   
   const getExplanation = () => {
@@ -80,11 +92,7 @@ export function HighlightedTerm({ id, children, color = 'blue', explanation }: H
             <div className="flex justify-between items-center">
               <button 
                 className="text-xs flex items-center text-primary hover:underline"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  // In a full implementation, this would navigate to detailed explanation
-                  setShowDefinition(false);
-                }}
+                onClick={openDetailedExplanation}
               >
                 <CircleHelp className="w-3 h-3 mr-1" />
                 Detailed Explanation
@@ -96,6 +104,14 @@ export function HighlightedTerm({ id, children, color = 'blue', explanation }: H
             </div>
           </div>
         </Card>
+      )}
+      
+      {showDetailedExplanation && (
+        <DetailedExplanation 
+          term={id} 
+          onClose={closeDetailedExplanation} 
+          content={null}
+        />
       )}
     </span>
   );
