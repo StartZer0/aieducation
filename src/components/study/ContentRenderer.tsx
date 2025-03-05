@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card } from '@/components/ui/card';
@@ -135,8 +136,10 @@ export function ContentRenderer({ content }: ContentRendererProps) {
       
       {showDetailedExplanation && (
         <DetailedExplanation 
-          term={currentTerm} 
+          title={currentTerm.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
+          onBack={closeDetailedExplanation}
           onClose={closeDetailedExplanation}
+          term={currentTerm} 
           content={null} 
         />
       )}

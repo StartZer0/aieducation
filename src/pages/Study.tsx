@@ -10,6 +10,8 @@ const Study = () => {
   return (
     <StudyLayout 
       subjects={subjectsData}
+      currentSubjectId={subjectId}
+      currentTopicId={topicId}
     />
   );
 };
