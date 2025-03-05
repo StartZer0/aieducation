@@ -1,9 +1,9 @@
 
 import React, { useState } from 'react';
-import { ArrowUp, Sliders } from 'lucide-react';
+import { Clock, Sliders, Check } from 'lucide-react';
 import ScheduleCustomizer from './ScheduleCustomizer';
 
-interface PerformanceData {
+export interface PerformanceData {
   score: number;
   timeSpent: number;
   recommendedExtra: number;
@@ -12,7 +12,6 @@ interface PerformanceData {
 
 interface PerformanceRecommendationsProps {
   performanceData: Record<string, PerformanceData>;
-  subjectColors: Record<string, string>;
   acceptRecommendation: (subject: string) => void;
   saveCustomSchedule: (subject: string, schedule: Record<string, number>) => void;
   currentSchedule: Record<string, Record<string, number>>;
@@ -20,7 +19,6 @@ interface PerformanceRecommendationsProps {
 
 const PerformanceRecommendations: React.FC<PerformanceRecommendationsProps> = ({
   performanceData,
-  subjectColors,
   acceptRecommendation,
   saveCustomSchedule,
   currentSchedule
@@ -28,23 +26,42 @@ const PerformanceRecommendations: React.FC<PerformanceRecommendationsProps> = ({
   const [customizingSubject, setCustomizingSubject] = useState<string | null>(null);
   
   // Filter subjects that need extra time
-  const subjectsNeedingTime = Object.entries(performanceData)
-    .filter(([_, data]) => data.recommendedExtra > 0)
+  const subjectsWithRecommendations = Object.entries(performanceData)
     .sort((a, b) => {
       const priorityRank = { high: 0, medium: 1, low: 2 };
       return priorityRank[a[1].priority] - priorityRank[b[1].priority];
     });
   
-  const getPriorityIndicator = (priority: string) => {
+  const getPriorityStyles = (priority: 'high' | 'medium' | 'low') => {
     switch (priority) {
       case 'high':
-        return { color: 'text-red-500', text: 'High Priority' };
+        return { 
+          color: 'text-red-500',
+          bg: 'bg-red-50',
+          border: 'border-l-4 border-l-red-500',
+          badge: 'bg-red-50 text-red-500'
+        };
       case 'medium':
-        return { color: 'text-amber-500', text: 'Medium Priority' };
+        return { 
+          color: 'text-amber-500',
+          bg: 'bg-amber-50/50',
+          border: 'border-l-4 border-l-amber-500',
+          badge: 'bg-amber-50 text-amber-500'
+        };
       case 'low':
-        return { color: 'text-emerald-500', text: 'Low Priority' };
+        return { 
+          color: 'text-blue-500',
+          bg: 'bg-blue-50/50',
+          border: 'border-l-4 border-l-blue-500',
+          badge: 'bg-blue-50 text-blue-500'
+        };
       default:
-        return { color: 'text-foreground/60', text: 'No Priority' };
+        return { 
+          color: 'text-gray-500',
+          bg: 'bg-gray-50',
+          border: 'border-l-4 border-l-gray-300',
+          badge: 'bg-gray-50 text-gray-500'
+        };
     }
   };
   
@@ -63,75 +80,65 @@ const PerformanceRecommendations: React.FC<PerformanceRecommendationsProps> = ({
   
   return (
     <>
-      <div className="glass-card p-5">
-        <h2 className="text-xl font-semibold mb-4">Recommendations</h2>
-        
-        {subjectsNeedingTime.length === 0 ? (
-          <div className="text-center p-4 bg-muted/20 rounded-lg">
-            <p className="text-foreground/70">No recommendations at this time.</p>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {subjectsNeedingTime.map(([subject, data]) => {
-              const { color, text } = getPriorityIndicator(data.priority);
-              
-              return (
-                <div key={subject} className="bg-card border border-border rounded-lg p-4 shadow-sm">
-                  <div className="flex justify-between items-start mb-3">
-                    <div>
-                      <h3 className="font-medium flex items-center">
-                        <div 
-                          className={`w-3 h-3 rounded-full bg-${subjectColors[subject]} mr-2`}
-                          aria-hidden="true"
-                        ></div>
-                        {subject}
-                      </h3>
-                      <p className={`text-xs ${color}`}>{text}</p>
-                    </div>
-                    <div className="bg-muted py-1 px-2 rounded text-xs font-medium">
-                      Score: {data.score}%
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-between text-sm text-muted-foreground mb-1">
-                    <span>Current weekly time:</span>
-                    <span>{data.timeSpent}h</span>
-                  </div>
-                  
-                  <div className="flex justify-between text-sm font-medium mb-3">
-                    <span className="flex items-center">
-                      <ArrowUp className="w-3 h-3 text-blue mr-1" />
-                      Recommended increase:
-                    </span>
-                    <span className="text-blue">+{data.recommendedExtra}h</span>
-                  </div>
-                  
-                  <div className="w-full h-2 bg-muted rounded-full mb-4">
-                    <div 
-                      className="h-full bg-blue rounded-full"
-                      style={{ width: `${Math.min(data.score, 100)}%` }}
-                    ></div>
-                  </div>
-                  
-                  <div className="flex space-x-2">
-                    <button
-                      onClick={() => acceptRecommendation(subject)}
-                      className="button-primary text-sm flex-1"
-                    >
-                      Accept
-                    </button>
-                    <button
-                      onClick={() => openCustomizer(subject)}
-                      className="flex items-center justify-center text-sm px-3 rounded-lg border border-border hover:bg-muted transition-colors"
-                    >
-                      <Sliders className="w-4 h-4" />
-                    </button>
-                  </div>
+      <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {subjectsWithRecommendations.map(([subject, data]) => {
+          const styles = getPriorityStyles(data.priority);
+          const hasRecommendation = data.recommendedExtra > 0;
+          
+          return (
+            <div 
+              key={subject}
+              className={`relative rounded-lg p-4 ${styles.bg} ${styles.border}`}
+            >
+              <div className="flex justify-between items-start mb-3">
+                <h3 className="font-semibold text-lg">{subject}</h3>
+                <div className={`px-3 py-1 rounded-full text-xs font-medium ${styles.badge}`}>
+                  {data.priority === 'high' ? 'High' : data.priority === 'medium' ? 'Medium' : 'Low'} priority
                 </div>
-              );
-            })}
-          </div>
-        )}
+              </div>
+              
+              <p className="text-sm text-muted-foreground mb-3">
+                Based on your performance (score: {data.score}%) and time spent ({data.timeSpent}h), we recommend:
+              </p>
+              
+              <div className="bg-white/60 dark:bg-gray-800/60 rounded-lg p-3 mb-3 flex items-center gap-2">
+                <Clock className="h-5 w-5 text-blue" />
+                <span className="font-medium">
+                  Extra {data.recommendedExtra} hours per week
+                </span>
+              </div>
+              
+              <div className="w-full h-1 bg-muted rounded-full mb-4">
+                <div 
+                  className="h-full bg-blue rounded-full"
+                  style={{ width: `${Math.min(data.score, 100)}%` }}
+                />
+              </div>
+              
+              <div className="flex gap-2">
+                <button
+                  onClick={() => acceptRecommendation(subject)}
+                  disabled={!hasRecommendation}
+                  className={`flex items-center justify-center gap-1 rounded-lg py-2 px-4 flex-1 text-sm font-medium ${
+                    hasRecommendation 
+                      ? 'bg-blue text-white hover:bg-blue-600' 
+                      : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  }`}
+                >
+                  <Check className="h-4 w-4" />
+                  Accept
+                </button>
+                <button
+                  onClick={() => openCustomizer(subject)}
+                  className="flex items-center justify-center gap-1 rounded-lg py-2 px-4 bg-muted hover:bg-muted/80 text-sm font-medium"
+                >
+                  <Sliders className="h-4 w-4" />
+                  Customize
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
       
       {customizingSubject && (

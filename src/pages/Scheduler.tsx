@@ -1,9 +1,12 @@
 
-import React from 'react';
-import { Calendar } from 'lucide-react';
+import React, { useState } from 'react';
+import { Calendar, Printer, PenSquare, LightbulbIcon, TrendingUp, RefreshCw, Clock, BrainCircuit, Trophy } from 'lucide-react';
 import WeeklyScheduleTable from '@/components/scheduler/WeeklyScheduleTable';
 import PerformanceRecommendations from '@/components/scheduler/PerformanceRecommendations';
+import StudyTips from '@/components/scheduler/StudyTips';
+import StudyStreak from '@/components/scheduler/StudyStreak';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 // Study hours by subject and day
 const initialTaskData = {
@@ -13,14 +16,14 @@ const initialTaskData = {
     "Wednesday": 2,
     "Thursday": 1,
     "Friday": 1.5,
-    "Saturday": 1.5,
+    "Saturday": 0.5,
     "Sunday": 0
   },
   "Science": {
     "Monday": 1,
     "Tuesday": 2,
     "Wednesday": 1,
-    "Thursday": 1.5,
+    "Thursday": 2,
     "Friday": 1,
     "Saturday": 0.5,
     "Sunday": 0
@@ -29,28 +32,37 @@ const initialTaskData = {
     "Monday": 1,
     "Tuesday": 0.5,
     "Wednesday": 1,
-    "Thursday": 1.5,
-    "Friday": 0.5,
-    "Saturday": 1,
+    "Thursday": 0.5,
+    "Friday": 1,
+    "Saturday": 0,
     "Sunday": 0.5
   },
   "History": {
     "Monday": 0.5,
-    "Tuesday": 1.5,
-    "Wednesday": 0,
+    "Tuesday": 1,
+    "Wednesday": 0.5,
     "Thursday": 1,
-    "Friday": 1,
+    "Friday": 0.5,
     "Saturday": 0.5,
     "Sunday": 0
   },
+  "Geography": {
+    "Monday": 0.5,
+    "Tuesday": 0.5,
+    "Wednesday": 0.5,
+    "Thursday": 0.5,
+    "Friday": 0.5,
+    "Saturday": 0,
+    "Sunday": 0.5
+  },
   "Computer Science": {
-    "Monday": 1.5,
-    "Tuesday": 0,
-    "Wednesday": 1.5,
-    "Thursday": 0,
+    "Monday": 1,
+    "Tuesday": 0.5,
+    "Wednesday": 1,
+    "Thursday": 0.5,
     "Friday": 1,
-    "Saturday": 2,
-    "Sunday": 1
+    "Saturday": 1,
+    "Sunday": 0.5
   }
 };
 
@@ -60,45 +72,61 @@ const performanceData = {
     score: 78, 
     timeSpent: 9.5, 
     recommendedExtra: 1.5,
-    priority: "high" as const
+    priority: "medium" as const
   },
   "Science": { 
     score: 85, 
     timeSpent: 7, 
     recommendedExtra: 0.5,
-    priority: "medium" as const
-  },
-  "English": { 
-    score: 92, 
-    timeSpent: 6, 
-    recommendedExtra: 0,
     priority: "low" as const
   },
-  "History": { 
-    score: 68, 
-    timeSpent: 4.5, 
+  "English": { 
+    score: 65, 
+    timeSpent: 4, 
     recommendedExtra: 2,
     priority: "high" as const
   },
-  "Computer Science": { 
-    score: 88, 
-    timeSpent: 7, 
+  "History": { 
+    score: 72, 
+    timeSpent: 4.5, 
     recommendedExtra: 1,
     priority: "medium" as const
+  },
+  "Geography": {
+    score: 80,
+    timeSpent: 3,
+    recommendedExtra: 0.5,
+    priority: "low" as const
+  },
+  "Computer Science": { 
+    score: 88, 
+    timeSpent: 5.5, 
+    recommendedExtra: 0,
+    priority: "low" as const
   }
 };
 
-// Map subjects to colors for visual identification
-const subjectColors = {
-  "Mathematics": "blue",
-  "Science": "teal",
-  "English": "amber-500",
-  "History": "rose-500",
-  "Computer Science": "violet-500"
-};
+// Tips for effective studying
+const studyTips = [
+  {
+    title: "Time Blocking",
+    description: "Allocate specific time blocks for each subject to maintain focus and avoid context switching.",
+    icon: <Clock className="h-5 w-5 text-blue" />
+  },
+  {
+    title: "Active Recall",
+    description: "Test yourself frequently. Try explaining concepts in your own words to improve retention.",
+    icon: <BrainCircuit className="h-5 w-5 text-blue" />
+  },
+  {
+    title: "Spaced Repetition",
+    description: "Review material at gradually increasing intervals to strengthen memory.",
+    icon: <RefreshCw className="h-5 w-5 text-blue" />
+  }
+];
 
 const Scheduler = () => {
-  const [taskData, setTaskData] = React.useState(initialTaskData);
+  const [taskData, setTaskData] = useState(initialTaskData);
   const { toast } = useToast();
   
   // Accept recommendation for a subject
@@ -167,43 +195,77 @@ const Scheduler = () => {
   };
 
   return (
-    <div className="min-h-screen pt-28 pb-20 px-4">
+    <div className="min-h-screen py-16 px-4">
       <div className="container mx-auto max-w-6xl">
-        <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 flex items-center">
-            <Calendar className="w-8 h-8 mr-3 text-blue" />
-            Weekly Study Scheduler
-          </h1>
-          <p className="text-foreground/70 text-lg">Optimize your study time with a personalized schedule</p>
+        <div className="mb-8 text-center">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-blue">Study Schedule & Tasks</h1>
+          <p className="text-foreground/70 text-lg">Manage your study time and view personalized recommendations</p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="md:col-span-2">
-            <div className="glass-card p-5">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold">Weekly Schedule</h2>
-                <button 
+        <div className="space-y-8">
+          {/* Weekly Schedule */}
+          <div className="bg-card rounded-xl shadow-md overflow-hidden border border-border">
+            <div className="p-4 flex justify-between items-center border-b border-border">
+              <h2 className="text-xl font-semibold flex items-center">
+                <Calendar className="w-5 h-5 mr-2 text-blue" />
+                <span>Weekly Study Schedule</span>
+              </h2>
+              <div className="flex space-x-2">
+                <button
                   onClick={printSchedule}
-                  className="button-secondary text-sm flex items-center"
+                  className="flex items-center gap-2 bg-muted px-3 py-2 rounded-lg hover:bg-muted/80 transition-colors"
                 >
-                  <span>Print Schedule</span>
+                  <Printer className="w-4 h-4" />
+                  <span>Print</span>
+                </button>
+                <button className="flex items-center gap-2 bg-blue text-white px-3 py-2 rounded-lg hover:bg-blue-600 transition-colors">
+                  <PenSquare className="w-4 h-4" />
+                  <span>Customize</span>
                 </button>
               </div>
-              <WeeklyScheduleTable 
-                taskData={taskData} 
-                subjectColors={subjectColors} 
-              />
             </div>
+            <WeeklyScheduleTable 
+              taskData={taskData}
+            />
           </div>
           
-          <div className="md:col-span-1">
+          {/* Study Recommendations */}
+          <div className="bg-card rounded-xl shadow-md overflow-hidden border border-border">
+            <div className="p-4 border-b border-border">
+              <h2 className="text-xl font-semibold flex items-center">
+                <TrendingUp className="w-5 h-5 mr-2 text-blue" />
+                <span>Study Recommendations Based on Your Performance</span>
+              </h2>
+            </div>
             <PerformanceRecommendations 
               performanceData={performanceData}
-              subjectColors={subjectColors}
               acceptRecommendation={acceptRecommendation}
               saveCustomSchedule={saveCustomSchedule}
               currentSchedule={taskData}
             />
+          </div>
+          
+          {/* Study Tips and Streak */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-card rounded-xl shadow-md overflow-hidden border border-border">
+              <div className="p-4 border-b border-border">
+                <h2 className="text-xl font-semibold flex items-center">
+                  <LightbulbIcon className="w-5 h-5 mr-2 text-blue" />
+                  <span>Study Tips</span>
+                </h2>
+              </div>
+              <StudyTips tips={studyTips} />
+            </div>
+            
+            <div className="bg-card rounded-xl shadow-md overflow-hidden border border-border">
+              <div className="p-4 border-b border-border">
+                <h2 className="text-xl font-semibold flex items-center">
+                  <Trophy className="w-5 h-5 mr-2 text-blue" />
+                  <span>Study Streak</span>
+                </h2>
+              </div>
+              <StudyStreak streak={7} />
+            </div>
           </div>
         </div>
       </div>
