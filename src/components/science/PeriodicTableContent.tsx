@@ -1,7 +1,7 @@
-
 import React, { useState } from 'react';
 import { Maximize2, Minimize2, X, PlayCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import InteractivePeriodicTable from './InteractivePeriodicTable';
 
 interface PopupState {
   id: string;
@@ -16,7 +16,6 @@ const PeriodicTableContent: React.FC = () => {
   const [overlay, setOverlay] = useState<boolean>(false);
   
   const showPopup = (popupId: string, concept: string) => {
-    // Check if already open
     if (!activePopups.some(popup => popup.id === popupId)) {
       setActivePopups([...activePopups, { 
         id: popupId, 
@@ -27,7 +26,6 @@ const PeriodicTableContent: React.FC = () => {
       setOverlay(true);
     }
     
-    // Highlight active terms
     document.querySelectorAll('.highlighted').forEach(term => 
       term.classList.remove('active'));
     document.querySelectorAll(`.highlighted[data-concept="${concept}"]`).forEach(term => 
@@ -37,12 +35,10 @@ const PeriodicTableContent: React.FC = () => {
   const closePopup = (popupId: string) => {
     setActivePopups(activePopups.filter(popup => popup.id !== popupId));
     
-    // If no popups are left, hide overlay
     if (activePopups.length <= 1) {
       setOverlay(false);
     }
     
-    // Remove active highlights
     document.querySelectorAll('.highlighted').forEach(term => 
       term.classList.remove('active'));
   };
@@ -133,7 +129,6 @@ const PeriodicTableContent: React.FC = () => {
   
   return (
     <div className="relative">
-      {/* Overlay for popups */}
       {overlay && (
         <div 
           className="fixed inset-0 bg-black/25 dark:bg-black/40 z-40"
@@ -157,14 +152,12 @@ const PeriodicTableContent: React.FC = () => {
           The table is divided into <HighlightedTerm id="period" concept="period" color="orange">periods</HighlightedTerm> (horizontal rows) and <HighlightedTerm id="group" concept="group" color="green">groups</HighlightedTerm> (vertical columns). Elements within the same group typically have similar chemical properties. This layout helps scientists understand the <HighlightedTerm id="periodic-law" concept="periodiclaw">periodic law</HighlightedTerm> and predict how elements will behave.
         </p>
         
-        <div className="bg-muted rounded-lg p-6 my-6 flex items-center justify-center">
-          <div className="text-center">
+        <div className="bg-muted rounded-lg p-6 my-6">
+          <div className="text-center mb-4">
             <div className="mb-2 text-lg font-medium">Interactive Periodic Table</div>
-            <div className="text-muted-foreground text-sm mb-4">Click or hover over elements to see details</div>
-            <div className="w-full h-64 bg-card border border-border rounded-md flex items-center justify-center">
-              <p className="text-foreground/60">Interactive visualization would appear here</p>
-            </div>
+            <div className="text-muted-foreground text-sm">Click or hover over elements to see details</div>
           </div>
+          <InteractivePeriodicTable />
         </div>
         
         <h2 className="text-2xl font-semibold mt-8 mb-4">Structure of the Periodic Table</h2>
@@ -206,7 +199,6 @@ const PeriodicTableContent: React.FC = () => {
         </div>
       </div>
       
-      {/* Popups */}
       {activePopups.map(popup => (
         <div 
           key={popup.id}
@@ -259,7 +251,6 @@ const PeriodicTableContent: React.FC = () => {
                 </button>
               </div>
               
-              {/* Simple explanation */}
               {!popup.showDetailed && (
                 <div className="simple-explanation">
                   {popup.id === "periodic-table" && (
@@ -295,7 +286,6 @@ const PeriodicTableContent: React.FC = () => {
                 </div>
               )}
               
-              {/* Detailed explanation */}
               {popup.showDetailed && (
                 <div className="detailed-explanation">
                   {popup.id === "periodic-table" && (
@@ -332,7 +322,6 @@ const PeriodicTableContent: React.FC = () => {
                     </>
                   )}
                   
-                  {/* Add detailed content for other elements as needed */}
                   {popup.id === "element" && (
                     <>
                       <p>A chemical element is a species of atoms that have a given number of protons in their nuclei, including isotopes. The number of protons (atomic number) defines which element it is. Currently, 118 elements are known, with the first 94 occurring naturally on Earth.</p>
@@ -348,8 +337,6 @@ const PeriodicTableContent: React.FC = () => {
                       </div>
                     </>
                   )}
-                  
-                  {/* Add similar detailed content for other concepts */}
                 </div>
               )}
             </div>
