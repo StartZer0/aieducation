@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -66,15 +67,19 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
             </p>
           </div>
           
-          <div className="my-6 w-full h-64 bg-muted rounded-lg flex items-center justify-center">
-            <iframe
-              src="https://www.desmos.com/calculator/bcikoysf8h?embed"
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              title="Interactive Quadratic Function Graph"
-              className="rounded-lg"
-            ></iframe>
+          <div className="my-6 w-full aspect-[4/3] bg-muted rounded-lg flex flex-col">
+            <h3 className="p-4 text-xl font-semibold">Interactive Function Explorer</h3>
+            <div className="flex-1 w-full">
+              <iframe
+                src="https://www.desmos.com/calculator/hnxwskogt0?embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                title="Interactive Quadratic Function Graph"
+                className="rounded-b-lg"
+                allow="fullscreen"
+              ></iframe>
+            </div>
           </div>
           
           <h3 className="text-xl font-semibold mt-6 mb-4">Key Features of Quadratic Functions</h3>

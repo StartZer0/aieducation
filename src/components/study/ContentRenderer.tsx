@@ -1,5 +1,4 @@
-
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card } from '@/components/ui/card';
 import { CircleHelp } from 'lucide-react';
@@ -25,7 +24,6 @@ export function ContentRenderer({ content }: ContentRendererProps) {
       }
       
       const text = selection.toString().trim().toLowerCase();
-      // Check if the text is one of our defined terms
       const terms = Object.keys(highlightedTerms);
       const matchedTerm = terms.find(term => 
         term === text || 
@@ -37,7 +35,6 @@ export function ContentRenderer({ content }: ContentRendererProps) {
         setCurrentTerm(matchedTerm);
         setSelectedText(text);
         
-        // Get the position of the selection to show the popup
         const range = selection.getRangeAt(0);
         const rect = range.getBoundingClientRect();
         
@@ -76,7 +73,6 @@ export function ContentRenderer({ content }: ContentRendererProps) {
       return highlightedTerms[term as keyof typeof highlightedTerms].shortDefinition;
     }
     
-    // Default explanations if not found in the data
     const explanations: Record<string, string> = {
       'quadratic-formula': 'The formula x = (-b ± √(b² - 4ac)) / 2a used to solve quadratic equations in the form ax² + bx + c = 0.',
       'function': 'A mathematical relationship that assigns exactly one output value to each input value, usually written as f(x).',
@@ -147,6 +143,3 @@ export function ContentRenderer({ content }: ContentRendererProps) {
     </ScrollArea>
   );
 }
-
-// Need to import useState at the top
-import { useState } from 'react';
