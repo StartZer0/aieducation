@@ -7,9 +7,12 @@ import { InteractiveFunctionGraph } from './InteractiveFunctionGraph';
 interface DetailedExplanationProps {
   title: string;
   onBack: () => void;
+  term?: string;
+  content?: React.ReactNode;
+  onClose?: () => void;
 }
 
-export function DetailedExplanation({ title, onBack }: DetailedExplanationProps) {
+export function DetailedExplanation({ title, onBack, term, content, onClose }: DetailedExplanationProps) {
   return (
     <div className="h-full flex flex-col overflow-hidden bg-background">
       {/* Header */}
@@ -64,8 +67,8 @@ export function DetailedExplanation({ title, onBack }: DetailedExplanationProps)
             <ul>
               <li>The x-coordinate of the vertex is x = -b/(2a)</li>
               <li>The y-coordinate of the vertex is f(-b/(2a))</li>
-              <li>If a > 0, the vertex is a minimum point</li>
-              <li>If a < 0, the vertex is a maximum point</li>
+              <li>If a {'>'} 0, the vertex is a minimum point</li>
+              <li>If a {'<'} 0, the vertex is a maximum point</li>
             </ul>
             
             <h3>The Axis of Symmetry</h3>
@@ -96,9 +99,9 @@ export function DetailedExplanation({ title, onBack }: DetailedExplanationProps)
               The expression b² - 4ac is called the discriminant, and it determines the number of real roots (x-intercepts) that the quadratic equation has:
             </p>
             <ul>
-              <li>If b² - 4ac > 0, the quadratic equation has two distinct real roots (the parabola crosses the x-axis at two points)</li>
+              <li>If b² - 4ac {'>'} 0, the quadratic equation has two distinct real roots (the parabola crosses the x-axis at two points)</li>
               <li>If b² - 4ac = 0, the quadratic equation has one repeated real root (the parabola is tangent to the x-axis at one point)</li>
-              <li>If b² - 4ac < 0, the quadratic equation has no real roots (the parabola does not cross the x-axis)</li>
+              <li>If b² - 4ac {'<'} 0, the quadratic equation has no real roots (the parabola does not cross the x-axis)</li>
             </ul>
             
             <h2>Transformations of Quadratic Functions</h2>
@@ -107,10 +110,10 @@ export function DetailedExplanation({ title, onBack }: DetailedExplanationProps)
               Starting with the basic quadratic function f(x) = x², we can apply various transformations:
             </p>
             <ul>
-              <li><strong>Vertical stretch or compression:</strong> f(x) = ax² (|a| > 1 stretches, 0 < |a| < 1 compresses)</li>
+              <li><strong>Vertical stretch or compression:</strong> f(x) = ax² (|a| {'>'} 1 stretches, 0 {'<'} |a| {'<'} 1 compresses)</li>
               <li><strong>Reflection across the x-axis:</strong> f(x) = -x² (flips the parabola upside down)</li>
-              <li><strong>Horizontal shift:</strong> f(x) = a(x - h)² shifts the parabola h units to the right (if h > 0) or left (if h < 0)</li>
-              <li><strong>Vertical shift:</strong> f(x) = ax² + k shifts the parabola k units up (if k > 0) or down (if k < 0)</li>
+              <li><strong>Horizontal shift:</strong> f(x) = a(x - h)² shifts the parabola h units to the right (if h {'>'} 0) or left (if h {'<'} 0)</li>
+              <li><strong>Vertical shift:</strong> f(x) = ax² + k shifts the parabola k units up (if k {'>'} 0) or down (if k {'<'} 0)</li>
             </ul>
             <p>
               The vertex form of a quadratic function, f(x) = a(x - h)² + k, makes these transformations explicit, where (h, k) is the vertex.
