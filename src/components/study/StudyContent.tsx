@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
-import { highlightedTerms, definitions } from '@/data/learningContent';
 import { ContentRenderer } from './ContentRenderer';
 import { HighlightedTerm } from './HighlightedTerm';
 
@@ -273,44 +272,46 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
       </div>
       
       {/* Tabs */}
-      <div className="border-b border-border">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="pl-4">
-            <TabsTrigger value="content" className="flex items-center">
-              <Book className="w-4 h-4 mr-2" />
-              Content
-            </TabsTrigger>
-            <TabsTrigger value="summary" className="flex items-center">
-              <FileText className="w-4 h-4 mr-2" />
-              Summary
-            </TabsTrigger>
-            <TabsTrigger value="flashcards" className="flex items-center">
-              <StickyNote className="w-4 h-4 mr-2" />
-              Flashcards
-            </TabsTrigger>
-            <TabsTrigger value="questions" className="flex items-center">
-              <HelpCircle className="w-4 h-4 mr-2" />
-              Questions
-            </TabsTrigger>
-          </TabsList>
-        
+      <div className="flex flex-col flex-grow overflow-hidden">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="h-full flex flex-col">
+          <div className="border-b border-border">
+            <TabsList className="px-4 h-auto py-1">
+              <TabsTrigger value="content" className="flex items-center">
+                <Book className="w-4 h-4 mr-2" />
+                Content
+              </TabsTrigger>
+              <TabsTrigger value="summary" className="flex items-center">
+                <FileText className="w-4 h-4 mr-2" />
+                Summary
+              </TabsTrigger>
+              <TabsTrigger value="flashcards" className="flex items-center">
+                <StickyNote className="w-4 h-4 mr-2" />
+                Flashcards
+              </TabsTrigger>
+              <TabsTrigger value="questions" className="flex items-center">
+                <HelpCircle className="w-4 h-4 mr-2" />
+                Questions
+              </TabsTrigger>
+            </TabsList>
+          </div>
+          
           {/* Tab Content */}
-          <div className="flex-1 overflow-y-auto p-6">
-            <div className="max-w-3xl mx-auto">
-              <TabsContent value="content">
-                {getContent()}
+          <div className="flex-1 overflow-hidden p-6">
+            <div className="max-w-3xl mx-auto h-full">
+              <TabsContent value="content" className="mt-0 h-full">
+                <ContentRenderer content={getContent()} />
               </TabsContent>
               
-              <TabsContent value="summary">
-                {renderSummary()}
+              <TabsContent value="summary" className="mt-0 h-full">
+                <ContentRenderer content={renderSummary()} />
               </TabsContent>
               
-              <TabsContent value="flashcards">
-                {renderFlashcards()}
+              <TabsContent value="flashcards" className="mt-0 h-full">
+                <ContentRenderer content={renderFlashcards()} />
               </TabsContent>
               
-              <TabsContent value="questions">
-                {renderQuestions()}
+              <TabsContent value="questions" className="mt-0 h-full">
+                <ContentRenderer content={renderQuestions()} />
               </TabsContent>
             </div>
           </div>

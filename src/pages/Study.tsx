@@ -8,8 +8,7 @@ const Study = () => {
   
   return (
     <StudyLayout 
-      subjectId={subjectId || 'mathematics'}
-      topicId={topicId || 'quadratic-functions'}
+      subjects={undefined} // Optional prop, using undefined to use default
     />
   );
 };

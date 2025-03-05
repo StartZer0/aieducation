@@ -63,7 +63,7 @@ export function HighlightedTerm({ id, children, color = 'blue', explanation }: H
     <span className="relative inline-block">
       <button
         onClick={toggleDefinition}
-        className={`py-0.5 px-1.5 rounded ${colorClasses[color]} ${
+        className={`py-0.5 px-1.5 rounded transition-all duration-200 ${colorClasses[color]} ${
           isHighlighted ? 'outline outline-2 outline-offset-1 outline-blue-400' : ''
         }`}
       >

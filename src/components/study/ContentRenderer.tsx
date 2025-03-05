@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import { HighlightedTerm } from './HighlightedTerm';
 
 interface ContentRendererProps {
@@ -7,5 +8,9 @@ interface ContentRendererProps {
 }
 
 export function ContentRenderer({ content }: ContentRendererProps) {
-  return <div className="content-area">{content}</div>;
+  return (
+    <ScrollArea className="h-full pr-4">
+      <div className="content-area pb-20">{content}</div>
+    </ScrollArea>
+  );
 }

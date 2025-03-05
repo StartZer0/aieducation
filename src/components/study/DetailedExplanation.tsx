@@ -1,7 +1,8 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { X, ThumbsUp, ThumbsDown, ArrowLeft } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface DetailedExplanationProps {
   term: string;
@@ -10,14 +11,17 @@ interface DetailedExplanationProps {
 }
 
 export function DetailedExplanation({ term, onClose, content }: DetailedExplanationProps) {
+  const [likeStatus, setLikeStatus] = useState<'none' | 'liked' | 'disliked'>('none');
+  
   const handleFeedback = (type: 'like' | 'dislike') => {
     // In a real app, this would send feedback to the server
     console.log(`User ${type}d the explanation for ${term}`);
+    setLikeStatus(type === 'like' ? 'liked' : 'disliked');
   };
   
   return (
-    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm">
-      <div className="container max-w-4xl mx-auto h-full flex flex-col p-6 pt-16">
+    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm overflow-hidden">
+      <div className="container max-w-4xl mx-auto h-full flex flex-col p-4 md:p-6 pt-16">
         <Button 
           variant="ghost" 
           size="icon" 
@@ -37,7 +41,7 @@ export function DetailedExplanation({ term, onClose, content }: DetailedExplanat
           Back to content
         </Button>
         
-        <div className="flex-1 overflow-y-auto">
+        <ScrollArea className="flex-1 -mr-4 pr-4">
           <div className="max-w-3xl mx-auto">
             <div className="mb-6">
               <h1 className="text-3xl font-bold text-primary mb-2">
@@ -63,6 +67,21 @@ export function DetailedExplanation({ term, onClose, content }: DetailedExplanat
                   </div>
                   
                   <p>In mathematics, a function is defined as a relation between a set of inputs (domain) and a set of permissible outputs (range) with the property that each input is related to exactly one output.</p>
+                </div>
+                
+                <div className="section p-6 bg-card rounded-lg border">
+                  <h2 className="text-2xl font-semibold mb-4">Interactive Function Graph</h2>
+                  <div className="aspect-video border rounded-lg mb-4 bg-gray-50 dark:bg-gray-900">
+                    <iframe 
+                      src="https://www.desmos.com/calculator/auubsajefh?embed" 
+                      className="w-full h-full border-0 rounded-lg"
+                      title="Interactive Function Graph"
+                      loading="lazy"
+                    ></iframe>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Interactive graph showing y = 2x + 3. You can modify the function by adjusting the parameters.
+                  </p>
                 </div>
                 
                 <div className="section p-6 bg-card rounded-lg border">
@@ -160,32 +179,40 @@ export function DetailedExplanation({ term, onClose, content }: DetailedExplanat
               </div>
             )}
           </div>
-        </div>
+        </ScrollArea>
         
         <div className="mt-8 flex justify-between items-center border-t pt-4">
-          <div className="text-sm text-muted-foreground">
-            Was this explanation helpful?
-          </div>
-          <div className="flex gap-2">
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex items-center gap-1"
-              onClick={() => handleFeedback('like')}
-            >
-              <ThumbsUp className="w-4 h-4" />
-              Yes
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="flex items-center gap-1"
-              onClick={() => handleFeedback('dislike')}
-            >
-              <ThumbsDown className="w-4 h-4" />
-              No
-            </Button>
-          </div>
+          {likeStatus === 'none' ? (
+            <>
+              <div className="text-sm text-muted-foreground">
+                Was this explanation helpful?
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex items-center gap-1 text-green-600 hover:bg-green-50 hover:text-green-700 dark:hover:bg-green-900/20"
+                  onClick={() => handleFeedback('like')}
+                >
+                  <ThumbsUp className="w-4 h-4" />
+                  Yes
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="flex items-center gap-1 text-red-600 hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-900/20"
+                  onClick={() => handleFeedback('dislike')}
+                >
+                  <ThumbsDown className="w-4 h-4" />
+                  No
+                </Button>
+              </div>
+            </>
+          ) : (
+            <div className="w-full text-center text-sm font-medium text-green-600 dark:text-green-400">
+              Thanks for your feedback!
+            </div>
+          )}
         </div>
       </div>
     </div>
