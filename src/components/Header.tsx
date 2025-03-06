@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, User, ChartLine } from 'lucide-react';
+import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, User, ChartLine, FileText } from 'lucide-react';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -29,6 +29,7 @@ const Header = () => {
     { path: '/chat', label: 'AI Tutor', icon: <MessageCircle className="w-5 h-5 mr-2" /> },
     { path: '/test-chats', label: 'Test Chats', icon: <ChartLine className="w-5 h-5 mr-2" /> },
     { path: '/test-chats2', label: 'Test Chats 2', icon: <ChartLine className="w-5 h-5 mr-2" /> },
+    { path: '/essay-analysis', label: 'Essay Analysis', icon: <FileText className="w-5 h-5 mr-2" /> },
   ];
 
   const isActive = (path: string) => location.pathname === path;

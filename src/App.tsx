@@ -12,6 +12,7 @@ import Scheduler from "./pages/Scheduler";
 import TestChats from "./pages/TestChats";
 import TestChats2 from "./pages/TestChats2";
 import ExplainToMe from "./pages/ExplainToMe";
+import EssayAnalysis from "./pages/EssayAnalysis";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -32,6 +33,7 @@ const App = () => (
             <Route path="/test-chats" element={<TestChats />} />
             <Route path="/test-chats2" element={<TestChats2 />} />
             <Route path="/explain-to-me" element={<ExplainToMe />} />
+            <Route path="/essay-analysis" element={<EssayAnalysis />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
