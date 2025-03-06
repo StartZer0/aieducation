@@ -3,9 +3,11 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import NewtonsLaws from '@/components/test-charts/NewtonsLaws';
 import TypewriterText from '@/components/test-charts/TypewriterText';
+import AStudentContent from '@/components/test-charts/AStudentContent';
 
 export default function TestCharts() {
   const [showVisualLoader, setShowVisualLoader] = useState(true);
+  const [showAStudentContent, setShowAStudentContent] = useState(false);
   
   // Hide loader after 2 seconds
   useEffect(() => {
@@ -13,7 +15,15 @@ export default function TestCharts() {
       setShowVisualLoader(false);
     }, 2000);
     
-    return () => clearTimeout(timer);
+    // Show A+ Student content after initial typing animation
+    const contentTimer = setTimeout(() => {
+      setShowAStudentContent(true);
+    }, 5000);
+    
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(contentTimer);
+    };
   }, []);
   
   const questionText = "Explain Newton's Three Laws of Motion";
@@ -35,81 +45,7 @@ Newton discovered these laws that explain how everything moves in our world - fr
     "Third Law: Every Push Has a Push Back": "#3182ce"
   };
 
-  const aStudentText = `Newton's First Law: The Law of Inertia
-Statement:
-"An object at rest remains at rest, and an object in motion continues in uniform motion in a straight line unless acted upon by a net external force."
-
-Mathematical Representation:
-\\[
-\\sum \\mathbf{F} = 0 \\implies \\mathbf{v} = \\text{constant}
-\\]
-where:
-- \\( \\sum \\mathbf{F} \\) is the net external force acting on the object,
-- \\( \\mathbf{v} \\) is the velocity vector of the object.
-
-If no net external force is applied (\\(\\sum \\mathbf{F} = 0\\)), the object will either remain at rest (\\(\\mathbf{v} = 0\\)) or move with a constant velocity in a straight line.
-
-Concept of Inertia:
-- Inertia is the resistance of an object to changes in its state of motion.
-- The mass (\\(m\\)) of an object quantifies its inertia—the greater the mass, the greater the force required to change its motion.
-
-Example:
-- A stationary spacecraft in deep space will continue to remain at rest unless acted upon by an external force (e.g., a thrust from an engine).
-- A moving car will continue in motion unless external forces like friction and air resistance slow it down.
-
-Newton's Second Law: The Law of Acceleration
-Statement:
-"The rate of change of momentum of an object is directly proportional to the net external force acting on it, and this change occurs in the direction of the applied force."
-
-Mathematical Representation:
-Newton's second law is formally expressed as:
-\\[
-\\sum \\mathbf{F} = \\frac{d\\mathbf{p}}{dt}
-\\]
-where:
-- \\( \\mathbf{p} = m \\mathbf{v} \\) is the linear momentum of the object,
-- \\( m \\) is the mass (assumed constant in classical mechanics),
-- \\( \\mathbf{v} \\) is the velocity,
-- \\( \\frac{d\\mathbf{p}}{dt} \\) represents the time derivative of momentum.
-
-Since in most classical cases mass remains constant (\\( \\frac{dm}{dt} = 0 \\)), we can rewrite the equation as:
-\\[
-\\sum \\mathbf{F} = m \\mathbf{a}
-\\]
-where:
-- \\( \\mathbf{a} = \\frac{d\\mathbf{v}}{dt} \\) is the acceleration.
-
-Implications:
-- The acceleration of an object is directly proportional to the applied force.
-- The acceleration is inversely proportional to the mass of the object.
-
-Example:
-- If a force of 10 N is applied to a 2 kg object, its acceleration is:
-  \\[
-  a = \\frac{F}{m} = \\frac{10}{2} = 5 \\text{ m/s}^2
-  \\]
-
-Newton's Third Law: The Law of Action and Reaction
-Statement:
-"For every action, there is an equal and opposite reaction."
-
-Mathematical Representation:
-If object A exerts a force \\( \\mathbf{F}_{A \\to B} \\) on object B, then object B simultaneously exerts a force \\( \\mathbf{F}_{B \\to A} \\) on object A such that:
-\\[
-\\mathbf{F}_{A \\to B} = - \\mathbf{F}_{B \\to A}
-\\]
-where:
-- \\( \\mathbf{F}_{A \\to B} \\) is the force exerted by object A on object B,
-- \\( \\mathbf{F}_{B \\to A} \\) is the reaction force exerted by object B on object A.
-
-Characteristics of Action-Reaction Forces:
-1. Equal in Magnitude: \\( |\\mathbf{F}_{A \\to B}| = |\\mathbf{F}_{B \\to A}| \\).
-2. Opposite in Direction: \\( \\mathbf{F}_{A \\to B} = -\\mathbf{F}_{B \\to A} \\).
-3. Act on Different Objects: They never act on the same object, meaning they do not cancel out.
-
-Example:
-- When a person pushes against a wall with a force \\( F \\), the wall pushes back with an equal force \\( -F \\).
-- In rocket propulsion, the exhaust gases exert a downward force, while the rocket experiences an equal and opposite upward thrust.`;
+  const aStudentText = "Newton's laws of motion are the foundation of classical mechanics...";
 
   const aStudentHighlights = {
     "Newton's First Law": "#4299e1",
@@ -133,11 +69,15 @@ Example:
             A+ Student
           </div>
           <CardContent className="p-4 h-[550px] overflow-auto">
-            <TypewriterText 
-              text={aStudentText} 
-              speed={15} 
-              highlightTerms={aStudentHighlights}
-            />
+            {showAStudentContent ? (
+              <AStudentContent />
+            ) : (
+              <TypewriterText 
+                text={aStudentText} 
+                speed={15} 
+                highlightTerms={aStudentHighlights}
+              />
+            )}
           </CardContent>
         </Card>
         
