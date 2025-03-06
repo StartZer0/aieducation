@@ -15,6 +15,8 @@ export default function AITutor() {
   const [isVisualizerVisible, setIsVisualizerVisible] = useState(false);
   const [visualizerTab, setVisualizerTab] = useState('table');
   const [selectedElement, setSelectedElement] = useState(null);
+  const [hoveredElement, setHoveredElement] = useState(null);
+  const [hoverPosition, setHoverPosition] = useState({ x: 0, y: 0 });
   const animationRef = useRef(null);
   const startTimeRef = useRef(null);
   const { toast } = useToast();
@@ -143,10 +145,33 @@ export default function AITutor() {
     }
   };
 
-  // Element info for the selected element or current stage element
-  const getElementInfo = () => {
-    // Default to Oxygen if no element is selected or we're in the demo sequence
-    return {
+  // Mock database of element information (in a real app, this would come from an API or database)
+  const elementsDatabase = {
+    "H": {
+      name: "Hydrogen",
+      symbol: "H",
+      atomicNumber: 1,
+      atomicMass: "1.008 u",
+      category: "Nonmetal",
+      electronConfig: "1s¹",
+      valenceElectrons: 1,
+      electronegativity: 2.20,
+      reactivity: "High",
+      compounds: ["H₂O", "H₂", "HCl"]
+    },
+    "O": {
+      name: "Oxygen",
+      symbol: "O",
+      atomicNumber: 8,
+      atomicMass: "15.999 u",
+      category: "Nonmetal",
+      electronConfig: "1s² 2s² 2p⁴",
+      valenceElectrons: 6,
+      electronegativity: 3.44,
+      reactivity: "High with metals",
+      compounds: ["H₂O", "CO₂", "Metal Oxides"]
+    },
+    "F": {
       name: "Fluorine",
       symbol: "F",
       atomicNumber: 9,
@@ -157,7 +182,30 @@ export default function AITutor() {
       electronegativity: 3.98,
       reactivity: "Very high",
       compounds: ["HF", "F₂", "Metal Fluorides"]
-    };
+    },
+    "Na": {
+      name: "Sodium",
+      symbol: "Na",
+      atomicNumber: 11,
+      atomicMass: "22.990 u",
+      category: "Alkali Metal",
+      electronConfig: "1s² 2s² 2p⁶ 3s¹",
+      valenceElectrons: 1,
+      electronegativity: 0.93,
+      reactivity: "High with nonmetals",
+      compounds: ["NaCl", "Na₂O", "NaOH"]
+    },
+    // Add more elements as needed
+  };
+  
+  // Function to get element data based on symbol or current stage
+  const getElementInfo = (symbol) => {
+    if (symbol && elementsDatabase[symbol]) {
+      return elementsDatabase[symbol];
+    }
+    
+    // Default to Oxygen during the demo, Fluorine otherwise
+    return currentStage > 0 ? elementsDatabase["O"] : elementsDatabase["F"];
   };
 
   const elementInfo = getElementInfo();
@@ -236,10 +284,50 @@ export default function AITutor() {
             </div>
             
             {/* Full-height visualization container */}
-            <div className="h-[450px] relative bg-gray-900">
+            <div className="h-[500px] relative bg-gray-900">
               <div 
                 className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
               >
+                {/* Hoverable element information tooltip */}
+                {hoveredElement && (
+                  <div 
+                    className="absolute z-50 bg-white rounded-lg shadow-lg border border-blue-100 p-3 w-64 transform transition-all duration-200 ease-in-out animate-fadeIn"
+                    style={{
+                      top: `${hoverPosition.y + 10}px`,
+                      left: `${hoverPosition.x + 10}px`,
+                      transform: 'translate(-50%, -100%)'
+                    }}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="font-bold text-blue-700">{hoveredElement.name}</h4>
+                      <span className="text-sm bg-blue-100 text-blue-800 px-2 py-0.5 rounded">{hoveredElement.symbol}</span>
+                    </div>
+                    
+                    <div className="grid grid-cols-2 gap-y-2 gap-x-4 text-sm">
+                      <div>
+                        <p className="text-xs text-gray-500">Atomic Number</p>
+                        <p className="font-medium">{hoveredElement.atomicNumber}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Atomic Mass</p>
+                        <p className="font-medium">{hoveredElement.atomicMass}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Electron Config</p>
+                        <p className="font-medium">{hoveredElement.electronConfig}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Valence Electrons</p>
+                        <p className="font-medium text-blue-600">{hoveredElement.valenceElectrons}</p>
+                      </div>
+                      <div className="col-span-2">
+                        <p className="text-xs text-gray-500">Common Compounds</p>
+                        <p className="font-medium truncate">{hoveredElement.compounds.join(', ')}</p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              
                 <InteractiveElementVisualizer 
                   currentStage={currentStage} 
                   progress={progressPercentage}
@@ -248,6 +336,20 @@ export default function AITutor() {
                   activeView={visualizerTab}
                   elementSize="md" // Increased size now that we have more space
                   spacing="normal" // Normal spacing for better readability
+                  onElementHover={(element, event) => {
+                    setHoveredElement(element);
+                    if (event) {
+                      // Calculate position for the tooltip based on mouse position
+                      // Offset to not cover the element with the cursor
+                      setHoverPosition({
+                        x: event.clientX,
+                        y: event.clientY
+                      });
+                    }
+                  }}
+                  onElementLeave={() => {
+                    setHoveredElement(null);
+                  }}
                 />
               </div>
               
@@ -272,40 +374,7 @@ export default function AITutor() {
             </div>
           </div>
           
-          {/* Element info panel with data from current stage/element - single source of truth */}
-          <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
-            <div className="flex items-center mb-3">
-              <Info className="h-4 w-4 mr-2 text-blue-500" />
-              <h3 className="text-sm font-medium">Element Information</h3>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <p className="text-xs text-gray-500">Valence Electrons</p>
-                <p className="text-base font-medium text-blue-600">
-                  {currentStage >= 2 ? "6" : "7"} {/* Show Oxygen (6) during demo, otherwise Fluorine (7) */}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Electronegativity</p>
-                <p className="text-base font-medium text-blue-600">
-                  {currentStage >= 2 ? "3.44" : "3.98"}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Reactivity</p>
-                <p className="text-base font-medium text-blue-600">
-                  {currentStage >= 2 ? "High with metals" : "Very high"}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Common Compounds</p>
-                <p className="text-base font-medium">
-                  {currentStage >= 2 ? "H₂O, CO₂, Metal Oxides" : "HF, F₂, Metal Fluorides"}
-                </p>
-              </div>
-            </div>
-          </div>
+          {/* No static element info panel here - will be shown on hover */}
         </div>
       </div>
     </div>
