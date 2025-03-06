@@ -50,7 +50,7 @@ Newton discovered these laws that explain how everything moves in our world - fr
             A+ Student
           </div>
           <CardContent className="p-4 h-[550px] overflow-auto">
-            <TypingAStudentContent typingSpeed={3} />
+            <TypingAStudentContent typingSpeed={10} /> {/* Increased speed for 3-second completion */}
           </CardContent>
         </Card>
         
@@ -78,7 +78,7 @@ Newton discovered these laws that explain how everything moves in our world - fr
           <CardContent className="p-4 h-[550px] overflow-auto">
             <TypewriterText 
               text={slowLearnerText} 
-              speed={10} 
+              speed={25} /* Increased speed for 3-second completion */
               highlightTerms={slowLearnerHighlights}
             />
           </CardContent>

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, ChartLine, FileText, Calculator, School, UserIcon, Beaker, FlaskConical } from 'lucide-react';
@@ -54,8 +55,10 @@ const Header = () => {
             <Link
               key={link.path}
               to={link.path}
-              className={`nav-link ${
-                isActive(link.path) ? 'text-blue font-medium after:w-full' : ''
+              className={`px-3 py-2 rounded-lg transition-colors duration-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 ${
+                isActive(link.path) 
+                  ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 font-medium' 
+                  : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-300'
               }`}
             >
               {link.label}
@@ -92,8 +95,8 @@ const Header = () => {
                 to={link.path}
                 className={`flex items-center py-3 px-4 rounded-xl transition-colors duration-300 ${
                   isActive(link.path) 
-                    ? 'bg-blue/10 text-blue font-medium' 
-                    : 'hover:bg-muted'
+                    ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 font-medium' 
+                    : 'hover:bg-blue-50 dark:hover:bg-blue-900/20 text-gray-700 dark:text-gray-300'
                 }`}
               >
                 {link.icon}
