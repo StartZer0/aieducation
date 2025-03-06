@@ -145,7 +145,7 @@ export default function AITutor() {
     }
   };
 
-  // Mock database of element information (in a real app, this would come from an API or database)
+  // Add Bromine to our elements database
   const elementsDatabase = {
     "H": {
       name: "Hydrogen",
@@ -194,6 +194,18 @@ export default function AITutor() {
       electronegativity: 0.93,
       reactivity: "High with nonmetals",
       compounds: ["NaCl", "Na₂O", "NaOH"]
+    },
+    "Br": {
+      name: "Bromine",
+      symbol: "Br",
+      atomicNumber: 35,
+      atomicMass: "79.904 u",
+      category: "Halogen",
+      electronConfig: "1s² 2s² 2p⁶ 3s² 3p⁶ 3d¹⁰ 4s² 4p⁵",
+      valenceElectrons: 7,
+      electronegativity: 2.96,
+      reactivity: "High with metals",
+      compounds: ["HBr", "KBr", "Metal Bromides"]
     },
     // Add more elements as needed
   };
