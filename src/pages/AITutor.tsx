@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -14,9 +13,10 @@ export default function AITutor() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [isVisualizerVisible, setIsVisualizerVisible] = useState(false);
-  const [visualizerTab, setVisualizerTab] = useState<'table' | 'atom'>('table');
-  const animationRef = useRef<number | null>(null);
-  const startTimeRef = useRef<number | null>(null);
+  const [visualizerTab, setVisualizerTab] = useState('table');
+  const [selectedElement, setSelectedElement] = useState(null);
+  const animationRef = useRef(null);
+  const startTimeRef = useRef(null);
   const { toast } = useToast();
 
   const totalDuration = 4000; // 4 seconds in milliseconds
@@ -143,24 +143,43 @@ export default function AITutor() {
     }
   };
 
+  // Element info for the selected element or current stage element
+  const getElementInfo = () => {
+    // Default to Oxygen if no element is selected or we're in the demo sequence
+    return {
+      name: "Fluorine",
+      symbol: "F",
+      atomicNumber: 9,
+      atomicMass: "18.998 u",
+      category: "Halogen",
+      electronConfig: "1s² 2s² 2p⁵",
+      valenceElectrons: 7,
+      electronegativity: 3.98,
+      reactivity: "Very high",
+      compounds: ["HF", "F₂", "Metal Fluorides"]
+    };
+  };
+
+  const elementInfo = getElementInfo();
+
   return (
     <div className="container mx-auto py-10 px-4 max-w-6xl">
-      <h1 className="text-2xl font-bold mb-6 text-center"></h1>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-20">
         {/* Left sidebar: Avatar and controls - 1/4 width on desktop */}
-        <div className="lg:col-span-1 flex flex-col gap-4 mt-20">
-          <div className="bg-white rounded-xl shadow-md border border-gray-100 h-[350px] overflow-hidden">
+        <div className="lg:col-span-1 flex flex-col gap-4">
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 h-auto overflow-hidden">
             <div className="p-3 bg-blue-50 border-b border-blue-100 flex items-center">
               <HelpCircle className="h-4 w-4 mr-2 text-blue-600" />
               <h3 className="text-sm font-medium">Chemistry Tutor</h3>
             </div>
-            <AITutorAvatar 
-              currentStage={currentStage}
-              avatarText={stages[currentStage]?.avatarText || ""}
-              isUserMessage={stages[currentStage]?.isUser || false}
-              progress={progressPercentage}
-            />
+            <div className="p-4 pb-6">
+              <AITutorAvatar 
+                currentStage={currentStage}
+                avatarText={stages[currentStage]?.avatarText || ""}
+                isUserMessage={stages[currentStage]?.isUser || false}
+                progress={progressPercentage}
+              />
+            </div>
           </div>
           
           {/* Controls */}
@@ -183,29 +202,32 @@ export default function AITutor() {
               </div>
             )}
           </div>
+          
+          {/* Add a little space before showing the status info on mobile */}
+          <div className="block lg:hidden h-6"></div>
         </div>
         
         {/* Main Content Area - 3/4 width on desktop */}
-        <div className="lg:col-span-3 flex flex-col gap-4 mt-16">
+        <div className="lg:col-span-3 flex flex-col gap-4">
           {/* Tabs and visualizer */}
           <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
-            <div className="flex items-center justify-between p-4 border-b">
-              <div className="flex items-center">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border-b">
+              <div className="flex items-center mb-3 sm:mb-0">
                 <Atom className="h-5 w-5 mr-2 text-blue-500" />
                 <h2 className="font-medium">Interactive Visualization</h2>
               </div>
               
               <Tabs 
                 value={visualizerTab} 
-                onValueChange={(value) => setVisualizerTab(value as 'table' | 'atom')}
+                onValueChange={(value) => setVisualizerTab(value)}
                 className="mr-0"
               >
                 <TabsList>
-                  <TabsTrigger value="table" className="flex items-center gap-1 px-4">
+                  <TabsTrigger value="table" className="flex items-center gap-1 px-3 py-1">
                     <Zap className="h-3.5 w-3.5" />
                     <span>Periodic Table</span>
                   </TabsTrigger>
-                  <TabsTrigger value="atom" className="flex items-center gap-1 px-4">
+                  <TabsTrigger value="atom" className="flex items-center gap-1 px-3 py-1">
                     <Atom className="h-3.5 w-3.5" />
                     <span>Atomic Structure</span>
                   </TabsTrigger>
@@ -213,7 +235,8 @@ export default function AITutor() {
               </Tabs>
             </div>
             
-            <div className="h-[350px] relative">
+            {/* Reduced height visualization container */}
+            <div className="h-[250px] relative bg-gray-900">
               <div 
                 className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
               >
@@ -223,21 +246,23 @@ export default function AITutor() {
                   currentTime={currentTime}
                   isVisible={isVisualizerVisible}
                   activeView={visualizerTab}
+                  elementSize="sm" // Add a prop to make elements smaller
+                  spacing="compact" // Add a prop to reduce spacing between elements
                 />
               </div>
               
               {!isVisualizerVisible && (
                 <div className="w-full h-full flex items-center justify-center">
-                  <div className="text-center max-w-md p-6 bg-gray-50 rounded-xl">
+                  <div className="text-center max-w-md p-6 bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl text-white">
                     <Atom className="h-16 w-16 mx-auto mb-4 text-blue-400" />
                     <p className="text-lg font-medium mb-2">Interactive Chemistry Learning</p>
-                    <p className="text-sm text-gray-500 mb-4">
+                    <p className="text-sm text-gray-300 mb-4">
                       Click the "Ask Question" button to learn about the electron configuration of oxygen
                     </p>
                     <Button 
                       onClick={askQuestion} 
                       variant="outline" 
-                      className="border-blue-200 text-blue-600"
+                      className="border-blue-500 text-blue-400 hover:bg-blue-900 hover:bg-opacity-30"
                     >
                       Start Demo
                     </Button>
@@ -245,12 +270,55 @@ export default function AITutor() {
                 </div>
               )}
             </div>
+            
+            {/* Element information box - moved outside the visualization */}
+            <div className="bg-white p-4 border-t border-gray-100">
+              <div className="flex items-center mb-2">
+                <Info className="h-4 w-4 mr-2 text-blue-500" />
+                <h3 className="text-sm font-medium">Element Information</h3>
+              </div>
+              
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2">
+                <div>
+                  <p className="text-xs text-gray-500">Name</p>
+                  <p className="text-sm font-medium">{elementInfo.name}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Symbol</p>
+                  <p className="text-sm font-medium">{elementInfo.symbol}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Atomic Number</p>
+                  <p className="text-sm font-medium">{elementInfo.atomicNumber}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Atomic Mass</p>
+                  <p className="text-sm font-medium">{elementInfo.atomicMass}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Category</p>
+                  <p className="text-sm font-medium">{elementInfo.category}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Electron Configuration</p>
+                  <p className="text-sm font-medium">{elementInfo.electronConfig}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Valence Electrons</p>
+                  <p className="text-sm font-medium">{elementInfo.valenceElectrons}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-gray-500">Electronegativity</p>
+                  <p className="text-sm font-medium">{elementInfo.electronegativity}</p>
+                </div>
+              </div>
+            </div>
           </div>
           
-          {/* Element info panel at the bottom */}
+          {/* Element info panel at the bottom with improved spacing */}
           <TutorInfoPanel 
             stageInfo={getStageInfo()} 
-            className="transition-all duration-500" 
+            className="transition-all duration-500 bg-white rounded-xl shadow-md border border-gray-100 p-4" 
           />
         </div>
       </div>
