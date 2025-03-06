@@ -213,8 +213,8 @@ export default function AITutor() {
           <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border-b">
               <div className="flex items-center mb-3 sm:mb-0">
-                {/* Removed the "Interactive Visualization" text as requested */}
                 <Atom className="h-5 w-5 mr-2 text-blue-500" />
+                <h2 className="font-medium">Interactive Visualization</h2>
               </div>
               
               <Tabs 
@@ -235,37 +235,27 @@ export default function AITutor() {
               </Tabs>
             </div>
             
-            {/* Container with space for explanations */}
-            <div className="h-[700px] relative bg-gray-900">
+            {/* Full-height visualization container */}
+            <div className="h-[450px] relative bg-gray-900">
               <div 
                 className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
               >
-                {/* Added container with padding to create space for explanations */}
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="relative w-4/5 h-4/5">
-                    {/* Visualizer positioned to maintain original size but with space for explanations */}
-                    <InteractiveElementVisualizer 
-                      currentStage={currentStage} 
-                      progress={progressPercentage}
-                      currentTime={currentTime}
-                      isVisible={isVisualizerVisible}
-                      activeView={visualizerTab}
-                      elementSize="md"
-                      spacing="normal"
-                      explanationPadding={true}
-                      showExplanationsAdjacent={true}
-                      showInfoOnHover={true}
-                      hideAnimationText={true}
-                    />
-                  </div>
-                </div>
+                <InteractiveElementVisualizer 
+                  currentStage={currentStage} 
+                  progress={progressPercentage}
+                  currentTime={currentTime}
+                  isVisible={isVisualizerVisible}
+                  activeView={visualizerTab}
+                  elementSize="md" // Increased size now that we have more space
+                  spacing="normal" // Normal spacing for better readability
+                />
               </div>
               
               {!isVisualizerVisible && (
                 <div className="w-full h-full flex items-center justify-center">
                   <div className="text-center max-w-md p-6 bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl text-white">
                     <Atom className="h-16 w-16 mx-auto mb-4 text-blue-400" />
-                    <p className="text-lg font-medium mb-2">Chemistry Learning</p>
+                    <p className="text-lg font-medium mb-2">Interactive Chemistry Learning</p>
                     <p className="text-sm text-gray-300 mb-4">
                       Click the "Ask Question" button to learn about the electron configuration of oxygen
                     </p>
@@ -281,7 +271,41 @@ export default function AITutor() {
               )}
             </div>
           </div>
-          {/* Element info panel removed as requested - info will be shown on hover instead */}
+          
+          {/* Element info panel with data from current stage/element - single source of truth */}
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+            <div className="flex items-center mb-3">
+              <Info className="h-4 w-4 mr-2 text-blue-500" />
+              <h3 className="text-sm font-medium">Element Information</h3>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <p className="text-xs text-gray-500">Valence Electrons</p>
+                <p className="text-base font-medium text-blue-600">
+                  {currentStage >= 2 ? "6" : "7"} {/* Show Oxygen (6) during demo, otherwise Fluorine (7) */}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Electronegativity</p>
+                <p className="text-base font-medium text-blue-600">
+                  {currentStage >= 2 ? "3.44" : "3.98"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Reactivity</p>
+                <p className="text-base font-medium text-blue-600">
+                  {currentStage >= 2 ? "High with metals" : "Very high"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Common Compounds</p>
+                <p className="text-base font-medium">
+                  {currentStage >= 2 ? "H₂O, CO₂, Metal Oxides" : "HF, F₂, Metal Fluorides"}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
