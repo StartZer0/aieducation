@@ -145,7 +145,7 @@ export default function AITutor() {
 
   return (
     <div className="container mx-auto py-10 px-4 max-w-6xl">
-      <h1 className="text-2xl font-bold mb-6 text-center">Interactive Chemistry Tutor</h1>
+      <h1 className="text-2xl font-bold mb-6 text-center"></h1>
       
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Left sidebar: Avatar and controls - 1/4 width on desktop */}
