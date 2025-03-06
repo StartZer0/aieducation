@@ -1,11 +1,4 @@
-// Clean up animation frame on unmount
-  useEffect(() => {
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, []);import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
@@ -103,21 +96,13 @@ export default function AITutor() {
     }
   };
 
-  // Initialize with default element data for demo
   useEffect(() => {
-    if (isPlaying && currentStage >= 1) {
-      // Set Oxygen data for demo
-      const oxygenData = {
-        name: "Oxygen",
-        symbol: "O",
-        atomicNumber: 8,
-        electronConfig: "1s² 2s² 2p⁴",
-        valenceElectrons: 6,
-        reactivity: "High with metals"
-      };
-      setSelectedElement(oxygenData);
-    }
-  }, [isPlaying, currentStage]);
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, []);
 
   // Calculate progress percentage
   const progressPercentage = Math.min((currentTime / totalDuration) * 100, 100);
@@ -162,53 +147,7 @@ export default function AITutor() {
   // Handle element selection
   const handleElementSelect = (element) => {
     console.log("Element selected:", element);
-    
-    // If we don't receive proper element data, create default data based on the element symbol
-    if (!element || !element.name) {
-      // Default data for common elements
-      const defaultData = {
-        O: {
-          name: "Oxygen",
-          symbol: "O",
-          atomicNumber: 8,
-          electronConfig: "1s² 2s² 2p⁴",
-          valenceElectrons: 6,
-          reactivity: "High with metals"
-        },
-        F: {
-          name: "Fluorine",
-          symbol: "F",
-          atomicNumber: 9,
-          electronConfig: "1s² 2s² 2p⁵",
-          valenceElectrons: 7,
-          reactivity: "Very high"
-        },
-        H: {
-          name: "Hydrogen",
-          symbol: "H",
-          atomicNumber: 1,
-          electronConfig: "1s¹",
-          valenceElectrons: 1,
-          reactivity: "High"
-        }
-      };
-      
-      // If element is just a string (symbol), convert to full data
-      const symbol = typeof element === 'string' ? element : 'O';
-      
-      // Use default data or generate basic info
-      setSelectedElement(defaultData[symbol] || {
-        name: symbol,
-        symbol: symbol,
-        atomicNumber: "?",
-        electronConfig: "?",
-        valenceElectrons: "?",
-        reactivity: "?"
-      });
-    } else {
-      // If we have proper element data, use it
-      setSelectedElement(element);
-    }
+    setSelectedElement(element);
   };
 
   return (
@@ -308,23 +247,23 @@ export default function AITutor() {
               <div className="h-32 bg-gray-800 p-4 overflow-auto">
                 {selectedElement ? (
                   <div className="text-white">
-                    <h3 className="text-xl font-bold mb-2">{selectedElement.name || "?"} ({selectedElement.symbol || "?"})</h3>
+                    <h3 className="text-xl font-bold mb-2">{selectedElement.name} ({selectedElement.symbol})</h3>
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
                         <p className="text-gray-400">Atomic Number</p>
-                        <p className="font-medium">{selectedElement.atomicNumber || "?"}</p>
+                        <p className="font-medium">{selectedElement.atomicNumber}</p>
                       </div>
                       <div>
                         <p className="text-gray-400">Electron Configuration</p>
-                        <p className="font-medium">{selectedElement.electronConfig || "?"}</p>
+                        <p className="font-medium">{selectedElement.electronConfig}</p>
                       </div>
                       <div>
                         <p className="text-gray-400">Valence Electrons</p>
-                        <p className="font-medium">{selectedElement.valenceElectrons || "?"}</p>
+                        <p className="font-medium">{selectedElement.valenceElectrons}</p>
                       </div>
                       <div>
                         <p className="text-gray-400">Reactivity</p>
-                        <p className="font-medium">{selectedElement.reactivity || "?"}</p>
+                        <p className="font-medium">{selectedElement.reactivity}</p>
                       </div>
                     </div>
                   </div>
