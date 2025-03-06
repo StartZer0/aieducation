@@ -2,7 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Mic, Info, Atom, Zap } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { Mic, Info, Atom, Zap, HelpCircle } from 'lucide-react';
 import AITutorAvatar from '@/components/ai-tutor/AITutorAvatar';
 import InteractiveElementVisualizer from '@/components/ai-tutor/InteractiveElementVisualizer';
 import { useToast } from '@/hooks/use-toast';
@@ -53,16 +54,14 @@ export default function AITutor() {
       cancelAnimationFrame(animationRef.current);
     }
     
-    // Show the visualizer with a slight delay
-    setTimeout(() => {
-      setIsVisualizerVisible(true);
-    }, 1000);
+    // Show the visualizer immediately for better UX
+    setIsVisualizerVisible(true);
     
     animateSequence();
     
     toast({
       title: "Question Asked",
-      description: "Listen as the AI Tutor explains oxygen's electron configuration",
+      description: "Explaining oxygen's electron configuration",
     });
   };
 
@@ -115,7 +114,8 @@ export default function AITutor() {
         return [
           { label: "Exploring", value: "Electron Configuration", highlight: true },
           { label: "Element", value: "Oxygen (O)", highlight: true },
-          { label: "Status", value: "Waiting for response..." }
+          { label: "Status", value: "Waiting for response..." },
+          { label: "Subject", value: "Chemistry" }
         ];
       case 1:
         return [
@@ -128,7 +128,8 @@ export default function AITutor() {
         return [
           { label: "Electron Configuration", value: "1s² 2s² 2p⁴", highlight: true },
           { label: "K Shell", value: "2 electrons" },
-          { label: "L Shell", value: "6 electrons", highlight: true }
+          { label: "L Shell", value: "6 electrons", highlight: true },
+          { label: "Valence", value: "6 electrons" }
         ];
       case 3:
         return [
@@ -143,30 +144,68 @@ export default function AITutor() {
   };
 
   return (
-    <div className="container mx-auto py-6 px-4 max-w-7xl">
-      <div className="flex flex-col space-y-6">
-        {/* Main content area with side-by-side layout */}
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Left side: Visualization area - ~70% on desktop */}
-          <div className="lg:w-[70%] flex flex-col gap-4">
-            {/* Top section with tabs */}
-            <div className="flex items-center justify-between bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+    <div className="container mx-auto py-10 px-4 max-w-6xl">
+      <h1 className="text-2xl font-bold mb-6 text-center">Interactive Chemistry Tutor</h1>
+      
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Left sidebar: Avatar and controls - 1/4 width on desktop */}
+        <div className="lg:col-span-1 flex flex-col gap-4">
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 h-[350px] overflow-hidden">
+            <div className="p-3 bg-blue-50 border-b border-blue-100 flex items-center">
+              <HelpCircle className="h-4 w-4 mr-2 text-blue-600" />
+              <h3 className="text-sm font-medium">Chemistry Tutor</h3>
+            </div>
+            <AITutorAvatar 
+              currentStage={currentStage}
+              avatarText={stages[currentStage]?.avatarText || ""}
+              isUserMessage={stages[currentStage]?.isUser || false}
+              progress={progressPercentage}
+            />
+          </div>
+          
+          {/* Controls */}
+          <div className="flex flex-col gap-3">
+            <Button
+              onClick={askQuestion}
+              className="w-full flex items-center justify-center gap-2 py-5 bg-blue-500 hover:bg-blue-600 transition-colors"
+              disabled={isPlaying}
+            >
+              <Mic className="h-4 w-4" />
+              Ask Question
+            </Button>
+            
+            {isPlaying && (
+              <div className="w-full">
+                <Progress value={progressPercentage} className="h-2" />
+                <p className="text-xs text-center mt-1 text-gray-500">
+                  {Math.floor(progressPercentage)}% complete
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+        
+        {/* Main Content Area - 3/4 width on desktop */}
+        <div className="lg:col-span-3 flex flex-col gap-4">
+          {/* Tabs and visualizer */}
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+            <div className="flex items-center justify-between p-4 border-b">
               <div className="flex items-center">
                 <Atom className="h-5 w-5 mr-2 text-blue-500" />
-                <h2 className="text-lg font-medium">Interactive Chemistry Visualization</h2>
+                <h2 className="font-medium">Interactive Visualization</h2>
               </div>
               
               <Tabs 
                 value={visualizerTab} 
                 onValueChange={(value) => setVisualizerTab(value as 'table' | 'atom')}
-                className="mr-2"
+                className="mr-0"
               >
                 <TabsList>
-                  <TabsTrigger value="table" className="flex items-center gap-1">
+                  <TabsTrigger value="table" className="flex items-center gap-1 px-4">
                     <Zap className="h-3.5 w-3.5" />
                     <span>Periodic Table</span>
                   </TabsTrigger>
-                  <TabsTrigger value="atom" className="flex items-center gap-1">
+                  <TabsTrigger value="atom" className="flex items-center gap-1 px-4">
                     <Atom className="h-3.5 w-3.5" />
                     <span>Atomic Structure</span>
                   </TabsTrigger>
@@ -174,71 +213,45 @@ export default function AITutor() {
               </Tabs>
             </div>
             
-            {/* Visualization area */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 h-[450px]">
-              <div className="h-full relative">
-                <div 
-                  className={`absolute inset-0 transition-opacity duration-1000 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
-                >
-                  <InteractiveElementVisualizer 
-                    currentStage={currentStage} 
-                    progress={progressPercentage}
-                    currentTime={currentTime}
-                    isVisible={isVisualizerVisible}
-                    activeView={visualizerTab}
-                  />
-                </div>
-                
-                {!isVisualizerVisible && (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <div className="text-center text-gray-500 max-w-md p-6">
-                      <Atom className="h-16 w-16 mx-auto mb-4 text-blue-400 animate-pulse" />
-                      <p className="text-lg font-medium">Interactive Chemistry Tutor</p>
-                      <p className="text-sm mt-2 text-gray-400">Click the "Ask Question" button below to learn about the electron configuration of oxygen</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            {/* Controls */}
-            <div className="flex justify-center gap-4 pb-2">
-              <Button
-                onClick={askQuestion}
-                className="flex items-center gap-2 py-2 px-6 bg-blue-500 hover:bg-blue-600 transition-colors"
-                disabled={isPlaying}
+            <div className="h-[350px] relative">
+              <div 
+                className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
               >
-                <Mic className="h-4 w-4" />
-                Ask Question
-              </Button>
-            </div>
-            
-            {/* Progress bar */}
-            {isPlaying && (
-              <div className="w-full bg-gray-100 rounded-full h-2">
-                <div 
-                  className="bg-blue-500 h-2 rounded-full transition-all duration-100" 
-                  style={{ width: `${progressPercentage}%` }}
-                ></div>
+                <InteractiveElementVisualizer 
+                  currentStage={currentStage} 
+                  progress={progressPercentage}
+                  currentTime={currentTime}
+                  isVisible={isVisualizerVisible}
+                  activeView={visualizerTab}
+                />
               </div>
-            )}
+              
+              {!isVisualizerVisible && (
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-center max-w-md p-6 bg-gray-50 rounded-xl">
+                    <Atom className="h-16 w-16 mx-auto mb-4 text-blue-400" />
+                    <p className="text-lg font-medium mb-2">Interactive Chemistry Learning</p>
+                    <p className="text-sm text-gray-500 mb-4">
+                      Click the "Ask Question" button to learn about the electron configuration of oxygen
+                    </p>
+                    <Button 
+                      onClick={askQuestion} 
+                      variant="outline" 
+                      className="border-blue-200 text-blue-600"
+                    >
+                      Start Demo
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
           
-          {/* Right side: Avatar and info - ~30% on desktop */}
-          <div className="lg:w-[30%] flex flex-col gap-4">
-            {/* Avatar area */}
-            <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 h-[450px]">
-              <AITutorAvatar 
-                currentStage={currentStage}
-                avatarText={stages[currentStage]?.avatarText || ""}
-                isUserMessage={stages[currentStage]?.isUser || false}
-                progress={progressPercentage}
-              />
-            </div>
-            
-            {/* Info panel */}
-            <TutorInfoPanel stageInfo={getStageInfo()} />
-          </div>
+          {/* Element info panel at the bottom */}
+          <TutorInfoPanel 
+            stageInfo={getStageInfo()} 
+            className="transition-all duration-500" 
+          />
         </div>
       </div>
     </div>

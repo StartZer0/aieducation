@@ -44,14 +44,14 @@ const InteractiveElementVisualizer: React.FC<InteractiveElementVisualizerProps> 
       return;
     }
     
-    // Start animation sequence
+    // Start animation sequence with shorter timing for better responsiveness
     const timeout1 = setTimeout(() => {
       setAnimationPhase(1); // Initial appearance
-    }, 300);
+    }, 200);
     
     const timeout2 = setTimeout(() => {
       setAnimationPhase(2); // Content appearance
-    }, 1000);
+    }, 700);
     
     return () => {
       clearTimeout(timeout1);
@@ -61,19 +61,19 @@ const InteractiveElementVisualizer: React.FC<InteractiveElementVisualizerProps> 
 
   return (
     <div className={cn(
-      "h-full transition-all duration-1000 transform",
+      "h-full transition-all duration-500 transform",
       !isVisible && "opacity-0 scale-95",
       isVisible && animationPhase >= 1 && "opacity-100 scale-100"
     )}>
       <div className="h-full flex flex-col">
-        {/* Main visualization area */}
-        <div className="flex-1 overflow-hidden relative">
+        {/* Main visualization area with enhanced visuals */}
+        <div className="flex-1 overflow-hidden relative rounded-lg bg-gradient-to-b from-gray-50 to-white">
           {/* Periodic Table View */}
           <div className={cn(
             "absolute inset-0 h-full w-full transition-all duration-500",
             activeView === 'table' ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
           )}>
-            <div className="h-full w-full bg-[#121212]">
+            <div className="h-full w-full bg-[#121212] rounded-lg">
               <CircularPeriodicTable 
                 highlightedElement={currentStage >= 1 ? 'O' : null}
                 isActive={activeView === 'table' && isVisible && animationPhase >= 2}
