@@ -12,8 +12,9 @@ const Study = () => {
   // Show welcome toast when loading the study page for the first time
   React.useEffect(() => {
     if (subjectId && topicId) {
-      // Find current topic name for the toast
-      const subject = subjectsData.find(s => s.id === subjectId);
+      // Access subject directly by key instead of using find
+      const subject = subjectsData[subjectId as keyof typeof subjectsData];
+      
       if (subject) {
         const findTopicTitle = (topics: any[], id: string): string | null => {
           for (const topic of topics) {
