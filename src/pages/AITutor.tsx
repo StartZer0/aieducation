@@ -2,17 +2,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Mic, MicOff, Info, Table, Atom } from 'lucide-react';
+import { Mic, MicOff, Info, Atom } from 'lucide-react';
 import AITutorAvatar from '@/components/ai-tutor/AITutorAvatar';
-import ChemistryVisualizer from '@/components/ai-tutor/ChemistryVisualizer';
-import CircularPeriodicTable from '@/components/ai-tutor/CircularPeriodicTable';
+import InteractiveElementVisualizer from '@/components/ai-tutor/InteractiveElementVisualizer';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AITutor() {
   const [currentStage, setCurrentStage] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [activeTab, setActiveTab] = useState<'table' | 'atom'>('table');
+  const [isVisualizerVisible, setIsVisualizerVisible] = useState(false);
   const animationRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const { toast } = useToast();
@@ -51,6 +50,11 @@ export default function AITutor() {
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
     }
+    
+    // Show the visualizer with a slight delay
+    setTimeout(() => {
+      setIsVisualizerVisible(true);
+    }, 2000);
     
     animateSequence();
     
@@ -103,47 +107,43 @@ export default function AITutor() {
       </div>
       
       <div className="flex flex-col lg:flex-row gap-6 mb-6">
-        {/* Visualization area - 65% */}
-        <div className="w-full lg:w-2/3 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
+        {/* Visualization area - 70% */}
+        <div className="w-full lg:w-3/4 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
           <div className="h-full flex flex-col">
-            <Tabs 
-              defaultValue="table" 
-              value={activeTab} 
-              onValueChange={(value) => setActiveTab(value as 'table' | 'atom')}
-              className="h-full flex flex-col"
-            >
-              <div className="border-b">
-                <TabsList className="w-auto px-4 h-12">
-                  <TabsTrigger value="table" className="flex items-center gap-2">
-                    <Table className="h-4 w-4" />
-                    Periodic Table
-                  </TabsTrigger>
-                  <TabsTrigger value="atom" className="flex items-center gap-2">
-                    <Atom className="h-4 w-4" />
-                    Atomic Structure
-                  </TabsTrigger>
-                </TabsList>
+            <div className="border-b border-gray-200 px-4 py-3 bg-white flex justify-between items-center">
+              <div className="flex items-center">
+                <Atom className="h-4 w-4 mr-2 text-blue-500" />
+                <span className="font-medium">Interactive Table with Atom Visualization</span>
               </div>
-              <TabsContent value="table" className="flex-1 h-full m-0 overflow-hidden">
-                <div className="w-full h-full">
-                  <ChemistryVisualizer 
-                    currentStage={currentStage} 
-                    progress={progressPercentage}
-                    currentTime={currentTime}
-                  />
+            </div>
+            
+            <div className="flex-1 h-full relative">
+              <div 
+                className={`absolute inset-0 transition-opacity duration-1000 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
+              >
+                <InteractiveElementVisualizer 
+                  currentStage={currentStage} 
+                  progress={progressPercentage}
+                  currentTime={currentTime}
+                  isVisible={isVisualizerVisible}
+                />
+              </div>
+              
+              {!isVisualizerVisible && (
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-center text-gray-500">
+                    <Atom className="h-16 w-16 mx-auto mb-4 text-gray-400" />
+                    <p className="text-lg font-medium">Ask a question to see the interactive visualization</p>
+                    <p className="text-sm mt-2">Try asking about elements, electron configurations, or atomic structures</p>
+                  </div>
                 </div>
-              </TabsContent>
-              <TabsContent value="atom" className="flex-1 h-full m-0">
-                <div className="w-full h-full bg-[#121212]">
-                  <CircularPeriodicTable />
-                </div>
-              </TabsContent>
-            </Tabs>
+              )}
+            </div>
           </div>
         </div>
         
-        {/* Avatar area - 25% */}
-        <div className="w-full lg:w-1/3 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
+        {/* Avatar area - 30% */}
+        <div className="w-full lg:w-1/4 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
           <AITutorAvatar 
             currentStage={currentStage}
             avatarText={stages[currentStage]?.avatarText || ""}
@@ -155,17 +155,10 @@ export default function AITutor() {
       
       {/* Controls */}
       <div className="flex justify-center gap-4 mb-8">
-        <Button 
-          onClick={startExplanation}
-          disabled={isPlaying}
-          className="py-2 px-6"
-        >
-          {isPlaying ? "Playing..." : "Start Explanation"}
-        </Button>
-        
         <Button
+          onClick={startExplanation}
+          className="flex items-center gap-2 py-2 px-6"
           variant="outline"
-          className="flex items-center gap-2"
           disabled={isPlaying}
         >
           <Mic className="h-4 w-4" />

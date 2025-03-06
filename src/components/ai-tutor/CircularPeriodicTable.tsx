@@ -1,24 +1,35 @@
+
 import React, { useEffect, useRef } from 'react';
 import p5 from 'p5';
 
 interface CircularPeriodicTableProps {
-  className?: string;
+  highlightedElement?: string | null;
+  isActive?: boolean;
 }
 
-const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className = '' }) => {
+const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ 
+  highlightedElement = null,
+  isActive = true
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<p5>();
   
   useEffect(() => {
     if (!containerRef.current) return;
-
-    // P5 sketch for the circular periodic table
+    
+    // Clean up any existing p5 instance
+    if (canvasRef.current) {
+      canvasRef.current.remove();
+    }
+    
+    // Create new p5 instance
     const sketch = (p: p5) => {
-      let elements: any[] = []; // Will store selected element data
-      let selectedElement: any = null; // Currently selected element
-      let cellSize = 60; // Size of each element cell (reduced from original)
-      let electronOrbitals: any[] = []; // Animation data for electron orbitals
-      let electronSpeed = 0.02; // Base speed for electron animation
-      let categoryColors: Record<string, p5.Color> = {}; // Colors for element categories
+      let elements: any[] = [];
+      let selectedElement: any = null;
+      let cellSize = 80;
+      let electronOrbitals: {angle: number, speed: number}[] = [];
+      let electronSpeed = 0.02;
+      let categoryColors: Record<string, p5.Color> = {};
       
       // Selected elements for circular arrangement (20 key elements)
       const elementSymbols = [
@@ -29,8 +40,7 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
       ];
       
       p.setup = () => {
-        // Create canvas that fits the container
-        const canvas = p.createCanvas(containerRef.current!.clientWidth, containerRef.current!.clientHeight);
+        p.createCanvas(containerRef.current!.clientWidth, containerRef.current!.clientHeight);
         p.textAlign(p.CENTER, p.CENTER);
         
         // Initialize element data
@@ -42,23 +52,32 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
         // Set up electron orbital animation data
         setupElectronOrbitals();
         
-        // Auto-select oxygen (O) when first loaded
-        selectedElement = elements.find(e => e.symbol === 'O');
+        // Set selected element if highlighted
+        if (highlightedElement) {
+          selectedElement = elements.find(e => e.symbol === highlightedElement) || null;
+        }
       };
       
       p.draw = () => {
-        p.background(18, 18, 24); // Dark background
+        if (!isActive) {
+          // Just draw a simple placeholder when not active
+          p.background(18, 18, 24);
+          p.fill(40);
+          p.noStroke();
+          p.textSize(14);
+          p.text("Interactive Periodic Table", p.width/2, p.height/2);
+          return;
+        }
+        
+        p.background(18, 18, 24);
         
         // Draw title
-        p.fill(255);
-        p.textSize(20);
+        p.fill(200);
+        p.textSize(24);
         p.textStyle(p.BOLD);
-        p.text("Interactive Periodic Table with Atom Visualization", p.width/2, 30);
+        p.text("Interactive Periodic Table", p.width/2, 50);
         
-        // Adjust for scaling based on container size
-        const scale = Math.min(p.width, p.height) / 800;
-        cellSize = 60 * scale;
-        
+        // If no element is selected, animate a default atom in the center
         if (!selectedElement) {
           drawDefaultAtom();
         } else {
@@ -72,17 +91,18 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
         // Draw elements in a circular pattern
         drawCircularElements();
         
-        // Draw legend (slightly smaller than original)
-        drawCategoryLegend();
-        
-        // Draw instructions
-        p.fill(200);
-        p.textSize(12);
-        p.textStyle(p.NORMAL);
-        p.text("Click on an element to view its atomic structure", p.width/2, p.height - 20);
+        // Draw category legend if space allows
+        if (p.width > 800) {
+          drawCategoryLegend();
+        }
       };
       
-      function drawDefaultAtom() {
+      p.windowResized = () => {
+        if (!containerRef.current) return;
+        p.resizeCanvas(containerRef.current.clientWidth, containerRef.current.clientHeight);
+      };
+      
+      const drawDefaultAtom = () => {
         // Draw a generic atom animation in the center when no element is selected
         let x = p.width/2;
         let y = p.height/2;
@@ -140,19 +160,24 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
             p.ellipse(x + offsetX, y + offsetY, 7, 7);
           }
         }
-      }
+        
+        // Add a prompt in the center
+        p.fill(200);
+        p.textSize(18);
+        p.text("Interactive Periodic Table", x, y + 140);
+      };
       
-      function drawCircularElements() {
+      const drawCircularElements = () => {
         const elementCount = elements.length;
         const centerX = p.width/2;
         const centerY = p.height/2;
-        const radius = Math.min(p.width, p.height) * 0.35; // Slightly smaller radius to fit
+        const radius = p.min(p.width, p.height) * 0.38;
         
         for (let i = 0; i < elementCount; i++) {
           const element = elements[i];
           
           // Calculate position in a circle
-          const angle = p.map(i, 0, elementCount, -p.PI/4, p.TWO_PI-p.PI/4); // Start from top-right, go clockwise
+          const angle = p.map(i, 0, elementCount, -p.PI/4, p.TWO_PI-p.PI/4);
           const x = centerX + p.cos(angle) * radius;
           const y = centerY + p.sin(angle) * radius;
           
@@ -163,7 +188,7 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
             p.fill(220, 220, 255);
             p.stroke(255);
             p.strokeWeight(2);
-          } else if (element === selectedElement) {
+          } else if (element === selectedElement || element.symbol === highlightedElement) {
             p.fill(250, 250, 180);
             p.stroke(255, 255, 0);
             p.strokeWeight(2);
@@ -179,33 +204,39 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
           // Draw element symbol
           p.noStroke();
           p.fill(0);
-          p.textSize(16); // Reduced text size
+          p.textSize(22);
           p.textStyle(p.BOLD);
           p.text(element.symbol, x, y - 5);
           
           // Draw atomic number
-          p.textSize(9); // Smaller text
+          p.textSize(10);
           p.textStyle(p.NORMAL);
           p.fill(50);
-          p.text(element.number, x, y - 16);
+          p.text(element.number, x, y - 20);
           
           // Draw atomic mass (except for elements with no stable isotopes)
           if (element.mass > 0) {
-            p.textSize(8); // Smaller text
-            p.text(element.mass.toFixed(1), x, y + 14);
+            p.textSize(9);
+            p.text(element.mass.toFixed(1), x, y + 15);
           }
         }
-      }
+      };
       
-      function drawElementDetails() {
+      const drawElementDetails = () => {
         if (!selectedElement) return;
         
         // Position for details panel - bottom of the screen
-        const containerHeight = containerRef.current?.clientHeight || 500;
-        let detailX = p.width/2 - 300;
-        let detailY = containerHeight - 160;
-        let detailWidth = 600;
-        let detailHeight = 140;
+        let detailX = p.width/2 - 400;
+        let detailY = p.height - 200;
+        let detailWidth = 800;
+        let detailHeight = 180;
+        
+        // Adjust for smaller screens
+        if (p.width < 900) {
+          detailX = p.width/2 - p.width * 0.45;
+          detailWidth = p.width * 0.9;
+          detailHeight = 120;
+        }
         
         // Draw details background
         p.fill(40, 40, 60, 230);
@@ -216,49 +247,43 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
         // Element name
         p.fill(255);
         p.textAlign(p.CENTER, p.TOP);
-        p.textSize(24);
+        p.textSize(28);
         p.textStyle(p.BOLD);
-        p.text(selectedElement.name, p.width/2, detailY + 15);
+        p.text(selectedElement.name, p.width/2, detailY + 20);
         
         // Category label
-        p.textSize(12);
+        p.textSize(14);
         p.textStyle(p.ITALIC);
         p.fill(categoryColors[selectedElement.category]);
-        p.text(selectedElement.category, p.width/2, detailY + 42);
+        p.text(selectedElement.category, p.width/2, detailY + 50);
         
         // Draw properties in two columns
         p.fill(255);
         p.textAlign(p.LEFT, p.TOP);
         p.textStyle(p.NORMAL);
-        p.textSize(14);
+        p.textSize(16);
         
         // Left column
-        let leftColX = detailX + 20;
-        let infoY = detailY + 65;
-        let infoSpacing = 18;
+        let leftColX = detailX + 30;
+        let infoY = detailY + 75;
+        let infoSpacing = 22;
         
         p.text(`Atomic Number: ${selectedElement.number}`, leftColX, infoY);
         p.text(`Atomic Mass: ${selectedElement.mass} u`, leftColX, infoY + infoSpacing);
-        p.text(`Electron Config: ${selectedElement.electronConfig}`, leftColX, infoY + infoSpacing * 2);
         
         // Right column
-        let rightColX = p.width/2 + 30;
+        let rightColX = p.width/2 + 50;
         
-        p.text(`Group: ${selectedElement.group}`, rightColX, infoY);
-        p.text(`Period: ${selectedElement.period}`, rightColX, infoY + infoSpacing);
-        p.text(`Block: ${selectedElement.block}`, rightColX, infoY + infoSpacing * 2);
+        p.text(`Electron Config: ${selectedElement.electronConfig}`, rightColX, infoY);
         
         // Reset text alignment
         p.textAlign(p.CENTER, p.CENTER);
-      }
+      };
       
-      function drawAtomAnimation(x: number, y: number, element: any) {
+      const drawAtomAnimation = (x: number, y: number, element: any) => {
         // Get electron configuration for animation
         let electronShells = getElectronShells(element.number);
         let maxShellRadius = 50 + (electronShells.length - 1) * 40;
-        
-        // Scale to fit different screen sizes
-        const scale = Math.min(p.width, p.height) / 800;
         
         // Draw electron shells (orbits)
         p.noFill();
@@ -267,12 +292,12 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
             // Draw shell orbit
             p.stroke(100, 100, 255, 150 - i * 15);
             p.strokeWeight(1);
-            p.ellipse(x, y, (80 + i * 60) * scale, (80 + i * 60) * scale);
+            p.ellipse(x, y, 100 + i * 80, 100 + i * 80);
           }
         }
         
         // Draw nucleus
-        let nucleusSize = Math.min(16 + element.number/10, 30) * scale;
+        let nucleusSize = p.min(20 + element.number/10, 40);
         
         // Nucleus glow effect
         for (let i = 3; i > 0; i--) {
@@ -299,7 +324,7 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
         let totalElectrons = 0;
         for (let shell = 0; shell < electronShells.length; shell++) {
           let electronsInShell = electronShells[shell];
-          let shellRadius = (40 + shell * 30) * scale;
+          let shellRadius = 50 + shell * 40;
           
           for (let e = 0; e < electronsInShell; e++) {
             let electronId = totalElectrons + e;
@@ -315,82 +340,77 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
             // Draw electron glow
             for (let i = 2; i > 0; i--) {
               p.fill(100, 200, 255, 50 - i * 15);
-              p.ellipse(x + offsetX, y + offsetY, (6 + i * 2) * scale, (6 + i * 2) * scale);
+              p.ellipse(x + offsetX, y + offsetY, 8 + i * 2, 8 + i * 2);
             }
             
             // Draw electron
             p.fill(100, 200, 255);
-            p.ellipse(x + offsetX, y + offsetY, 5 * scale, 5 * scale);
+            p.ellipse(x + offsetX, y + offsetY, 7, 7);
           }
           
           totalElectrons += electronsInShell;
         }
         
         // Label for shells
-        p.textSize(10 * scale);
+        p.textSize(12);
         p.fill(200);
         for (let i = 0; i < electronShells.length; i++) {
           if (electronShells[i] > 0) {
             let shellLabels = ["K", "L", "M", "N", "O", "P", "Q"];
             let labelAngle = p.PI/4;
-            let labelX = x + ((40 + i * 30) * scale) * p.cos(labelAngle);
-            let labelY = y + ((40 + i * 30) * scale) * p.sin(labelAngle);
+            let labelX = x + (50 + i * 40) * p.cos(labelAngle);
+            let labelY = y + (50 + i * 40) * p.sin(labelAngle);
             p.text(shellLabels[i], labelX, labelY);
           }
         }
         
         // Show valence electrons count
-        p.textSize(14 * scale);
+        p.textSize(14);
         p.fill(255);
         if (element.group >= 1 && element.group <= 18) {
           let valence = getValenceElectrons(element);
-          p.text(`Valence electrons: ${valence}`, x, y + maxShellRadius * scale + 30 * scale);
+          p.text(`Valence electrons: ${valence}`, x, y + maxShellRadius + 30);
         }
         
         // Update electron animations
         updateElectronAnimations();
-      }
+      };
       
-      function drawCategoryLegend() {
-        const scale = Math.min(p.width, p.height) / 800;
+      const drawCategoryLegend = () => {
         let legendX = 20;
-        let legendY = 80;
-        let legendSpacing = 20 * scale;
+        let legendY = 100;
+        let legendSpacing = 25;
         
         p.textAlign(p.LEFT, p.CENTER);
-        p.textSize(10 * scale);
+        p.textSize(12);
         
         p.fill(255);
         p.textStyle(p.BOLD);
-        p.text("ELEMENT CATEGORIES", legendX, legendY - 15);
+        p.text("ELEMENT CATEGORIES", legendX, legendY - 20);
         
         p.textStyle(p.NORMAL);
         let index = 0;
-        
-        // Only draw a few categories to save space
-        const categoriesToShow = ["Alkali Metal", "Noble Gas", "Nonmetal", "Transition Metal"];
-        
-        for (let category of categoriesToShow) {
+        for (let category in categoryColors) {
           let y = legendY + index * legendSpacing;
           
           // Draw color square
           p.fill(categoryColors[category]);
           p.stroke(100);
           p.strokeWeight(0.5);
-          p.rect(legendX, y - 5, 10, 10);
+          p.rect(legendX, y - 6, 12, 12);
           
           // Draw category name
           p.noStroke();
           p.fill(200);
-          p.text(category, legendX + 15, y);
+          p.text(category, legendX + 20, y);
           
           index++;
         }
         
         p.textAlign(p.CENTER, p.CENTER);
-      }
+      };
       
-      function getValenceElectrons(element: any) {
+      const getValenceElectrons = (element: any) => {
         if (element.block === "s" || element.block === "p") {
           if (element.group === 1) return 1;
           else if (element.group === 2) return 2;
@@ -402,18 +422,19 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
         }
         
         return "-";
-      }
+      };
       
-      function updateElectronAnimations() {
+      const updateElectronAnimations = () => {
         for (let i = 0; i < electronOrbitals.length; i++) {
           electronOrbitals[i].angle += electronOrbitals[i].speed;
           if (electronOrbitals[i].angle > p.TWO_PI) {
             electronOrbitals[i].angle -= p.TWO_PI;
           }
         }
-      }
+      };
       
-      function setupElectronOrbitals() {
+      const setupElectronOrbitals = () => {
+        electronOrbitals = [];
         for (let i = 0; i < 20; i++) {
           let shellNum = Math.floor(i / 8) + 1;
           let speedVariation = p.map(shellNum, 1, 3, 1.5, 0.5);
@@ -423,9 +444,9 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
             speed: electronSpeed * speedVariation * p.random(0.8, 1.2)
           });
         }
-      }
+      };
       
-      function getElectronShells(atomicNumber: number) {
+      const getElectronShells = (atomicNumber: number) => {
         let shells = [0, 0, 0, 0, 0, 0, 0];
         let remaining = atomicNumber;
         let shellCapacity = [2, 8, 18, 32, 32, 18, 8];
@@ -437,9 +458,9 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
         }
         
         return shells;
-      }
+      };
       
-      function setupCategoryColors() {
+      const setupCategoryColors = () => {
         categoryColors = {
           "Alkali Metal": p.color(255, 102, 102, 200),
           "Alkaline Earth Metal": p.color(255, 191, 102, 200),
@@ -450,40 +471,9 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
           "Halogen": p.color(191, 102, 255, 200),
           "Noble Gas": p.color(217, 102, 255, 200)
         };
-      }
-      
-      p.mousePressed = () => {
-        // Check if clicked on an element
-        const centerX = p.width/2;
-        const centerY = p.height/2;
-        const radius = Math.min(p.width, p.height) * 0.35;
-        
-        let clickedOnElement = false;
-        
-        for (let i = 0; i < elements.length; i++) {
-          const angle = p.map(i, 0, elements.length, -p.PI/4, p.TWO_PI-p.PI/4);
-          const x = centerX + p.cos(angle) * radius;
-          const y = centerY + p.sin(angle) * radius;
-          
-          if (p.dist(p.mouseX, p.mouseY, x, y) < cellSize/2) {
-            selectedElement = elements[i];
-            clickedOnElement = true;
-            break;
-          }
-        }
-        
-        // If clicked outside elements, deselect current element
-        if (!clickedOnElement) {
-          selectedElement = null;
-        }
       };
       
-      p.windowResized = () => {
-        if (!containerRef.current) return;
-        p.resizeCanvas(containerRef.current.clientWidth, containerRef.current.clientHeight);
-      };
-      
-      function loadElementData() {
+      const loadElementData = () => {
         // Complete element data for the 20 selected elements
         const allElements = [
           // Period 1
@@ -525,22 +515,51 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({ className
             elements.push(element);
           }
         }
+      };
+      
+      p.mousePressed = () => {
+        if (!isActive) return;
+        
+        // Check if clicked on an element
+        const centerX = p.width/2;
+        const centerY = p.height/2;
+        const radius = p.min(p.width, p.height) * 0.38;
+        
+        let clickedOnElement = false;
+        
+        for (let i = 0; i < elements.length; i++) {
+          const angle = p.map(i, 0, elements.length, -p.PI/4, p.TWO_PI-p.PI/4);
+          const x = centerX + p.cos(angle) * radius;
+          const y = centerY + p.sin(angle) * radius;
+          
+          if (p.dist(p.mouseX, p.mouseY, x, y) < cellSize/2) {
+            selectedElement = elements[i];
+            clickedOnElement = true;
+            break;
+          }
+        }
+        
+        // If clicked outside elements, deselect current element
+        if (!clickedOnElement) {
+          selectedElement = null;
+        }
+      };
+    };
+    
+    canvasRef.current = new p5(sketch, containerRef.current);
+    
+    return () => {
+      if (canvasRef.current) {
+        canvasRef.current.remove();
       }
     };
-
-    // Create new p5 instance
-    const p5Instance = new p5(sketch, containerRef.current);
-
-    // Cleanup on unmount
-    return () => {
-      p5Instance.remove();
-    };
-  }, []);
-
+  }, [highlightedElement, isActive]);
+  
   return (
-    <div className={`w-full h-full ${className}`}>
-      <div ref={containerRef} className="w-full h-full"></div>
-    </div>
+    <div 
+      ref={containerRef} 
+      className="w-full h-full"
+    />
   );
 };
 
