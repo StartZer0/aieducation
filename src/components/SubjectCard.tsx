@@ -2,6 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
 
 export interface SubjectCardProps {
   id: string;
@@ -41,8 +42,20 @@ const SubjectCard = ({ id, title, icon, color, progress, lessons, completedLesso
             style={{ 
               width: `${progress}%`,
               background: `linear-gradient(to right, var(--color-start), var(--color-end))`,
-              '--color-start': color.includes('blue') ? '#4a6cfa' : color.includes('teal') ? '#00c4cc' : color.includes('amber') ? '#fbbf24' : color.includes('emerald') ? '#34d399' : color.includes('rose') ? '#fb7185' : color.includes('violet') ? '#8b5cf6' : '#4a6cfa',
-              '--color-end': color.includes('blue') ? '#818cf8' : color.includes('teal') ? '#2dd4bf' : color.includes('amber') ? '#fcd34d' : color.includes('emerald') ? '#6ee7b7' : color.includes('rose') ? '#fda4af' : color.includes('violet') ? '#a78bfa' : '#818cf8',
+              '--color-start': color.includes('blue') ? '#4a6cfa' : 
+                              color.includes('teal') ? '#00c4cc' : 
+                              color.includes('purple') ? '#8b5cf6' : 
+                              color.includes('red') ? '#ef4444' : 
+                              color.includes('amber') ? '#f59e0b' : 
+                              color.includes('green') ? '#10b981' : 
+                              '#4a6cfa',
+              '--color-end': color.includes('blue') ? '#818cf8' : 
+                            color.includes('teal') ? '#2dd4bf' : 
+                            color.includes('purple') ? '#a78bfa' : 
+                            color.includes('red') ? '#f87171' : 
+                            color.includes('amber') ? '#fbbf24' : 
+                            color.includes('green') ? '#34d399' : 
+                            '#818cf8',
             } as React.CSSProperties}
           ></div>
         </div>

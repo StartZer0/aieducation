@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, User, ChartLine, FileText } from 'lucide-react';
+import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, ChartLine, FileText, Calculator, School } from 'lucide-react';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -23,13 +22,12 @@ const Header = () => {
 
   const navLinks = [
     { path: '/', label: 'Home', icon: <Book className="w-5 h-5 mr-2" /> },
-    { path: '/dashboard', label: 'Subjects', icon: <GraduationCap className="w-5 h-5 mr-2" /> },
-    { path: '/analytics', label: 'Analytics', icon: <BarChart className="w-5 h-5 mr-2" /> },
-    { path: '/schedule', label: 'Schedule', icon: <Calendar className="w-5 h-5 mr-2" /> },
-    { path: '/chat', label: 'AI Tutor', icon: <MessageCircle className="w-5 h-5 mr-2" /> },
-    { path: '/test-chats', label: 'Test Chats', icon: <ChartLine className="w-5 h-5 mr-2" /> },
-    { path: '/test-chats2', label: 'Test Chats 2', icon: <ChartLine className="w-5 h-5 mr-2" /> },
-    { path: '/essay-analysis', label: 'Essay Analysis', icon: <FileText className="w-5 h-5 mr-2" /> },
+    { path: '/dashboard', label: 'My Subjects', icon: <GraduationCap className="w-5 h-5 mr-2" /> },
+    { path: '/analytics', label: 'Learning Analytics', icon: <BarChart className="w-5 h-5 mr-2" /> },
+    { path: '/schedule', label: 'Study Schedule', icon: <Calendar className="w-5 h-5 mr-2" /> },
+    { path: '/ai-tutor', label: 'AI Tutor', icon: <MessageCircle className="w-5 h-5 mr-2" /> },
+    { path: '/explain-to-me', label: 'Concept Explainer', icon: <School className="w-5 h-5 mr-2" /> },
+    { path: '/essay-analysis', label: 'Essay Feedback', icon: <FileText className="w-5 h-5 mr-2" /> },
   ];
 
   const isActive = (path: string) => location.pathname === path;

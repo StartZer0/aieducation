@@ -1,63 +1,63 @@
 
 import React from 'react';
 import SubjectCard, { SubjectCardProps } from './SubjectCard';
-import { BookOpen, FlaskConical, PenTool, GraduationCap, Globe, Laptop } from 'lucide-react';
+import { Calculator, FlaskConical, BookText, LandmarkIcon, Globe, Code } from 'lucide-react';
 
 const SubjectGrid = () => {
   const subjects: SubjectCardProps[] = [
     {
       id: 'mathematics',
       title: 'Mathematics',
-      icon: <BookOpen className="w-6 h-6 text-white" />,
-      color: 'bg-blue',
-      progress: 68,
+      icon: <Calculator className="w-6 h-6 text-white" />,
+      color: 'bg-blue-500',
+      progress: 45,
       lessons: 42,
-      completedLessons: 28,
+      completedLessons: 19,
     },
     {
       id: 'science',
       title: 'Science',
       icon: <FlaskConical className="w-6 h-6 text-white" />,
-      color: 'bg-teal',
-      progress: 45,
+      color: 'bg-teal-500',
+      progress: 65,
       lessons: 38,
-      completedLessons: 17,
+      completedLessons: 25,
     },
     {
       id: 'english',
       title: 'English',
-      icon: <PenTool className="w-6 h-6 text-white" />,
-      color: 'bg-amber-500',
-      progress: 92,
+      icon: <BookText className="w-6 h-6 text-white" />,
+      color: 'bg-purple-500',
+      progress: 30,
       lessons: 26,
-      completedLessons: 24,
+      completedLessons: 8,
     },
     {
       id: 'history',
       title: 'History',
-      icon: <GraduationCap className="w-6 h-6 text-white" />,
-      color: 'bg-rose-500',
-      progress: 32,
+      icon: <LandmarkIcon className="w-6 h-6 text-white" />,
+      color: 'bg-red-500',
+      progress: 20,
       lessons: 36,
-      completedLessons: 11,
+      completedLessons: 7,
     },
     {
       id: 'geography',
       title: 'Geography',
       icon: <Globe className="w-6 h-6 text-white" />,
-      color: 'bg-emerald-500',
-      progress: 18,
+      color: 'bg-amber-500',
+      progress: 15,
       lessons: 32,
-      completedLessons: 6,
+      completedLessons: 5,
     },
     {
       id: 'computer-science',
       title: 'Computer Science',
-      icon: <Laptop className="w-6 h-6 text-white" />,
-      color: 'bg-violet-500',
-      progress: 75,
+      icon: <Code className="w-6 h-6 text-white" />,
+      color: 'bg-green-500',
+      progress: 40,
       lessons: 40,
-      completedLessons: 30,
+      completedLessons: 16,
     },
   ];
 
