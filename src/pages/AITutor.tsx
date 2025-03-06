@@ -186,7 +186,7 @@ export default function AITutor() {
         </div>
         
         {/* Main Content Area - 3/4 width on desktop */}
-        <div className="lg:col-span-3 flex flex-col gap-4">
+        <div className="lg:col-span-3 flex flex-col gap-4 mt-16">
           {/* Tabs and visualizer */}
           <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
             <div className="flex items-center justify-between p-4 border-b">
