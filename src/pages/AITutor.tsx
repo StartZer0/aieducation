@@ -159,37 +159,68 @@ export default function AITutor() {
   };
 
   // Element info for the selected element or current stage element
-  // Handle element selection
+  // Handle element selection with expanded properties
   const handleElementSelect = (element) => {
     console.log("Element selected:", element);
     
     // If we don't receive proper element data, create default data based on the element symbol
     if (!element || !element.name) {
-      // Default data for common elements
+      // Default data for common elements with expanded properties
       const defaultData = {
+        Li: {
+          name: "Lithium",
+          symbol: "Li",
+          atomicNumber: 3,
+          atomicMass: "6.94",
+          electronConfig: "1s² 2s¹",
+          valenceElectrons: 1,
+          reactivity: "High with water",
+          category: "Alkali Metal",
+          compounds: ["LiOH", "Li₂O", "LiCl"]
+        },
         O: {
           name: "Oxygen",
           symbol: "O",
           atomicNumber: 8,
+          atomicMass: "16.0",
           electronConfig: "1s² 2s² 2p⁴",
           valenceElectrons: 6,
-          reactivity: "High with metals"
+          reactivity: "High with metals",
+          category: "Nonmetal",
+          compounds: ["H₂O", "CO₂", "Metal Oxides"]
         },
         F: {
           name: "Fluorine",
           symbol: "F",
           atomicNumber: 9,
+          atomicMass: "19.0",
           electronConfig: "1s² 2s² 2p⁵",
           valenceElectrons: 7,
-          reactivity: "Very high"
+          reactivity: "Very high",
+          category: "Halogen",
+          compounds: ["HF", "F₂", "Metal Fluorides"]
         },
-        H: {
-          name: "Hydrogen",
-          symbol: "H",
-          atomicNumber: 1,
-          electronConfig: "1s¹",
+        Na: {
+          name: "Sodium",
+          symbol: "Na",
+          atomicNumber: 11,
+          atomicMass: "23.0",
+          electronConfig: "1s² 2s² 2p⁶ 3s¹",
           valenceElectrons: 1,
-          reactivity: "High"
+          reactivity: "High with water",
+          category: "Alkali Metal",
+          compounds: ["NaCl", "Na₂O", "NaOH"]
+        },
+        Mg: {
+          name: "Magnesium",
+          symbol: "Mg",
+          atomicNumber: 12,
+          atomicMass: "24.3",
+          electronConfig: "1s² 2s² 2p⁶ 3s²",
+          valenceElectrons: 2,
+          reactivity: "Moderate",
+          category: "Alkaline Earth Metal",
+          compounds: ["MgO", "MgCl₂", "MgSO₄"]
         }
       };
       
@@ -201,9 +232,12 @@ export default function AITutor() {
         name: symbol,
         symbol: symbol,
         atomicNumber: "?",
+        atomicMass: "?",
         electronConfig: "?",
         valenceElectrons: "?",
-        reactivity: "?"
+        reactivity: "?",
+        category: "Element",
+        compounds: []
       });
     } else {
       // If we have proper element data, use it
@@ -284,10 +318,10 @@ export default function AITutor() {
               </Tabs>
             </div>
             
-            {/* Taller visualization container with space for explanations at bottom */}
+            {/* Taller visualization container with better space utilization */}
             <div className="h-[600px] relative bg-gray-900 flex flex-col">
-              {/* Main visualizer area */}
-              <div className="flex-grow relative">
+              {/* Main visualizer area with improved spacing */}
+              <div className="h-2/3 relative">
                 <div 
                   className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
                 >
@@ -298,39 +332,53 @@ export default function AITutor() {
                     isVisible={isVisualizerVisible}
                     activeView={visualizerTab}
                     elementSize="md" 
-                    spacing="normal"
+                    spacing="wide"
+                    gridLayout={true}
+                    showPeriodLabels={true}
+                    showGroupLabels={true}
                     onElementSelect={handleElementSelect}
                   />
                 </div>
               </div>
               
-              {/* Explanation area at bottom - appears when an element is clicked */}
-              <div className="h-32 bg-gray-800 p-4 overflow-auto">
+              {/* Expanded explanation area at bottom - larger and more informative */}
+              <div className="h-1/3 bg-gray-800 p-6 overflow-auto">
                 {selectedElement ? (
-                  <div className="text-white">
-                    <h3 className="text-xl font-bold mb-2">{selectedElement.name || "?"} ({selectedElement.symbol || "?"})</h3>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <p className="text-gray-400">Atomic Number</p>
-                        <p className="font-medium">{selectedElement.atomicNumber || "?"}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-400">Electron Configuration</p>
-                        <p className="font-medium">{selectedElement.electronConfig || "?"}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-400">Valence Electrons</p>
-                        <p className="font-medium">{selectedElement.valenceElectrons || "?"}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-400">Reactivity</p>
-                        <p className="font-medium">{selectedElement.reactivity || "?"}</p>
-                      </div>
+                  <div className="text-white grid grid-cols-2 gap-x-8 gap-y-4">
+                    <div className="col-span-2">
+                      <h3 className="text-2xl font-bold mb-1">{selectedElement.name || "?"} ({selectedElement.symbol || "?"})</h3>
+                      <p className="text-blue-300 mb-2">{selectedElement.category || "Element"}</p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-gray-400 text-sm">Atomic Number</p>
+                      <p className="font-medium text-lg">{selectedElement.atomicNumber || "?"}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Atomic Mass</p>
+                      <p className="font-medium text-lg">{selectedElement.atomicMass || "?"} u</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Electron Configuration</p>
+                      <p className="font-medium text-lg">{selectedElement.electronConfig || "?"}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Valence Electrons</p>
+                      <p className="font-medium text-lg">{selectedElement.valenceElectrons || "?"}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Reactivity</p>
+                      <p className="font-medium text-lg">{selectedElement.reactivity || "?"}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400 text-sm">Common Compounds</p>
+                      <p className="font-medium">{selectedElement.compounds ? selectedElement.compounds.join(", ") : "?"}</p>
                     </div>
                   </div>
                 ) : (
-                  <div className="text-gray-400 text-center h-full flex items-center justify-center">
-                    <p>Click on an element to view its details</p>
+                  <div className="text-gray-400 text-center h-full flex flex-col items-center justify-center">
+                    <p className="text-xl mb-3">Click on an element to view its details</p>
+                    <p className="text-sm max-w-md">Elements are arranged according to their position in the periodic table, showing their relationships and properties</p>
                   </div>
                 )}
               </div>
