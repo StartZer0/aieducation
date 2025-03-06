@@ -235,23 +235,30 @@ export default function AITutor() {
               </Tabs>
             </div>
             
-            {/* Further increased height visualization container to fill available space */}
+            {/* Container with space for explanations */}
             <div className="h-[700px] relative bg-gray-900">
               <div 
                 className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
               >
-                <InteractiveElementVisualizer 
-                  currentStage={currentStage} 
-                  progress={progressPercentage}
-                  currentTime={currentTime}
-                  isVisible={isVisualizerVisible}
-                  activeView={visualizerTab}
-                  elementSize="lg"
-                  spacing="wide"
-                  showExplanationBelow={true}
-                  showInfoOnHover={true}
-                  hideAnimationText={true}
-                />
+                {/* Added container with padding to create space for explanations */}
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="relative w-4/5 h-4/5">
+                    {/* Visualizer positioned to maintain original size but with space for explanations */}
+                    <InteractiveElementVisualizer 
+                      currentStage={currentStage} 
+                      progress={progressPercentage}
+                      currentTime={currentTime}
+                      isVisible={isVisualizerVisible}
+                      activeView={visualizerTab}
+                      elementSize="md"
+                      spacing="normal"
+                      explanationPadding={true}
+                      showExplanationsAdjacent={true}
+                      showInfoOnHover={true}
+                      hideAnimationText={true}
+                    />
+                  </div>
+                </div>
               </div>
               
               {!isVisualizerVisible && (
