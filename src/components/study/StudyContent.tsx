@@ -191,7 +191,7 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
         </li>
         <li className="flex items-start">
           <span className="mr-2 text-blue-500">•</span>
-          <span>The graph of a quadratic function is a parabola, opening upward when a {'>'} 0 and downward when a {'<'} 0.</span>
+          <span>The graph of a quadratic function is a parabola, opening upward when a {`>`} 0 and downward when a {`<`} 0.</span>
         </li>
         <li className="flex items-start">
           <span className="mr-2 text-blue-500">•</span>
