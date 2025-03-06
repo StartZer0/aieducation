@@ -149,7 +149,7 @@ export default function AITutor() {
       
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Left sidebar: Avatar and controls - 1/4 width on desktop */}
-        <div className="lg:col-span-1 flex flex-col gap-4">
+        <div className="lg:col-span-1 flex flex-col gap-4 mt-20">
           <div className="bg-white rounded-xl shadow-md border border-gray-100 h-[350px] overflow-hidden">
             <div className="p-3 bg-blue-50 border-b border-blue-100 flex items-center">
               <HelpCircle className="h-4 w-4 mr-2 text-blue-600" />
