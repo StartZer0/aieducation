@@ -235,8 +235,8 @@ export default function AITutor() {
               </Tabs>
             </div>
             
-            {/* Increased height visualization container to accommodate element explanations below */}
-            <div className="h-[600px] relative bg-gray-900">
+            {/* Further increased height visualization container to fill available space */}
+            <div className="h-[700px] relative bg-gray-900">
               <div 
                 className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
               >
@@ -246,9 +246,11 @@ export default function AITutor() {
                   currentTime={currentTime}
                   isVisible={isVisualizerVisible}
                   activeView={visualizerTab}
-                  elementSize="md"
-                  spacing="wide" // Changed from "normal" to "wide" to allow more space for explanations
-                  showExplanationBelow={true} // Added new prop to display explanations below the table
+                  elementSize="lg"
+                  spacing="wide"
+                  showExplanationBelow={true}
+                  showInfoOnHover={true}
+                  hideAnimationText={true}
                 />
               </div>
               
@@ -272,41 +274,7 @@ export default function AITutor() {
               )}
             </div>
           </div>
-          
-          {/* Element info panel with data from current stage/element - single source of truth */}
-          <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
-            <div className="flex items-center mb-3">
-              <Info className="h-4 w-4 mr-2 text-blue-500" />
-              <h3 className="text-sm font-medium">Element Information</h3>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <p className="text-xs text-gray-500">Valence Electrons</p>
-                <p className="text-base font-medium text-blue-600">
-                  {currentStage >= 2 ? "6" : "7"} {/* Show Oxygen (6) during demo, otherwise Fluorine (7) */}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Electronegativity</p>
-                <p className="text-base font-medium text-blue-600">
-                  {currentStage >= 2 ? "3.44" : "3.98"}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Reactivity</p>
-                <p className="text-base font-medium text-blue-600">
-                  {currentStage >= 2 ? "High with metals" : "Very high"}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Common Compounds</p>
-                <p className="text-base font-medium">
-                  {currentStage >= 2 ? "H₂O, CO₂, Metal Oxides" : "HF, F₂, Metal Fluorides"}
-                </p>
-              </div>
-            </div>
-          </div>
+          {/* Element info panel removed as requested - info will be shown on hover instead */}
         </div>
       </div>
     </div>
