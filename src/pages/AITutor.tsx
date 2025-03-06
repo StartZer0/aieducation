@@ -235,8 +235,8 @@ export default function AITutor() {
               </Tabs>
             </div>
             
-            {/* Reduced height visualization container */}
-            <div className="h-[250px] relative bg-gray-900">
+            {/* Full-height visualization container */}
+            <div className="h-[450px] relative bg-gray-900">
               <div 
                 className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
               >
@@ -246,8 +246,8 @@ export default function AITutor() {
                   currentTime={currentTime}
                   isVisible={isVisualizerVisible}
                   activeView={visualizerTab}
-                  elementSize="sm" // Add a prop to make elements smaller
-                  spacing="compact" // Add a prop to reduce spacing between elements
+                  elementSize="md" // Increased size now that we have more space
+                  spacing="normal" // Normal spacing for better readability
                 />
               </div>
               
@@ -270,56 +270,42 @@ export default function AITutor() {
                 </div>
               )}
             </div>
+          </div>
+          
+          {/* Element info panel with data from current stage/element - single source of truth */}
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
+            <div className="flex items-center mb-3">
+              <Info className="h-4 w-4 mr-2 text-blue-500" />
+              <h3 className="text-sm font-medium">Element Information</h3>
+            </div>
             
-            {/* Element information box - moved outside the visualization */}
-            <div className="bg-white p-4 border-t border-gray-100">
-              <div className="flex items-center mb-2">
-                <Info className="h-4 w-4 mr-2 text-blue-500" />
-                <h3 className="text-sm font-medium">Element Information</h3>
+            <div className="grid grid-cols-2 gap-6">
+              <div>
+                <p className="text-xs text-gray-500">Valence Electrons</p>
+                <p className="text-base font-medium text-blue-600">
+                  {currentStage >= 2 ? "6" : "7"} {/* Show Oxygen (6) during demo, otherwise Fluorine (7) */}
+                </p>
               </div>
-              
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-x-6 gap-y-2">
-                <div>
-                  <p className="text-xs text-gray-500">Name</p>
-                  <p className="text-sm font-medium">{elementInfo.name}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Symbol</p>
-                  <p className="text-sm font-medium">{elementInfo.symbol}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Atomic Number</p>
-                  <p className="text-sm font-medium">{elementInfo.atomicNumber}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Atomic Mass</p>
-                  <p className="text-sm font-medium">{elementInfo.atomicMass}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Category</p>
-                  <p className="text-sm font-medium">{elementInfo.category}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Electron Configuration</p>
-                  <p className="text-sm font-medium">{elementInfo.electronConfig}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Valence Electrons</p>
-                  <p className="text-sm font-medium">{elementInfo.valenceElectrons}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Electronegativity</p>
-                  <p className="text-sm font-medium">{elementInfo.electronegativity}</p>
-                </div>
+              <div>
+                <p className="text-xs text-gray-500">Electronegativity</p>
+                <p className="text-base font-medium text-blue-600">
+                  {currentStage >= 2 ? "3.44" : "3.98"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Reactivity</p>
+                <p className="text-base font-medium text-blue-600">
+                  {currentStage >= 2 ? "High with metals" : "Very high"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Common Compounds</p>
+                <p className="text-base font-medium">
+                  {currentStage >= 2 ? "H₂O, CO₂, Metal Oxides" : "HF, F₂, Metal Fluorides"}
+                </p>
               </div>
             </div>
           </div>
-          
-          {/* Element info panel at the bottom with improved spacing */}
-          <TutorInfoPanel 
-            stageInfo={getStageInfo()} 
-            className="transition-all duration-500 bg-white rounded-xl shadow-md border border-gray-100 p-4" 
-          />
         </div>
       </div>
     </div>
