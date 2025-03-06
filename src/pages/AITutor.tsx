@@ -274,7 +274,7 @@ export default function AITutor() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border-b">
               <div className="flex items-center mb-3 sm:mb-0">
                 <Atom className="h-5 w-5 mr-2 text-blue-500" />
-                <h2 className="font-medium">Interactive Visualization</h2>
+                <h2 className="font-medium">Visualization</h2>
               </div>
               
               <Tabs 
@@ -369,16 +369,12 @@ export default function AITutor() {
                 <div className="w-full h-full flex items-center justify-center">
                   <div className="text-center max-w-md p-6 bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl text-white">
                     <Atom className="h-16 w-16 mx-auto mb-4 text-blue-400" />
-                    <p className="text-lg font-medium mb-2">Interactive Chemistry Learning</p>
-                    <p className="text-sm text-gray-300 mb-4">
-                      Click the "Ask Question" button to learn about the electron configuration of oxygen
-                    </p>
                     <Button 
                       onClick={askQuestion} 
                       variant="outline" 
                       className="border-blue-500 text-blue-400 hover:bg-blue-900 hover:bg-opacity-30"
                     >
-                      Start Demo
+                      Ask Question
                     </Button>
                   </div>
                 </div>
