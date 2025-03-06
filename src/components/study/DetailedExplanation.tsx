@@ -1,7 +1,9 @@
-import React from 'react';
-import { ArrowLeft, CheckCircle, X } from 'lucide-react';
+
+import React, { useState } from 'react';
+import { ArrowLeft, ThumbsUp, ThumbsDown, X } from 'lucide-react';
 import { Button } from '../ui/button';
 import { InteractiveFunctionGraph } from './InteractiveFunctionGraph';
+import { useToast } from '@/hooks/use-toast';
 
 interface DetailedExplanationProps {
   title: string;
@@ -12,8 +14,25 @@ interface DetailedExplanationProps {
 }
 
 export function DetailedExplanation({ title, onBack, term, content, onClose }: DetailedExplanationProps) {
+  const { toast } = useToast();
+  const [feedbackGiven, setFeedbackGiven] = useState(false);
+  
   // Use onClose if provided, otherwise fallback to onBack
   const handleClose = onClose || onBack;
+
+  const handleFeedback = (isPositive: boolean) => {
+    if (feedbackGiven) return;
+    
+    setFeedbackGiven(true);
+    toast({
+      title: "Thanks for your feedback!",
+      description: isPositive 
+        ? "We're glad you found this explanation helpful." 
+        : "We'll work on improving this explanation.",
+      variant: "default",
+      className: isPositive ? "bg-green-50 border-green-200" : "bg-blue-50 border-blue-200",
+    });
+  };
 
   // Custom HTML content for specific terms
   const renderContentForTerm = () => {
@@ -340,9 +359,9 @@ export function DetailedExplanation({ title, onBack, term, content, onClose }: D
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-background flex flex-col overflow-hidden">
+    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex flex-col overflow-hidden">
       {/* Header */}
-      <div className="p-4 border-b flex items-center justify-between">
+      <div className="p-4 border-b flex items-center justify-between bg-white/95 dark:bg-background/95">
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" onClick={onBack}>
             <ArrowLeft className="h-4 w-4" />
@@ -355,23 +374,39 @@ export function DetailedExplanation({ title, onBack, term, content, onClose }: D
       </div>
       
       {/* Content with scrolling */}
-      <div className="flex-grow overflow-y-auto p-6">
-        <div className="max-w-3xl mx-auto space-y-6">
+      <div className="flex-grow overflow-y-auto bg-white/80 dark:bg-background/80">
+        <div className="max-w-3xl mx-auto py-6 px-8 bg-white dark:bg-background shadow-lg my-4 rounded-lg">
           {renderContentForTerm()}
         </div>
       </div>
       
       {/* Footer */}
-      <div className="p-4 border-t">
+      <div className="p-4 border-t bg-white/95 dark:bg-background/95">
         <div className="flex items-center justify-between">
           <Button variant="ghost" onClick={onBack}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to content
           </Button>
-          <Button className="flex items-center gap-2">
-            <CheckCircle className="h-4 w-4" />
-            Mark as complete
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button 
+              variant="outline"
+              className="flex items-center gap-2 text-green-600 hover:bg-green-50"
+              onClick={() => handleFeedback(true)}
+              disabled={feedbackGiven}
+            >
+              <ThumbsUp className="h-4 w-4" />
+              Helpful
+            </Button>
+            <Button 
+              variant="outline"
+              className="flex items-center gap-2 text-red-600 hover:bg-red-50"
+              onClick={() => handleFeedback(false)}
+              disabled={feedbackGiven}
+            >
+              <ThumbsDown className="h-4 w-4" />
+              Not helpful
+            </Button>
+          </div>
         </div>
       </div>
     </div>

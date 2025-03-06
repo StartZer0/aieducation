@@ -64,57 +64,81 @@ export function StudyNavigation({ subject, activeTopic, onNavigate }: StudyNavig
     }));
   };
   
+  // Get progress color for the topic (simulated for now)
+  const getProgressColor = (id: string) => {
+    // Simulate different progress states
+    const progressMapping: Record<string, { color: string, width: string }> = {
+      'linear-equations': { color: 'bg-green-400', width: 'w-full' },
+      'quadratic-functions': { color: 'bg-blue-400', width: 'w-2/3' },
+      'inequalities': { color: 'bg-orange-400', width: 'w-1/4' },
+      'functions-and-graphs': { color: 'bg-yellow-400', width: 'w-1/6' }
+    };
+    
+    return progressMapping[id] || { color: 'bg-gray-200', width: 'w-0' };
+  };
+  
   const isActive = (id: string) => {
     return id === activeTopic;
   };
   
   const renderTopics = (topics: Topic[], level = 0) => {
-    return topics.map(topic => (
-      <div key={topic.id} className="animate-fade-in" style={{ animationDuration: '0.2s' }}>
-        <div 
-          className={`flex items-center py-1.5 px-2 rounded-md ${
-            isActive(topic.id) ? 'bg-primary/10 text-primary' : 'hover:bg-muted'
-          }`}
-          onClick={() => onNavigate(`/study/${subject.id}/${topic.id}`)}
-        >
-          {topic.subtopics && topic.subtopics.length > 0 ? (
-            <button
-              className="p-1 mr-1 rounded hover:bg-muted"
-              onClick={(e) => toggleTopic(topic.id, e)}
+    return topics.map(topic => {
+      const progress = getProgressColor(topic.id);
+      
+      return (
+        <div key={topic.id} className="animate-fade-in" style={{ animationDuration: '0.2s' }}>
+          <div className="relative">
+            <div 
+              className={`flex items-center py-1.5 px-2 rounded-md ${
+                isActive(topic.id) ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 font-medium' : 'hover:bg-blue-50 dark:hover:bg-blue-900/20'
+              }`}
+              onClick={() => onNavigate(`/study/${subject.id}/${topic.id}`)}
             >
-              {expandedTopics[topic.id] ? (
-                <ChevronDown className="w-4 h-4 text-muted-foreground" />
+              {topic.subtopics && topic.subtopics.length > 0 ? (
+                <button
+                  className="p-1 mr-1 rounded hover:bg-muted"
+                  onClick={(e) => toggleTopic(topic.id, e)}
+                >
+                  {expandedTopics[topic.id] ? (
+                    <ChevronDown className="w-4 h-4 text-muted-foreground" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                  )}
+                </button>
               ) : (
-                <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                <span className="w-6"></span>
               )}
-            </button>
-          ) : (
-            <span className="w-6"></span>
-          )}
-          
-          <span 
-            className={`text-sm ${isActive(topic.id) ? 'font-medium' : ''}`}
-            style={{ marginLeft: `${level * 4}px` }}
-          >
-            {topic.title}
-          </span>
-        </div>
-        
-        {topic.subtopics && expandedTopics[topic.id] && (
-          <div className="ml-6 pl-2 border-l border-border/50 mt-1 mb-1">
-            {renderTopics(topic.subtopics, level + 1)}
+              
+              <span 
+                className={`text-sm ${isActive(topic.id) ? 'font-medium' : ''}`}
+                style={{ marginLeft: `${level * 4}px` }}
+              >
+                {topic.title}
+              </span>
+            </div>
+            
+            {/* Progress bar */}
+            <div className="h-1 bg-gray-100 dark:bg-gray-800 rounded-full mx-8 mt-1">
+              <div className={`h-full ${progress.color} rounded-full ${progress.width}`}></div>
+            </div>
           </div>
-        )}
-      </div>
-    ));
+          
+          {topic.subtopics && expandedTopics[topic.id] && (
+            <div className="ml-6 pl-2 border-l border-border/50 mt-1 mb-1">
+              {renderTopics(topic.subtopics, level + 1)}
+            </div>
+          )}
+        </div>
+      )
+    });
   };
   
   return (
     <div className="h-full flex flex-col overflow-hidden">
       <div className="p-4 border-b border-border">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-            <BookOpen className="w-4 h-4 text-primary-foreground" />
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center">
+            <BookOpen className="w-4 h-4 text-white" />
           </div>
           <h3 className="font-medium">{subject.title}</h3>
         </div>

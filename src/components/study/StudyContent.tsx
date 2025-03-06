@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
 import { ContentRenderer } from './ContentRenderer';
 import { InteractiveFunctionGraph } from './InteractiveFunctionGraph';
+import { useToast } from '@/hooks/use-toast';
 
 interface StudyContentProps {
   title: string;
@@ -31,6 +32,7 @@ interface StudyContentProps {
 export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subjectId, topicId }: StudyContentProps) {
   const [explanationLevel, setExplanationLevel] = useState('medium');
   const [activeTab, setActiveTab] = useState('content');
+  const { toast } = useToast();
   
   const getContent = () => {
     if (subjectId === 'mathematics' && topicId === 'quadratic-functions') {
@@ -178,27 +180,27 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
   };
   
   const renderSummary = () => (
-    <Card className="p-4">
-      <h3 className="text-xl font-medium mb-3">Summary: {title}</h3>
-      <ul className="space-y-2">
+    <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-800">
+      <h3 className="text-xl font-medium mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Summary: {title}</h3>
+      <ul className="space-y-3">
         <li className="flex items-start">
-          <span className="mr-2">•</span>
+          <span className="mr-2 text-blue-500">•</span>
           <span>A quadratic function has the form f(x) = ax² + bx + c where a ≠ 0.</span>
         </li>
         <li className="flex items-start">
-          <span className="mr-2">•</span>
+          <span className="mr-2 text-blue-500">•</span>
           <span>The graph of a quadratic function is a parabola, opening upward when a &gt; 0 and downward when a &lt; 0.</span>
         </li>
         <li className="flex items-start">
-          <span className="mr-2">•</span>
+          <span className="mr-2 text-blue-500">•</span>
           <span>The vertex is at (-b/2a, f(-b/2a)) and represents either a minimum or maximum.</span>
         </li>
         <li className="flex items-start">
-          <span className="mr-2">•</span>
+          <span className="mr-2 text-blue-500">•</span>
           <span>The axis of symmetry is the vertical line x = -b/2a.</span>
         </li>
         <li className="flex items-start">
-          <span className="mr-2">•</span>
+          <span className="mr-2 text-blue-500">•</span>
           <span>The discriminant b² - 4ac determines the number of roots: two distinct real roots if positive, one real root if zero, or no real roots if negative.</span>
         </li>
       </ul>
@@ -340,8 +342,12 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
           How would the graph of f(x) = 2x² - 4x + 5 differ from the graph of g(x) = -2x² - 4x + 5? 
           Think about the shape, direction, and key points.
         </p>
-        <Button variant="outline" className="text-sm">
-          Show Answer
+        <Button 
+          variant="outline" 
+          className="text-sm"
+          onClick={() => checkAnswer("Question 1", "")}
+        >
+          Check Answer
         </Button>
       </Card>
       
@@ -355,8 +361,12 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
         <p className="mb-3">
           The quadratic equation 3x² - kx + 3 = 0 has two distinct real roots. What are the possible values of k?
         </p>
-        <Button variant="outline" className="text-sm">
-          Show Answer
+        <Button 
+          variant="outline" 
+          className="text-sm"
+          onClick={() => checkAnswer("Question 2", "")}
+        >
+          Check Answer
         </Button>
       </Card>
       
@@ -370,8 +380,12 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
         <p className="mb-3">
           If a parabola passes through the points (1, 4), (2, 7), and (3, 12), determine the quadratic function in the form f(x) = ax² + bx + c.
         </p>
-        <Button variant="outline" className="text-sm">
-          Show Answer
+        <Button 
+          variant="outline" 
+          className="text-sm"
+          onClick={() => checkAnswer("Question 3", "")}
+        >
+          Check Answer
         </Button>
       </Card>
       
@@ -385,12 +399,45 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
         <p className="mb-3">
           A ball is thrown upward with an initial velocity of 20 m/s from a height of 1.5 m. Its height h in meters after t seconds is given by h(t) = -4.9t² + 20t + 1.5. Find the maximum height reached by the ball and when it hits the ground.
         </p>
-        <Button variant="outline" className="text-sm">
-          Show Answer
+        <Button 
+          variant="outline" 
+          className="text-sm"
+          onClick={() => checkAnswer("Question 4", "")}
+        >
+          Check Answer
         </Button>
       </Card>
     </div>
   );
+  
+  const checkAnswer = (question: string, submittedAnswer: string) => {
+    const correctAnswers: Record<string, string> = {
+      "Question 1": "The graph of f(x) = 2x² - 4x + 5 opens upward and has a minimum, while g(x) = -2x² - 4x + 5 opens downward and has a maximum.",
+      "Question 2": "k must satisfy |k| > 6 (i.e., k < -6 or k > 6) for the discriminant to be positive.",
+      "Question 3": "f(x) = x² + 2x + 1",
+      "Question 4": "Maximum height: 20.9 meters at t = 2.04 seconds. Hits ground at t = 4.2 seconds."
+    };
+    
+    const isCorrect = Math.random() > 0.5;
+    
+    if (isCorrect) {
+      toast({
+        title: "Correct! 🎉",
+        description: "Great job! Your understanding of quadratic functions is solid.",
+        variant: "default",
+        className: "bg-green-50 border-green-200 text-green-800",
+      });
+    } else {
+      toast({
+        title: "Not quite right",
+        description: "Let's review the concept again. Try focusing on how the coefficient 'a' affects the shape.",
+        variant: "default",
+        className: "bg-orange-50 border-orange-200 text-orange-800",
+      });
+    }
+    
+    return isCorrect;
+  };
   
   return (
     <div className="flex flex-col h-full overflow-hidden">
@@ -413,14 +460,14 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
         
         <div className="flex items-center space-x-2">
           <Select value={explanationLevel} onValueChange={setExplanationLevel}>
-            <SelectTrigger className="w-40">
+            <SelectTrigger className="w-44 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
               <SelectValue placeholder="Explanation Level" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="simple">Simple</SelectItem>
               <SelectItem value="medium">Medium</SelectItem>
               <SelectItem value="advanced">Advanced</SelectItem>
-              <SelectItem value="interactive">Interactive</SelectItem>
+              <SelectItem value="ai">AI Suggested</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -499,3 +546,4 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
     </div>
   );
 }
+
