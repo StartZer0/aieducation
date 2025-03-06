@@ -80,7 +80,10 @@ const StrengthsWeaknessesChart: React.FC = () => {
                 }}
               >
                 {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={getBarColor(entry.mastery)} />
+                  <rect 
+                    key={`cell-${index}`} 
+                    fill={getBarColor(entry.mastery)} 
+                  />
                 ))}
               </Bar>
             </BarChart>

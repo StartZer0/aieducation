@@ -13,7 +13,7 @@ export default function AITutor() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [isVisualizerVisible, setIsVisualizerVisible] = useState(false);
-  const [visualizerTab, setVisualizerTab] = useState('table');
+  const [visualizerTab, setVisualizerTab] = useState<'table' | 'atom'>('table');
   const [selectedElement, setSelectedElement] = useState(null);
   const animationRef = useRef(null);
   const startTimeRef = useRef(null);
@@ -54,7 +54,6 @@ export default function AITutor() {
       cancelAnimationFrame(animationRef.current);
     }
     
-    // Show the visualizer immediately for better UX
     setIsVisualizerVisible(true);
     
     animateSequence();
@@ -71,13 +70,11 @@ export default function AITutor() {
     const elapsed = Date.now() - startTimeRef.current;
     setCurrentTime(elapsed);
     
-    // Update the current stage based on elapsed time
     for (let i = stages.length - 1; i >= 0; i--) {
       if (elapsed >= stages[i].time) {
         if (currentStage !== i) {
           setCurrentStage(i);
           
-          // Auto switch to atom view when reaching electron configuration explanation
           if (i >= 2) {
             setVisualizerTab('atom');
           } else {
@@ -104,10 +101,8 @@ export default function AITutor() {
     };
   }, []);
 
-  // Calculate progress percentage
   const progressPercentage = Math.min((currentTime / totalDuration) * 100, 100);
 
-  // Get current stage info
   const getStageInfo = () => {
     switch(currentStage) {
       case 0:
@@ -143,8 +138,6 @@ export default function AITutor() {
     }
   };
 
-  // Element info for the selected element or current stage element
-  // Handle element selection
   const handleElementSelect = (element) => {
     console.log("Element selected:", element);
     setSelectedElement(element);
@@ -153,7 +146,6 @@ export default function AITutor() {
   return (
     <div className="container mx-auto py-10 px-4 max-w-6xl">
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mt-20">
-        {/* Left sidebar: Avatar and controls - 1/4 width on desktop */}
         <div className="lg:col-span-1 flex flex-col gap-4">
           <div className="bg-white rounded-xl shadow-md border border-gray-100 h-auto overflow-hidden">
             <div className="p-3 bg-blue-50 border-b border-blue-100 flex items-center">
@@ -170,7 +162,6 @@ export default function AITutor() {
             </div>
           </div>
           
-          {/* Controls */}
           <div className="flex flex-col gap-3">
             <Button
               onClick={askQuestion}
@@ -191,23 +182,19 @@ export default function AITutor() {
             )}
           </div>
           
-          {/* Add a little space before showing the status info on mobile */}
           <div className="block lg:hidden h-6"></div>
         </div>
         
-        {/* Main Content Area - 3/4 width on desktop */}
         <div className="lg:col-span-3 flex flex-col gap-4">
-          {/* Tabs and visualizer */}
           <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border-b">
               <div className="flex items-center mb-3 sm:mb-0">
                 <Atom className="h-5 w-5 mr-2 text-blue-500" />
-                {/* Removed "Interactive Visualization" text as requested */}
               </div>
               
               <Tabs 
                 value={visualizerTab} 
-                onValueChange={(value) => setVisualizerTab(value)}
+                onValueChange={(value) => setVisualizerTab(value as 'table' | 'atom')}
                 className="mr-0"
               >
                 <TabsList>
@@ -223,9 +210,7 @@ export default function AITutor() {
               </Tabs>
             </div>
             
-            {/* Taller visualization container with space for explanations at bottom */}
             <div className="h-[600px] relative bg-gray-900 flex flex-col">
-              {/* Main visualizer area */}
               <div className="flex-grow relative">
                 <div 
                   className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
@@ -243,7 +228,6 @@ export default function AITutor() {
                 </div>
               </div>
               
-              {/* Explanation area at bottom - appears when an element is clicked */}
               <div className="h-32 bg-gray-800 p-4 overflow-auto">
                 {selectedElement ? (
                   <div className="text-white">
@@ -294,8 +278,6 @@ export default function AITutor() {
               )}
             </div>
           </div>
-          
-          {/* Element info panel has been completely removed as requested */}
         </div>
       </div>
     </div>

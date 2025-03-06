@@ -10,6 +10,9 @@ interface InteractiveElementVisualizerProps {
   currentTime: number;
   isVisible: boolean;
   activeView: 'table' | 'atom';
+  elementSize?: string;
+  spacing?: string;
+  onElementSelect?: (element: any) => void;
 }
 
 const InteractiveElementVisualizer: React.FC<InteractiveElementVisualizerProps> = ({ 
@@ -17,7 +20,10 @@ const InteractiveElementVisualizer: React.FC<InteractiveElementVisualizerProps> 
   progress,
   currentTime,
   isVisible,
-  activeView
+  activeView,
+  elementSize,
+  spacing,
+  onElementSelect
 }) => {
   const [animationPhase, setAnimationPhase] = useState(0);
   

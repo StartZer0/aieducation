@@ -98,7 +98,7 @@ const MonthlyProgressChart: React.FC = () => {
                 dataKey="month" 
                 axisLine={false} 
                 tickLine={false} 
-                tick={{ angle: 0, textAnchor: 'middle', dy: 10 }}
+                tick={{ textAnchor: 'middle', dy: 10 }}
               />
               <YAxis 
                 domain={[40, 100]} 
