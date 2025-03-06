@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import p5 from 'p5';
 
@@ -26,7 +25,7 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({
     const sketch = (p: p5) => {
       let elements: any[] = [];
       let selectedElement: any = null;
-      let cellSize = 80;
+      let cellSize = 70;
       let electronOrbitals: {angle: number, speed: number}[] = [];
       let electronSpeed = 0.02;
       let categoryColors: Record<string, p5.Color> = {};
@@ -201,23 +200,23 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({
           // Draw element cell
           p.ellipse(x, y, cellSize, cellSize);
           
-          // Draw element symbol
+          // Draw element symbol - reduced text size
           p.noStroke();
           p.fill(0);
-          p.textSize(22);
+          p.textSize(18);
           p.textStyle(p.BOLD);
           p.text(element.symbol, x, y - 5);
           
-          // Draw atomic number
-          p.textSize(10);
+          // Draw atomic number - reduced text size
+          p.textSize(9);
           p.textStyle(p.NORMAL);
           p.fill(50);
-          p.text(element.number, x, y - 20);
+          p.text(element.number, x, y - 18);
           
-          // Draw atomic mass (except for elements with no stable isotopes)
+          // Draw atomic mass with reduced text size
           if (element.mass > 0) {
-            p.textSize(9);
-            p.text(element.mass.toFixed(1), x, y + 15);
+            p.textSize(8);
+            p.text(element.mass.toFixed(1), x, y + 13);
           }
         }
       };
@@ -227,15 +226,15 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({
         
         // Position for details panel - bottom of the screen
         let detailX = p.width/2 - 400;
-        let detailY = p.height - 200;
+        let detailY = p.height - 190;
         let detailWidth = 800;
-        let detailHeight = 180;
+        let detailHeight = 170;
         
         // Adjust for smaller screens
         if (p.width < 900) {
           detailX = p.width/2 - p.width * 0.45;
           detailWidth = p.width * 0.9;
-          detailHeight = 120;
+          detailHeight = 110;
         }
         
         // Draw details background
@@ -244,29 +243,29 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({
         p.strokeWeight(2);
         p.rect(detailX, detailY, detailWidth, detailHeight, 10);
         
-        // Element name
+        // Element name - reduced size
         p.fill(255);
         p.textAlign(p.CENTER, p.TOP);
-        p.textSize(28);
+        p.textSize(24);
         p.textStyle(p.BOLD);
-        p.text(selectedElement.name, p.width/2, detailY + 20);
+        p.text(selectedElement.name, p.width/2, detailY + 15);
         
-        // Category label
-        p.textSize(14);
+        // Category label - reduced size
+        p.textSize(12);
         p.textStyle(p.ITALIC);
         p.fill(categoryColors[selectedElement.category]);
-        p.text(selectedElement.category, p.width/2, detailY + 50);
+        p.text(selectedElement.category, p.width/2, detailY + 45);
         
         // Draw properties in two columns
         p.fill(255);
         p.textAlign(p.LEFT, p.TOP);
         p.textStyle(p.NORMAL);
-        p.textSize(16);
+        p.textSize(14);
         
         // Left column
         let leftColX = detailX + 30;
-        let infoY = detailY + 75;
-        let infoSpacing = 22;
+        let infoY = detailY + 70;
+        let infoSpacing = 20;
         
         p.text(`Atomic Number: ${selectedElement.number}`, leftColX, infoY);
         p.text(`Atomic Mass: ${selectedElement.mass} u`, leftColX, infoY + infoSpacing);
@@ -351,8 +350,8 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({
           totalElectrons += electronsInShell;
         }
         
-        // Label for shells
-        p.textSize(12);
+        // Label for shells - smaller text
+        p.textSize(10);
         p.fill(200);
         for (let i = 0; i < electronShells.length; i++) {
           if (electronShells[i] > 0) {
@@ -364,8 +363,8 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({
           }
         }
         
-        // Show valence electrons count
-        p.textSize(14);
+        // Show valence electrons count - smaller text
+        p.textSize(12);
         p.fill(255);
         if (element.group >= 1 && element.group <= 18) {
           let valence = getValenceElectrons(element);
@@ -379,10 +378,10 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({
       const drawCategoryLegend = () => {
         let legendX = 20;
         let legendY = 100;
-        let legendSpacing = 25;
+        let legendSpacing = 22;
         
         p.textAlign(p.LEFT, p.CENTER);
-        p.textSize(12);
+        p.textSize(11);
         
         p.fill(255);
         p.textStyle(p.BOLD);
@@ -397,12 +396,12 @@ const CircularPeriodicTable: React.FC<CircularPeriodicTableProps> = ({
           p.fill(categoryColors[category]);
           p.stroke(100);
           p.strokeWeight(0.5);
-          p.rect(legendX, y - 6, 12, 12);
+          p.rect(legendX, y - 6, 10, 10);
           
           // Draw category name
           p.noStroke();
           p.fill(200);
-          p.text(category, legendX + 20, y);
+          p.text(category, legendX + 18, y);
           
           index++;
         }

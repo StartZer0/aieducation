@@ -109,11 +109,6 @@ export default function AITutor() {
 
   return (
     <div className="container mx-auto py-12 px-4">
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-bold mb-2">AI Chemistry Tutor</h1>
-        <p className="text-gray-600">Interactive learning with personalized explanations</p>
-      </div>
-      
       <div className="flex flex-col lg:flex-row gap-6 mb-6">
         {/* Visualization area - 70% */}
         <div className="w-full lg:w-3/4 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
