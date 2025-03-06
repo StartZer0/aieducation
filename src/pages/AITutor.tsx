@@ -214,7 +214,7 @@ export default function AITutor() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border-b">
               <div className="flex items-center mb-3 sm:mb-0">
                 <Atom className="h-5 w-5 mr-2 text-blue-500" />
-                <h2 className="font-medium">Interactive Visualization</h2>
+                {/* Removed "Interactive Visualization" text as requested */}
               </div>
               
               <Tabs 
@@ -235,27 +235,65 @@ export default function AITutor() {
               </Tabs>
             </div>
             
-            {/* Full-height visualization container */}
-            <div className="h-[450px] relative bg-gray-900">
+            {/* Taller visualization container with space for explanations at bottom */}
+            <div className="h-[600px] relative bg-gray-900">
               <div 
                 className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
               >
-                <InteractiveElementVisualizer 
-                  currentStage={currentStage} 
-                  progress={progressPercentage}
-                  currentTime={currentTime}
-                  isVisible={isVisualizerVisible}
-                  activeView={visualizerTab}
-                  elementSize="md" // Increased size now that we have more space
-                  spacing="normal" // Normal spacing for better readability
-                />
+                <div className="flex flex-col h-full">
+                  {/* Animation area - maintains original size but has more container space */}
+                  <div className="flex-grow flex items-center justify-center">
+                    <InteractiveElementVisualizer 
+                      currentStage={currentStage} 
+                      progress={progressPercentage}
+                      currentTime={currentTime}
+                      isVisible={isVisualizerVisible}
+                      activeView={visualizerTab}
+                      elementSize="md" 
+                      spacing="normal"
+                      onElementClick={setSelectedElement}
+                      showExplanationsOnClick={true}
+                    />
+                  </div>
+                  
+                  {/* Explanation area at bottom - appears when an element is clicked */}
+                  <div className="h-32 bg-gray-800 p-4 overflow-auto">
+                    {selectedElement ? (
+                      <div className="text-white">
+                        <h3 className="text-xl font-bold mb-2">{selectedElement.name} ({selectedElement.symbol})</h3>
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <p className="text-gray-400">Atomic Number</p>
+                            <p className="font-medium">{selectedElement.atomicNumber}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-400">Electron Configuration</p>
+                            <p className="font-medium">{selectedElement.electronConfig}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-400">Valence Electrons</p>
+                            <p className="font-medium">{selectedElement.valenceElectrons}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-400">Reactivity</p>
+                            <p className="font-medium">{selectedElement.reactivity}</p>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="text-gray-400 text-center h-full flex items-center justify-center">
+                        <p>Click on an element to view its details</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
               
               {!isVisualizerVisible && (
                 <div className="w-full h-full flex items-center justify-center">
                   <div className="text-center max-w-md p-6 bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl text-white">
                     <Atom className="h-16 w-16 mx-auto mb-4 text-blue-400" />
-                    <p className="text-lg font-medium mb-2">Interactive Chemistry Learning</p>
+                    <p className="text-lg font-medium mb-2">Chemistry Learning</p>
                     <p className="text-sm text-gray-300 mb-4">
                       Click the "Ask Question" button to learn about the electron configuration of oxygen
                     </p>
@@ -272,40 +310,7 @@ export default function AITutor() {
             </div>
           </div>
           
-          {/* Element info panel with data from current stage/element - single source of truth */}
-          <div className="bg-white rounded-xl shadow-md border border-gray-100 p-4">
-            <div className="flex items-center mb-3">
-              <Info className="h-4 w-4 mr-2 text-blue-500" />
-              <h3 className="text-sm font-medium">Element Information</h3>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-6">
-              <div>
-                <p className="text-xs text-gray-500">Valence Electrons</p>
-                <p className="text-base font-medium text-blue-600">
-                  {currentStage >= 2 ? "6" : "7"} {/* Show Oxygen (6) during demo, otherwise Fluorine (7) */}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Electronegativity</p>
-                <p className="text-base font-medium text-blue-600">
-                  {currentStage >= 2 ? "3.44" : "3.98"}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Reactivity</p>
-                <p className="text-base font-medium text-blue-600">
-                  {currentStage >= 2 ? "High with metals" : "Very high"}
-                </p>
-              </div>
-              <div>
-                <p className="text-xs text-gray-500">Common Compounds</p>
-                <p className="text-base font-medium">
-                  {currentStage >= 2 ? "H₂O, CO₂, Metal Oxides" : "HF, F₂, Metal Fluorides"}
-                </p>
-              </div>
-            </div>
-          </div>
+          {/* Element info panel has been completely removed as requested */}
         </div>
       </div>
     </div>
