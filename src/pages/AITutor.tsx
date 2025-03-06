@@ -144,23 +144,11 @@ export default function AITutor() {
   };
 
   // Element info for the selected element or current stage element
-  const getElementInfo = () => {
-    // Default to Oxygen if no element is selected or we're in the demo sequence
-    return {
-      name: "Fluorine",
-      symbol: "F",
-      atomicNumber: 9,
-      atomicMass: "18.998 u",
-      category: "Halogen",
-      electronConfig: "1s² 2s² 2p⁵",
-      valenceElectrons: 7,
-      electronegativity: 3.98,
-      reactivity: "Very high",
-      compounds: ["HF", "F₂", "Metal Fluorides"]
-    };
+  // Handle element selection
+  const handleElementSelect = (element) => {
+    console.log("Element selected:", element);
+    setSelectedElement(element);
   };
-
-  const elementInfo = getElementInfo();
 
   return (
     <div className="container mx-auto py-10 px-4 max-w-6xl">
@@ -236,61 +224,58 @@ export default function AITutor() {
             </div>
             
             {/* Taller visualization container with space for explanations at bottom */}
-            <div className="h-[600px] relative bg-gray-900">
-              <div 
-                className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
-              >
-                <div className="flex flex-col h-full">
-                  {/* Animation area - maintains original size but has more container space */}
-                  <div className="flex-grow flex items-center justify-center">
-                    <InteractiveElementVisualizer 
-                      currentStage={currentStage} 
-                      progress={progressPercentage}
-                      currentTime={currentTime}
-                      isVisible={isVisualizerVisible}
-                      activeView={visualizerTab}
-                      elementSize="md" 
-                      spacing="normal"
-                      onElementClick={setSelectedElement}
-                      showExplanationsOnClick={true}
-                    />
-                  </div>
-                  
-                  {/* Explanation area at bottom - appears when an element is clicked */}
-                  <div className="h-32 bg-gray-800 p-4 overflow-auto">
-                    {selectedElement ? (
-                      <div className="text-white">
-                        <h3 className="text-xl font-bold mb-2">{selectedElement.name} ({selectedElement.symbol})</h3>
-                        <div className="grid grid-cols-2 gap-4 text-sm">
-                          <div>
-                            <p className="text-gray-400">Atomic Number</p>
-                            <p className="font-medium">{selectedElement.atomicNumber}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-400">Electron Configuration</p>
-                            <p className="font-medium">{selectedElement.electronConfig}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-400">Valence Electrons</p>
-                            <p className="font-medium">{selectedElement.valenceElectrons}</p>
-                          </div>
-                          <div>
-                            <p className="text-gray-400">Reactivity</p>
-                            <p className="font-medium">{selectedElement.reactivity}</p>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="text-gray-400 text-center h-full flex items-center justify-center">
-                        <p>Click on an element to view its details</p>
-                      </div>
-                    )}
-                  </div>
+            <div className="h-[600px] relative bg-gray-900 flex flex-col">
+              {/* Main visualizer area */}
+              <div className="flex-grow relative">
+                <div 
+                  className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
+                >
+                  <InteractiveElementVisualizer 
+                    currentStage={currentStage} 
+                    progress={progressPercentage}
+                    currentTime={currentTime}
+                    isVisible={isVisualizerVisible}
+                    activeView={visualizerTab}
+                    elementSize="md" 
+                    spacing="normal"
+                    onElementSelect={handleElementSelect}
+                  />
                 </div>
               </div>
               
+              {/* Explanation area at bottom - appears when an element is clicked */}
+              <div className="h-32 bg-gray-800 p-4 overflow-auto">
+                {selectedElement ? (
+                  <div className="text-white">
+                    <h3 className="text-xl font-bold mb-2">{selectedElement.name} ({selectedElement.symbol})</h3>
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <p className="text-gray-400">Atomic Number</p>
+                        <p className="font-medium">{selectedElement.atomicNumber}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400">Electron Configuration</p>
+                        <p className="font-medium">{selectedElement.electronConfig}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400">Valence Electrons</p>
+                        <p className="font-medium">{selectedElement.valenceElectrons}</p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400">Reactivity</p>
+                        <p className="font-medium">{selectedElement.reactivity}</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-gray-400 text-center h-full flex items-center justify-center">
+                    <p>Click on an element to view its details</p>
+                  </div>
+                )}
+              </div>
+              
               {!isVisualizerVisible && (
-                <div className="w-full h-full flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center max-w-md p-6 bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl text-white">
                     <Atom className="h-16 w-16 mx-auto mb-4 text-blue-400" />
                     <p className="text-lg font-medium mb-2">Chemistry Learning</p>
