@@ -4,10 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import NewtonsLaws from '@/components/test-charts/NewtonsLaws';
 import TypewriterText from '@/components/test-charts/TypewriterText';
 import AStudentContent from '@/components/test-charts/AStudentContent';
+import TypingAStudentContent from '@/components/test-charts/TypingAStudentContent';
 
 export default function TestCharts() {
   const [showVisualLoader, setShowVisualLoader] = useState(true);
-  const [showAStudentContent, setShowAStudentContent] = useState(false);
   
   // Hide loader after 2 seconds
   useEffect(() => {
@@ -15,14 +15,8 @@ export default function TestCharts() {
       setShowVisualLoader(false);
     }, 2000);
     
-    // Show A+ Student content after initial typing animation
-    const contentTimer = setTimeout(() => {
-      setShowAStudentContent(true);
-    }, 5000);
-    
     return () => {
       clearTimeout(timer);
-      clearTimeout(contentTimer);
     };
   }, []);
   
@@ -45,19 +39,6 @@ Newton discovered these laws that explain how everything moves in our world - fr
     "Third Law: Every Push Has a Push Back": "#3182ce"
   };
 
-  const aStudentText = "Newton's laws of motion are the foundation of classical mechanics...";
-
-  const aStudentHighlights = {
-    "Newton's First Law": "#4299e1",
-    "Newton's Second Law": "#48bb78",
-    "Newton's Third Law": "#ed8936",
-    "Inertia": "#805ad5",
-    "momentum": "#d53f8c",
-    "acceleration": "#dd6b20",
-    "force": "#3182ce",
-    "mass": "#38a169"
-  };
-
   return (
     <div className="container mx-auto py-24 px-4">
       <h1 className="text-3xl font-bold text-center mb-8">{questionText}</h1>
@@ -69,15 +50,7 @@ Newton discovered these laws that explain how everything moves in our world - fr
             A+ Student
           </div>
           <CardContent className="p-4 h-[550px] overflow-auto">
-            {showAStudentContent ? (
-              <AStudentContent />
-            ) : (
-              <TypewriterText 
-                text={aStudentText} 
-                speed={15} 
-                highlightTerms={aStudentHighlights}
-              />
-            )}
+            <TypingAStudentContent typingSpeed={3} />
           </CardContent>
         </Card>
         
@@ -105,7 +78,7 @@ Newton discovered these laws that explain how everything moves in our world - fr
           <CardContent className="p-4 h-[550px] overflow-auto">
             <TypewriterText 
               text={slowLearnerText} 
-              speed={20} 
+              speed={10} 
               highlightTerms={slowLearnerHighlights}
             />
           </CardContent>
