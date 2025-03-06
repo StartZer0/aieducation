@@ -107,11 +107,45 @@ export default function AITutor() {
   // Calculate progress percentage
   const progressPercentage = Math.min((currentTime / totalDuration) * 100, 100);
 
+  // Get current stage info
+  const getStageInfo = () => {
+    switch(currentStage) {
+      case 0:
+        return [
+          { label: "Exploring", value: "Electron Configuration", highlight: true },
+          { label: "Element", value: "Oxygen (O)", highlight: true },
+          { label: "Status", value: "Waiting for response..." }
+        ];
+      case 1:
+        return [
+          { label: "Element", value: "Oxygen (O)", highlight: true },
+          { label: "Atomic Number", value: "8" },
+          { label: "Group", value: "16", highlight: true },
+          { label: "Period", value: "2", highlight: true }
+        ];
+      case 2:
+        return [
+          { label: "Electron Configuration", value: "1s² 2s² 2p⁴", highlight: true },
+          { label: "K Shell", value: "2 electrons" },
+          { label: "L Shell", value: "6 electrons", highlight: true }
+        ];
+      case 3:
+        return [
+          { label: "Valence Electrons", value: "6", highlight: true },
+          { label: "Electronegativity", value: "3.44", highlight: true },
+          { label: "Reactivity", value: "High with metals", highlight: true },
+          { label: "Common Compounds", value: "H₂O, CO₂, Metal Oxides" }
+        ];
+      default:
+        return [];
+    }
+  };
+
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex flex-col space-y-6">
-        {/* Title and tabs container with better spacing */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
+    <div className="container mx-auto py-4 px-4">
+      <div className="flex flex-col space-y-4">
+        {/* Title and tabs container */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-2">
           <div className="flex items-center">
             <Atom className="h-5 w-5 mr-2 text-blue-500" />
             <h2 className="text-lg font-medium">Interactive Table with Atom Visualization</h2>
@@ -129,10 +163,10 @@ export default function AITutor() {
           </Tabs>
         </div>
         
-        {/* Main content area */}
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Visualization area - 70% */}
-          <div className="w-full lg:w-3/4 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
+        {/* Main content area with adjusted layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          {/* Visualization area - 75% */}
+          <div className="lg:col-span-3 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
             <div className="h-full relative">
               <div 
                 className={`absolute inset-0 transition-opacity duration-1000 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
@@ -158,8 +192,8 @@ export default function AITutor() {
             </div>
           </div>
           
-          {/* Avatar area - 30% */}
-          <div className="w-full lg:w-1/4 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
+          {/* Avatar area - 25% */}
+          <div className="lg:col-span-1 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
             <AITutorAvatar 
               currentStage={currentStage}
               avatarText={stages[currentStage]?.avatarText || ""}
@@ -169,17 +203,23 @@ export default function AITutor() {
           </div>
         </div>
         
-        {/* Controls */}
-        <div className="flex justify-center gap-4">
-          <Button
-            onClick={askQuestion}
-            className="flex items-center gap-2 py-2 px-6"
-            variant="outline"
-            disabled={isPlaying}
-          >
-            <Mic className="h-4 w-4" />
-            Ask Question
-          </Button>
+        {/* Controls and info section with better spacing */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+          {/* Controls */}
+          <div className="lg:col-span-3 flex justify-center gap-4 pt-2">
+            <Button
+              onClick={askQuestion}
+              className="flex items-center gap-2 py-2 px-6"
+              variant="outline"
+              disabled={isPlaying}
+            >
+              <Mic className="h-4 w-4" />
+              Ask Question
+            </Button>
+          </div>
+          
+          {/* Empty space for alignment */}
+          <div className="hidden lg:block lg:col-span-1"></div>
         </div>
         
         {/* Progress bar */}
@@ -192,23 +232,17 @@ export default function AITutor() {
           </div>
         )}
         
-        {/* Footer info area */}
-        <div className="w-full bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 p-4">
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-2">
-            <div className="flex items-center">
-              <span className="text-gray-500 mr-2">Exploring:</span>
-              <span className="text-blue-600 font-medium">Electron Configuration</span>
-            </div>
-            
-            <div className="flex items-center">
-              <span className="text-gray-500 mr-2">Element:</span>
-              <span className="text-blue-600 font-medium">Oxygen (O)</span>
-            </div>
-            
-            <div className="flex items-center">
-              <span className="text-gray-500 mr-2">Status:</span>
-              <span className="text-gray-700">Waiting for response...</span>
-            </div>
+        {/* Footer info area - moved to bottom */}
+        <div className="w-full mt-auto bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 p-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {getStageInfo().map((info, index) => (
+              <div key={index} className="flex items-center">
+                <span className="text-gray-500 mr-2">{info.label}:</span>
+                <span className={info.highlight ? "text-blue-600 font-medium" : "text-gray-700"}>
+                  {info.value}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>
