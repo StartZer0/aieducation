@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ArrowLeft, ThumbsUp, ThumbsDown, X } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -356,5 +357,62 @@ export function DetailedExplanation({ title, onBack, term, content, onClose }: D
 
   return (
     <div className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm flex flex-col overflow-hidden">
-      <
-
+      <div className="flex items-center justify-between p-4 border-b">
+        <div className="flex items-center gap-2">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={handleClose}
+            className="h-8 w-8"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
+          <h3 className="font-medium text-lg">{title}</h3>
+        </div>
+        
+        <div className="flex items-center gap-2">
+          {onClose && (
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              onClick={onClose}
+              className="h-8 w-8"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
+      </div>
+      
+      <div className="flex-1 overflow-y-auto p-6 bg-white/95 dark:bg-black/95">
+        {content || renderContentForTerm()}
+      </div>
+      
+      <div className="p-4 border-t flex justify-end">
+        <div className="flex items-center gap-2">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-1"
+            onClick={() => handleFeedback(true)}
+            disabled={feedbackGiven}
+          >
+            <ThumbsUp className="h-4 w-4" />
+            <span>Helpful</span>
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-1"
+            onClick={() => handleFeedback(false)}
+            disabled={feedbackGiven}
+          >
+            <ThumbsDown className="h-4 w-4" />
+            <span>Not Helpful</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
