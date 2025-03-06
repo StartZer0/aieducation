@@ -29,11 +29,13 @@ When you do something, something else pushes back with the same amount of force.
 
 Newton discovered these laws that explain how everything moves in our world - from small marbles to giant rocket ships. These simple rules help us understand motion everywhere around us.`;
 
-  const aStudentText = `Certainly! Below is a more academically rigorous explanation of Newton's Three Laws of Motion, incorporating precise mathematical formulations and detailed physical interpretations
+  const slowLearnerHighlights = {
+    "First Law: Things Like to Stay Put": "#e53e3e",
+    "Second Law: Bigger Things Need More Force": "#38a169",
+    "Third Law: Every Push Has a Push Back": "#3182ce"
+  };
 
----
-
-### Newton's First Law: The Law of Inertia
+  const aStudentText = `### Newton's First Law: The Law of Inertia
 Statement:
 "An object at rest remains at rest, and an object in motion continues in uniform motion in a straight line unless acted upon by a net external force."
 
@@ -113,6 +115,17 @@ Example:
 - When a person pushes against a wall with a force \\( F \\), the wall pushes back with an equal force \\( -F \\).
 - In rocket propulsion, the exhaust gases exert a downward force, while the rocket experiences an equal and opposite upward thrust.`;
 
+  const aStudentHighlights = {
+    "Newton's First Law": "#4299e1",
+    "Newton's Second Law": "#48bb78",
+    "Newton's Third Law": "#ed8936",
+    "Inertia": "#805ad5",
+    "momentum": "#d53f8c",
+    "acceleration": "#dd6b20",
+    "force": "#3182ce",
+    "mass": "#38a169"
+  };
+
   return (
     <div className="container mx-auto py-24 px-4">
       <h1 className="text-3xl font-bold text-center mb-8">{questionText}</h1>
@@ -124,7 +137,11 @@ Example:
             A+ Student
           </div>
           <CardContent className="p-4 h-[550px] overflow-auto">
-            <TypewriterText text={aStudentText} speed={15} />
+            <TypewriterText 
+              text={aStudentText} 
+              speed={15} 
+              highlightTerms={aStudentHighlights}
+            />
           </CardContent>
         </Card>
         
@@ -150,7 +167,11 @@ Example:
             Slow Learner
           </div>
           <CardContent className="p-4 h-[550px] overflow-auto">
-            <TypewriterText text={slowLearnerText} speed={40} />
+            <TypewriterText 
+              text={slowLearnerText} 
+              speed={20} 
+              highlightTerms={slowLearnerHighlights}
+            />
           </CardContent>
         </Card>
       </div>
