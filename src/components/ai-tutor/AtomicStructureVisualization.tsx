@@ -33,6 +33,26 @@ const AtomicStructureVisualization: React.FC<AtomicStructureVisualizationProps> 
   const [showOrbitalText, setShowOrbitalText] = useState(false);
   const [animationPhase, setAnimationPhase] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const animationFrameRef = useRef<number>();
+  const electronOrbitals = useRef<Array<{angle: number, speed: number}>>([]);
+
+  // Set up electron orbital animation data
+  useEffect(() => {
+    const electronSpeed = 0.02; // Base speed for electron animation
+    
+    // Create animation data for electrons in different orbitals
+    for (let i = 0; i < 20; i++) {
+      let shellNum = Math.floor(i / 8) + 1; // Approximate which shell this electron belongs to
+      let speedVariation = shellNum === 1 ? 1.5 : 
+                           shellNum === 2 ? 1.0 : 
+                           shellNum === 3 ? 0.7 : 0.5; // Outer shells move slower
+      
+      electronOrbitals.current.push({
+        angle: Math.random() * Math.PI * 2,
+        speed: electronSpeed * speedVariation * (0.8 + Math.random() * 0.4) // Different speeds for varied animation
+      });
+    }
+  }, []);
   
   // Animation for electrons appearing
   useEffect(() => {
@@ -52,14 +72,15 @@ const AtomicStructureVisualization: React.FC<AtomicStructureVisualizationProps> 
       // Show all electrons immediately
       setVisibleElectrons(elementData.atomicNumber);
       setShowValence(true);
+      setShowOrbitalText(true);
     } else {
       setVisibleElectrons(0);
       setShowValence(false);
       setShowOrbitalText(false);
     }
   }, [currentStage, visibleElectrons, elementData.atomicNumber]);
-  
-  // Animation loop for electron movement
+
+  // Draw the atomic model
   useEffect(() => {
     if (!canvasRef.current || visibleElectrons === 0) return;
     
@@ -74,82 +95,161 @@ const AtomicStructureVisualization: React.FC<AtomicStructureVisualizationProps> 
     canvas.height = height * 2;
     ctx.scale(2, 2);
     
-    // Configure orbits
-    const orbits = [
-      { radius: 30, electrons: 2, speed: 0.01, color: '#3b82f6' },  // K shell (1s)
-      { radius: 60, electrons: 8, speed: 0.007, color: '#10b981' }, // L shell (2s, 2p)
-      // Add more shells as needed for heavier elements
-    ];
-    
-    let animationFrame: number;
-    let angle = 0;
+    // Get electron shells distribution
+    const electronShells = getElectronShells(elementData.atomicNumber);
     
     const animate = () => {
       ctx.clearRect(0, 0, width, height);
       
+      // Draw orbits
+      for (let i = 0; i < electronShells.length; i++) {
+        if (electronShells[i] > 0) {
+          // Draw shell orbit
+          ctx.beginPath();
+          ctx.arc(width / 2, height / 2, 30 + i * 20, 0, Math.PI * 2);
+          ctx.strokeStyle = 'rgba(100, 100, 255, 0.3)';
+          ctx.stroke();
+          
+          // Label for shells
+          const shellLabels = ["K", "L", "M", "N", "O", "P", "Q"];
+          const labelAngle = Math.PI / 4;
+          const labelX = width / 2 + (30 + i * 20) * Math.cos(labelAngle);
+          const labelY = height / 2 + (30 + i * 20) * Math.sin(labelAngle);
+          
+          ctx.font = '10px Arial';
+          ctx.fillStyle = '#888';
+          ctx.textAlign = 'center';
+          ctx.fillText(shellLabels[i], labelX, labelY);
+        }
+      }
+      
       // Draw nucleus
+      const nucleusSize = Math.min(15 + elementData.atomicNumber / 15, 30);
+      
+      // Nucleus glow
+      for (let i = 3; i > 0; i--) {
+        ctx.beginPath();
+        ctx.arc(width / 2, height / 2, nucleusSize + i * 3, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255, 100, 100, ${0.2 - i * 0.05})`;
+        ctx.fill();
+      }
+      
+      // Nucleus
       ctx.beginPath();
-      ctx.arc(width / 2, height / 2, 15, 0, Math.PI * 2);
+      ctx.arc(width / 2, height / 2, nucleusSize, 0, Math.PI * 2);
       ctx.fillStyle = '#ef4444';
       ctx.fill();
       
-      // Draw orbits and electrons
-      let electronCount = 0;
-      
-      orbits.forEach((orbit, orbitIndex) => {
-        // Draw orbit path
+      // Add texture to nucleus
+      for (let i = 0; i < 5; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const distance = Math.random() * (nucleusSize / 4);
         ctx.beginPath();
-        ctx.arc(width / 2, height / 2, orbit.radius, 0, Math.PI * 2);
-        ctx.strokeStyle = '#d1d5db';
-        ctx.stroke();
+        ctx.arc(
+          width / 2 + Math.cos(angle) * distance, 
+          height / 2 + Math.sin(angle) * distance, 
+          2, 0, Math.PI * 2
+        );
+        ctx.fillStyle = 'rgba(255, 180, 180, 0.8)';
+        ctx.fill();
+      }
+      
+      // Draw electrons
+      let totalElectrons = 0;
+      for (let shell = 0; shell < electronShells.length; shell++) {
+        let electronsInShell = Math.min(electronShells[shell], visibleElectrons - totalElectrons);
+        if (electronsInShell <= 0) continue;
         
-        // Only draw electrons that are "visible" based on current animation state
-        const orbitElectrons = Math.min(orbit.electrons, visibleElectrons - electronCount);
+        const shellRadius = 30 + shell * 20;
         
-        if (orbitElectrons > 0) {
-          // Draw electrons
-          for (let i = 0; i < orbitElectrons; i++) {
-            const electronAngle = angle + (Math.PI * 2 * i / orbit.electrons);
-            const x = width / 2 + Math.cos(electronAngle * orbit.speed) * orbit.radius;
-            const y = height / 2 + Math.sin(electronAngle * orbit.speed) * orbit.radius;
-            
-            // Determine if this is a valence electron
-            const isValence = orbitIndex === orbits.length - 1;
-            
-            // Draw electron
+        for (let e = 0; e < electronsInShell; e++) {
+          const electronId = totalElectrons + e;
+          const orbitAngle = electronId % electronOrbitals.current.length;
+          let angle = electronOrbitals.current[orbitAngle].angle;
+          
+          // Add a phase shift based on electron position
+          angle += e * (Math.PI * 2 / electronsInShell);
+          
+          const x = width / 2 + Math.cos(angle) * shellRadius;
+          const y = height / 2 + Math.sin(angle) * shellRadius;
+          
+          // Determine if this is a valence electron
+          const isValence = shell === electronShells.findIndex(e => e > 0, shell) - 1 || 
+                          shell === electronShells.length - 1;
+          
+          // Electron glow
+          for (let i = 2; i > 0; i--) {
             ctx.beginPath();
-            ctx.arc(x, y, 5, 0, Math.PI * 2);
-            
-            // If showing valence and this is a valence electron, highlight it
-            if (showValence && isValence) {
-              ctx.fillStyle = '#8b5cf6';
-              ctx.strokeStyle = '#ffffff';
-              ctx.lineWidth = 2;
-              ctx.stroke();
-            } else {
-              ctx.fillStyle = orbit.color;
-            }
-            
+            ctx.arc(x, y, 4 + i, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(100, 200, 255, ${0.2 - i * 0.05})`;
             ctx.fill();
           }
+          
+          // Draw electron
+          ctx.beginPath();
+          ctx.arc(x, y, 4, 0, Math.PI * 2);
+          
+          // If showing valence and this is a valence electron, highlight it
+          if (showValence && isValence) {
+            ctx.fillStyle = '#8b5cf6';
+            ctx.strokeStyle = '#ffffff';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          } else {
+            ctx.fillStyle = '#3b82f6';
+          }
+          
+          ctx.fill();
         }
         
-        electronCount += orbit.electrons;
-      });
+        totalElectrons += electronsInShell;
+      }
       
-      // Increment angle for animation
-      angle += 0.01;
+      // Update orbital animations
+      updateElectronAnimations();
       
-      // Continue animation
-      animationFrame = requestAnimationFrame(animate);
+      animationFrameRef.current = requestAnimationFrame(animate);
     };
     
     animate();
     
     return () => {
-      cancelAnimationFrame(animationFrame);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
-  }, [visibleElectrons, showValence]);
+  }, [visibleElectrons, showValence, elementData.atomicNumber]);
+
+  // Helper function to update electron animations
+  const updateElectronAnimations = () => {
+    for (let i = 0; i < electronOrbitals.current.length; i++) {
+      electronOrbitals.current[i].angle += electronOrbitals.current[i].speed;
+      if (electronOrbitals.current[i].angle > Math.PI * 2) {
+        electronOrbitals.current[i].angle -= Math.PI * 2;
+      }
+    }
+  };
+
+  // Helper function to get electron shell distribution
+  const getElectronShells = (atomicNumber: number) => {
+    // Return electron shell distribution (K, L, M, N, O, P, Q)
+    // This is a simplified model for visualization purposes
+    const shells = [0, 0, 0, 0, 0, 0, 0];
+    
+    // Fill shells according to basic rules
+    let remaining = atomicNumber;
+    
+    // Maximum electrons per shell (simplified)
+    const shellCapacity = [2, 8, 18, 32, 32, 18, 8];
+    
+    for (let i = 0; i < shells.length; i++) {
+      shells[i] = Math.min(shellCapacity[i], remaining);
+      remaining -= shells[i];
+      if (remaining <= 0) break;
+    }
+    
+    return shells;
+  };
   
   return (
     <div className="h-full relative flex flex-col items-center justify-center bg-gray-50 p-4">

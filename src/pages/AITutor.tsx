@@ -4,8 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Mic, MicOff, Info } from 'lucide-react';
 import AITutorAvatar from '@/components/ai-tutor/AITutorAvatar';
 import ChemistryVisualizer from '@/components/ai-tutor/ChemistryVisualizer';
-import PeriodicTableVisualization from '@/components/ai-tutor/PeriodicTableVisualization';
-import AtomicStructureVisualization from '@/components/ai-tutor/AtomicStructureVisualization';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AITutor() {
@@ -41,7 +39,7 @@ export default function AITutor() {
     }
   ];
 
-  const startDemo = () => {
+  const startExplanation = () => {
     setIsPlaying(true);
     setCurrentTime(0);
     setCurrentStage(0);
@@ -51,15 +49,15 @@ export default function AITutor() {
       cancelAnimationFrame(animationRef.current);
     }
     
-    animateDemo();
+    animateSequence();
     
     toast({
-      title: "Demo Started",
-      description: "Watch how the AI Tutor explains oxygen's electron configuration",
+      title: "Analysis Started",
+      description: "Listen as the AI Tutor explains oxygen's electron configuration",
     });
   };
 
-  const animateDemo = () => {
+  const animateSequence = () => {
     if (!startTimeRef.current) return;
     
     const elapsed = Date.now() - startTimeRef.current;
@@ -76,7 +74,7 @@ export default function AITutor() {
     }
     
     if (elapsed < totalDuration) {
-      animationRef.current = requestAnimationFrame(animateDemo);
+      animationRef.current = requestAnimationFrame(animateSequence);
     } else {
       setIsPlaying(false);
       startTimeRef.current = null;
@@ -125,11 +123,11 @@ export default function AITutor() {
       {/* Controls */}
       <div className="flex justify-center gap-4 mb-8">
         <Button 
-          onClick={startDemo}
+          onClick={startExplanation}
           disabled={isPlaying}
           className="py-2 px-6"
         >
-          {isPlaying ? "Playing..." : "Start Demo"}
+          {isPlaying ? "Playing..." : "Start Explanation"}
         </Button>
         
         <Button
@@ -157,11 +155,11 @@ export default function AITutor() {
         <div className="flex items-start">
           <Info className="h-5 w-5 text-blue-500 mt-1 mr-2 flex-shrink-0" />
           <div>
-            <h3 className="font-medium text-blue-700">Demo Information</h3>
+            <h3 className="font-medium text-blue-700">How It Works</h3>
             <p className="text-sm text-blue-600">
-              This demonstration shows how an AI Chemistry Tutor would explain chemical concepts
-              with synchronized visualizations. The demo runs for exactly 4 seconds, showcasing
-              interactive explanations of oxygen's electron configuration.
+              This AI Chemistry Tutor uses voice recognition to understand your questions about chemical concepts.
+              The tutor provides synchronized visualizations and clear explanations to help you understand
+              complex topics like electron configuration, atomic structure, and chemical properties.
             </p>
           </div>
         </div>

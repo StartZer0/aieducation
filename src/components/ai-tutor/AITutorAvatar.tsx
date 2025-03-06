@@ -104,7 +104,7 @@ const AITutorAvatar: React.FC<AITutorAvatarProps> = ({
         </div>
       </div>
       
-      {/* Input area (static for demo) */}
+      {/* Input area - voice interaction */}
       <div className="p-4 border-t border-gray-200 bg-white">
         <div className="flex items-center">
           <div className="flex-1 bg-gray-100 rounded-l-full py-2 px-4 text-gray-400 text-sm">
@@ -112,7 +112,7 @@ const AITutorAvatar: React.FC<AITutorAvatarProps> = ({
           </div>
           <button className="bg-blue-500 text-white rounded-r-full p-2">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              <path fillRule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clipRule="evenodd" />
             </svg>
           </button>
         </div>

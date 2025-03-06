@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
 interface PeriodicTableVisualizationProps {
@@ -21,40 +21,46 @@ const categories = {
   "actinide": "bg-rose-100 border-rose-200 text-rose-800"
 };
 
+// Sample elements data for a simplified periodic table
+const elements = [
+  { symbol: 'H', name: 'Hydrogen', number: 1, category: 'nonmetal', group: 1, period: 1, mass: 1.008, electronConfig: "1s¹" },
+  { symbol: 'He', name: 'Helium', number: 2, category: 'noble gas', group: 18, period: 1, mass: 4.0026, electronConfig: "1s²" },
+  
+  { symbol: 'Li', name: 'Lithium', number: 3, category: 'alkali metal', group: 1, period: 2, mass: 6.94, electronConfig: "1s² 2s¹" },
+  { symbol: 'Be', name: 'Beryllium', number: 4, category: 'alkaline earth metal', group: 2, period: 2, mass: 9.0122, electronConfig: "1s² 2s²" },
+  { symbol: 'B', name: 'Boron', number: 5, category: 'metalloid', group: 13, period: 2, mass: 10.81, electronConfig: "1s² 2s² 2p¹" },
+  { symbol: 'C', name: 'Carbon', number: 6, category: 'nonmetal', group: 14, period: 2, mass: 12.011, electronConfig: "1s² 2s² 2p²" },
+  { symbol: 'N', name: 'Nitrogen', number: 7, category: 'nonmetal', group: 15, period: 2, mass: 14.007, electronConfig: "1s² 2s² 2p³" },
+  { symbol: 'O', name: 'Oxygen', number: 8, category: 'nonmetal', group: 16, period: 2, mass: 15.999, electronConfig: "1s² 2s² 2p⁴" },
+  { symbol: 'F', name: 'Fluorine', number: 9, category: 'halogen', group: 17, period: 2, mass: 18.998, electronConfig: "1s² 2s² 2p⁵" },
+  { symbol: 'Ne', name: 'Neon', number: 10, category: 'noble gas', group: 18, period: 2, mass: 20.180, electronConfig: "1s² 2s² 2p⁶" },
+  
+  { symbol: 'Na', name: 'Sodium', number: 11, category: 'alkali metal', group: 1, period: 3, mass: 22.990, electronConfig: "1s² 2s² 2p⁶ 3s¹" },
+  { symbol: 'Mg', name: 'Magnesium', number: 12, category: 'alkaline earth metal', group: 2, period: 3, mass: 24.305, electronConfig: "1s² 2s² 2p⁶ 3s²" },
+  { symbol: 'Al', name: 'Aluminum', number: 13, category: 'post-transition metal', group: 13, period: 3, mass: 26.982, electronConfig: "1s² 2s² 2p⁶ 3s² 3p¹" },
+  { symbol: 'Si', name: 'Silicon', number: 14, category: 'metalloid', group: 14, period: 3, mass: 28.085, electronConfig: "1s² 2s² 2p⁶ 3s² 3p²" },
+  { symbol: 'P', name: 'Phosphorus', number: 15, category: 'nonmetal', group: 15, period: 3, mass: 30.974, electronConfig: "1s² 2s² 2p⁶ 3s² 3p³" },
+  { symbol: 'S', name: 'Sulfur', number: 16, category: 'nonmetal', group: 16, period: 3, mass: 32.06, electronConfig: "1s² 2s² 2p⁶ 3s² 3p⁴" },
+  { symbol: 'Cl', name: 'Chlorine', number: 17, category: 'halogen', group: 17, period: 3, mass: 35.45, electronConfig: "1s² 2s² 2p⁶ 3s² 3p⁵" },
+  { symbol: 'Ar', name: 'Argon', number: 18, category: 'noble gas', group: 18, period: 3, mass: 39.95, electronConfig: "1s² 2s² 2p⁶ 3s² 3p⁶" },
+];
+
 const PeriodicTableVisualization: React.FC<PeriodicTableVisualizationProps> = ({ 
   currentStage,
   highlightedElement
 }) => {
   const [zoomLevel, setZoomLevel] = useState(1);
   const [focusPosition, setFocusPosition] = useState({ x: 50, y: 50 });
+  const [selectedElement, setSelectedElement] = useState<any>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   
-  // Sample elements data for a simplified periodic table
-  const elements = [
-    { symbol: 'H', name: 'Hydrogen', number: 1, category: 'nonmetal', group: 1, period: 1 },
-    { symbol: 'He', name: 'Helium', number: 2, category: 'noble gas', group: 18, period: 1 },
-    
-    { symbol: 'Li', name: 'Lithium', number: 3, category: 'alkali metal', group: 1, period: 2 },
-    { symbol: 'Be', name: 'Beryllium', number: 4, category: 'alkaline earth metal', group: 2, period: 2 },
-    { symbol: 'B', name: 'Boron', number: 5, category: 'metalloid', group: 13, period: 2 },
-    { symbol: 'C', name: 'Carbon', number: 6, category: 'nonmetal', group: 14, period: 2 },
-    { symbol: 'N', name: 'Nitrogen', number: 7, category: 'nonmetal', group: 15, period: 2 },
-    { symbol: 'O', name: 'Oxygen', number: 8, category: 'nonmetal', group: 16, period: 2 },
-    { symbol: 'F', name: 'Fluorine', number: 9, category: 'halogen', group: 17, period: 2 },
-    { symbol: 'Ne', name: 'Neon', number: 10, category: 'noble gas', group: 18, period: 2 },
-    
-    { symbol: 'Na', name: 'Sodium', number: 11, category: 'alkali metal', group: 1, period: 3 },
-    { symbol: 'Mg', name: 'Magnesium', number: 12, category: 'alkaline earth metal', group: 2, period: 3 },
-    { symbol: 'Al', name: 'Aluminum', number: 13, category: 'post-transition metal', group: 13, period: 3 },
-    { symbol: 'Si', name: 'Silicon', number: 14, category: 'metalloid', group: 14, period: 3 },
-    { symbol: 'P', name: 'Phosphorus', number: 15, category: 'nonmetal', group: 15, period: 3 },
-    { symbol: 'S', name: 'Sulfur', number: 16, category: 'nonmetal', group: 16, period: 3 },
-    { symbol: 'Cl', name: 'Chlorine', number: 17, category: 'halogen', group: 17, period: 3 },
-    { symbol: 'Ar', name: 'Argon', number: 18, category: 'noble gas', group: 18, period: 3 },
-  ];
-
   // Effect to zoom into oxygen when it's highlighted
   useEffect(() => {
     if (highlightedElement === 'O') {
+      // Set the selected element to Oxygen
+      const oxygen = elements.find(e => e.symbol === 'O');
+      setSelectedElement(oxygen);
+      
       // Zoom in on oxygen
       setZoomLevel(2.5);
       // Focus on oxygen's position (group 16, period 2)
@@ -63,9 +69,11 @@ const PeriodicTableVisualization: React.FC<PeriodicTableVisualizationProps> = ({
       // Reset zoom
       setZoomLevel(1);
       setFocusPosition({ x: 50, y: 50 });
+      setSelectedElement(null);
     }
   }, [highlightedElement]);
 
+  // Display a simplified periodic table with a focus on the selected element
   return (
     <div className="h-full w-full bg-gray-50 overflow-hidden flex items-center justify-center">
       <div 
@@ -148,6 +156,10 @@ const PeriodicTableVisualization: React.FC<PeriodicTableVisualizationProps> = ({
               <div className="grid grid-cols-2">
                 <span className="text-gray-500">Atomic Mass:</span>
                 <span className="font-medium">15.999 u</span>
+              </div>
+              <div className="grid grid-cols-2">
+                <span className="text-gray-500">Configuration:</span>
+                <span className="font-medium">1s² 2s² 2p⁴</span>
               </div>
             </div>
           </div>
