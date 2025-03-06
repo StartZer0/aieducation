@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Mic, MicOff, Info } from 'lucide-react';
 import AITutorAvatar from '@/components/ai-tutor/AITutorAvatar';
 import ChemistryVisualizer from '@/components/ai-tutor/ChemistryVisualizer';
+import CircularPeriodicTable from '@/components/ai-tutor/CircularPeriodicTable';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AITutor() {
@@ -93,7 +95,7 @@ export default function AITutor() {
 
   return (
     <div className="container mx-auto py-24 px-4">
-      <div className="text-center mb-8">
+      <div className="text-center mb-8 pt-4">
         <h1 className="text-3xl font-bold mb-2">AI Chemistry Tutor</h1>
         <p className="text-gray-600">Interactive learning with personalized explanations</p>
       </div>
@@ -149,19 +151,9 @@ export default function AITutor() {
         </div>
       )}
       
-      {/* Info box */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
-        <div className="flex items-start">
-          <Info className="h-5 w-5 text-blue-500 mt-1 mr-2 flex-shrink-0" />
-          <div>
-            <h3 className="font-medium text-blue-700">How It Works</h3>
-            <p className="text-sm text-blue-600">
-              This AI Chemistry Tutor uses voice recognition to understand your questions about chemical concepts.
-              The tutor provides synchronized visualizations and clear explanations to help you understand
-              complex topics like electron configuration, atomic structure, and chemical properties.
-            </p>
-          </div>
-        </div>
+      {/* Interactive Circular Periodic Table */}
+      <div className="w-full bg-[#121212] rounded-xl shadow-md overflow-hidden border border-gray-800 h-[600px] mb-6">
+        <CircularPeriodicTable />
       </div>
     </div>
   );
