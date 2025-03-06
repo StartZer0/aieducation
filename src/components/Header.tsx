@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, ChartLine, FileText, Calculator, School } from 'lucide-react';
+import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, ChartLine, FileText, Calculator, School, UserIcon } from 'lucide-react';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -64,7 +65,7 @@ const Header = () => {
             className="ml-4 p-2 rounded-full hover:bg-muted transition-colors duration-300"
             aria-label="User Profile"
           >
-            <User className="w-5 h-5" />
+            <UserIcon className="w-5 h-5" />
           </Link>
         </nav>
         
@@ -103,7 +104,7 @@ const Header = () => {
               to="/profile"
               className="flex items-center py-3 px-4 rounded-xl transition-colors duration-300 hover:bg-muted"
             >
-              <User className="w-5 h-5 mr-2" />
+              <UserIcon className="w-5 h-5 mr-2" />
               Profile
             </Link>
           </nav>
