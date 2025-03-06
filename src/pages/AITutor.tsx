@@ -1,0 +1,171 @@
+
+import React, { useState, useEffect, useRef } from 'react';
+import { Button } from '@/components/ui/button';
+import { Mic, MicOff, Info } from 'lucide-react';
+import AITutorAvatar from '@/components/ai-tutor/AITutorAvatar';
+import ChemistryVisualizer from '@/components/ai-tutor/ChemistryVisualizer';
+import PeriodicTableVisualization from '@/components/ai-tutor/PeriodicTableVisualization';
+import AtomicStructureVisualization from '@/components/ai-tutor/AtomicStructureVisualization';
+import { useToast } from '@/hooks/use-toast';
+
+export default function AITutor() {
+  const [currentStage, setCurrentStage] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const animationRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number | null>(null);
+  const { toast } = useToast();
+
+  const totalDuration = 4000; // 4 seconds in milliseconds
+  
+  const stages = [
+    {
+      time: 0,
+      avatarText: "What can you tell me about the electron configuration of Oxygen?",
+      isUser: true
+    },
+    {
+      time: 1000,
+      avatarText: "Oxygen is element 8 in the periodic table, located in group 16, period 2.",
+      isUser: false
+    },
+    {
+      time: 2000,
+      avatarText: "Oxygen's electron configuration is 1s² 2s² 2p⁴",
+      isUser: false
+    },
+    {
+      time: 3000,
+      avatarText: "This gives oxygen 6 valence electrons, making it highly reactive with metals.",
+      isUser: false
+    }
+  ];
+
+  const startDemo = () => {
+    setIsPlaying(true);
+    setCurrentTime(0);
+    setCurrentStage(0);
+    startTimeRef.current = Date.now();
+    
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+    
+    animateDemo();
+    
+    toast({
+      title: "Demo Started",
+      description: "Watch how the AI Tutor explains oxygen's electron configuration",
+    });
+  };
+
+  const animateDemo = () => {
+    if (!startTimeRef.current) return;
+    
+    const elapsed = Date.now() - startTimeRef.current;
+    setCurrentTime(elapsed);
+    
+    // Update the current stage based on elapsed time
+    for (let i = stages.length - 1; i >= 0; i--) {
+      if (elapsed >= stages[i].time) {
+        if (currentStage !== i) {
+          setCurrentStage(i);
+        }
+        break;
+      }
+    }
+    
+    if (elapsed < totalDuration) {
+      animationRef.current = requestAnimationFrame(animateDemo);
+    } else {
+      setIsPlaying(false);
+      startTimeRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, []);
+
+  // Calculate progress percentage
+  const progressPercentage = Math.min((currentTime / totalDuration) * 100, 100);
+
+  return (
+    <div className="container mx-auto py-16 px-4">
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold">AI Chemistry Tutor</h1>
+        <p className="text-gray-600 mt-2">Interactive learning with personalized explanations</p>
+      </div>
+      
+      <div className="flex flex-col lg:flex-row gap-6 mb-6">
+        {/* Visualization area - 65% */}
+        <div className="w-full lg:w-2/3 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
+          <ChemistryVisualizer 
+            currentStage={currentStage} 
+            progress={progressPercentage}
+            currentTime={currentTime}
+          />
+        </div>
+        
+        {/* Avatar area - 25% */}
+        <div className="w-full lg:w-1/3 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
+          <AITutorAvatar 
+            currentStage={currentStage}
+            avatarText={stages[currentStage]?.avatarText || ""}
+            isUserMessage={stages[currentStage]?.isUser || false}
+            progress={progressPercentage}
+          />
+        </div>
+      </div>
+      
+      {/* Controls */}
+      <div className="flex justify-center gap-4 mb-8">
+        <Button 
+          onClick={startDemo}
+          disabled={isPlaying}
+          className="py-2 px-6"
+        >
+          {isPlaying ? "Playing..." : "Start Demo"}
+        </Button>
+        
+        <Button
+          variant="outline"
+          className="flex items-center gap-2"
+          disabled={isPlaying}
+        >
+          <Mic className="h-4 w-4" />
+          Ask Question
+        </Button>
+      </div>
+      
+      {/* Progress bar */}
+      {isPlaying && (
+        <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+          <div 
+            className="bg-blue-500 h-2.5 rounded-full transition-all duration-100" 
+            style={{ width: `${progressPercentage}%` }}
+          ></div>
+        </div>
+      )}
+      
+      {/* Info box */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-8">
+        <div className="flex items-start">
+          <Info className="h-5 w-5 text-blue-500 mt-1 mr-2 flex-shrink-0" />
+          <div>
+            <h3 className="font-medium text-blue-700">Demo Information</h3>
+            <p className="text-sm text-blue-600">
+              This demonstration shows how an AI Chemistry Tutor would explain chemical concepts
+              with synchronized visualizations. The demo runs for exactly 4 seconds, showcasing
+              interactive explanations of oxygen's electron configuration.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
