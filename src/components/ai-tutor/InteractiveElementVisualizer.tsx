@@ -128,29 +128,10 @@ const InteractiveElementVisualizer: React.FC<InteractiveElementVisualizerProps> 
           </div>
         </div>
         
-        {/* Information panel */}
-        <div className={cn(
-          "p-4 border-t border-gray-200 bg-white transition-all duration-500",
-          animationPhase >= 2 ? "opacity-100 transform translate-y-0" : "opacity-0 transform translate-y-4"
-        )}>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-2">
-            {getStageInfo().map((item, index) => (
-              <div key={index} className="flex justify-between">
-                <span className="text-gray-500 text-sm">{item.label}:</span>
-                <span className={cn(
-                  "text-sm font-medium",
-                  item.highlight ? "text-blue-600" : "text-gray-700",
-                  item.highlight && currentStage > 0 && "animate-pulse"
-                )}>
-                  {item.value}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
+        {/* The information panel has been removed from here since we're showing it in the main layout */}
       </div>
     </div>
   );
-};
+}
 
 export default InteractiveElementVisualizer;

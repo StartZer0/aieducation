@@ -108,29 +108,32 @@ export default function AITutor() {
   const progressPercentage = Math.min((currentTime / totalDuration) * 100, 100);
 
   return (
-    <div className="container mx-auto py-12 px-4">
-      <div className="flex flex-col lg:flex-row gap-6 mb-6">
-        {/* Visualization area - 70% */}
-        <div className="w-full lg:w-3/4 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
-          <div className="h-full flex flex-col">
-            <div className="border-b border-gray-200 px-4 py-3 bg-white flex justify-between items-center">
-              <div className="flex items-center">
-                <Atom className="h-4 w-4 mr-2 text-blue-500" />
-                <span className="font-medium">Interactive Table with Atom Visualization</span>
-              </div>
-              <Tabs 
-                value={visualizerTab} 
-                onValueChange={(value) => setVisualizerTab(value as 'table' | 'atom')}
-                className="mr-2"
-              >
-                <TabsList>
-                  <TabsTrigger value="table">Periodic Table</TabsTrigger>
-                  <TabsTrigger value="atom">Atomic Structure</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </div>
-            
-            <div className="flex-1 h-full relative">
+    <div className="container mx-auto py-8 px-4">
+      <div className="flex flex-col space-y-6">
+        {/* Title and tabs container with better spacing */}
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center">
+            <Atom className="h-5 w-5 mr-2 text-blue-500" />
+            <h2 className="text-lg font-medium">Interactive Table with Atom Visualization</h2>
+          </div>
+          
+          <Tabs 
+            value={visualizerTab} 
+            onValueChange={(value) => setVisualizerTab(value as 'table' | 'atom')}
+            className="mr-2"
+          >
+            <TabsList>
+              <TabsTrigger value="table">Periodic Table</TabsTrigger>
+              <TabsTrigger value="atom">Atomic Structure</TabsTrigger>
+            </TabsList>
+          </Tabs>
+        </div>
+        
+        {/* Main content area */}
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Visualization area - 70% */}
+          <div className="w-full lg:w-3/4 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
+            <div className="h-full relative">
               <div 
                 className={`absolute inset-0 transition-opacity duration-1000 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
               >
@@ -154,58 +157,58 @@ export default function AITutor() {
               )}
             </div>
           </div>
+          
+          {/* Avatar area - 30% */}
+          <div className="w-full lg:w-1/4 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
+            <AITutorAvatar 
+              currentStage={currentStage}
+              avatarText={stages[currentStage]?.avatarText || ""}
+              isUserMessage={stages[currentStage]?.isUser || false}
+              progress={progressPercentage}
+            />
+          </div>
         </div>
         
-        {/* Avatar area - 30% */}
-        <div className="w-full lg:w-1/4 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
-          <AITutorAvatar 
-            currentStage={currentStage}
-            avatarText={stages[currentStage]?.avatarText || ""}
-            isUserMessage={stages[currentStage]?.isUser || false}
-            progress={progressPercentage}
-          />
+        {/* Controls */}
+        <div className="flex justify-center gap-4">
+          <Button
+            onClick={askQuestion}
+            className="flex items-center gap-2 py-2 px-6"
+            variant="outline"
+            disabled={isPlaying}
+          >
+            <Mic className="h-4 w-4" />
+            Ask Question
+          </Button>
         </div>
-      </div>
-      
-      {/* Controls */}
-      <div className="flex justify-center gap-4 mb-8">
-        <Button
-          onClick={askQuestion}
-          className="flex items-center gap-2 py-2 px-6"
-          variant="outline"
-          disabled={isPlaying}
-        >
-          <Mic className="h-4 w-4" />
-          Ask Question
-        </Button>
-      </div>
-      
-      {/* Progress bar */}
-      {isPlaying && (
-        <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6">
-          <div 
-            className="bg-blue-500 h-2.5 rounded-full transition-all duration-100" 
-            style={{ width: `${progressPercentage}%` }}
-          ></div>
-        </div>
-      )}
-      
-      {/* Footer info area */}
-      <div className="w-full bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 p-4 mb-6">
-        <div className="flex flex-wrap items-center gap-x-8 gap-y-2">
-          <div className="flex items-center">
-            <span className="text-gray-500 mr-2">Exploring:</span>
-            <span className="text-blue-600 font-medium">Electron Configuration</span>
+        
+        {/* Progress bar */}
+        {isPlaying && (
+          <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
+            <div 
+              className="bg-blue-500 h-2.5 rounded-full transition-all duration-100" 
+              style={{ width: `${progressPercentage}%` }}
+            ></div>
           </div>
-          
-          <div className="flex items-center">
-            <span className="text-gray-500 mr-2">Element:</span>
-            <span className="text-blue-600 font-medium">Oxygen (O)</span>
-          </div>
-          
-          <div className="flex items-center">
-            <span className="text-gray-500 mr-2">Status:</span>
-            <span className="text-gray-700">Waiting for response...</span>
+        )}
+        
+        {/* Footer info area */}
+        <div className="w-full bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 p-4">
+          <div className="flex flex-wrap items-center gap-x-8 gap-y-2">
+            <div className="flex items-center">
+              <span className="text-gray-500 mr-2">Exploring:</span>
+              <span className="text-blue-600 font-medium">Electron Configuration</span>
+            </div>
+            
+            <div className="flex items-center">
+              <span className="text-gray-500 mr-2">Element:</span>
+              <span className="text-blue-600 font-medium">Oxygen (O)</span>
+            </div>
+            
+            <div className="flex items-center">
+              <span className="text-gray-500 mr-2">Status:</span>
+              <span className="text-gray-700">Waiting for response...</span>
+            </div>
           </div>
         </div>
       </div>
