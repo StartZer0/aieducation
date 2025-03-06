@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Mic, MicOff, Info } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Mic, MicOff, Info, Table, Atom } from 'lucide-react';
 import AITutorAvatar from '@/components/ai-tutor/AITutorAvatar';
 import ChemistryVisualizer from '@/components/ai-tutor/ChemistryVisualizer';
 import CircularPeriodicTable from '@/components/ai-tutor/CircularPeriodicTable';
@@ -11,6 +12,7 @@ export default function AITutor() {
   const [currentStage, setCurrentStage] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [activeTab, setActiveTab] = useState<'table' | 'atom'>('table');
   const animationRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const { toast } = useToast();
@@ -94,8 +96,8 @@ export default function AITutor() {
   const progressPercentage = Math.min((currentTime / totalDuration) * 100, 100);
 
   return (
-    <div className="container mx-auto py-24 px-4">
-      <div className="text-center mb-8 pt-4">
+    <div className="container mx-auto py-12 px-4">
+      <div className="text-center mb-8">
         <h1 className="text-3xl font-bold mb-2">AI Chemistry Tutor</h1>
         <p className="text-gray-600">Interactive learning with personalized explanations</p>
       </div>
@@ -103,11 +105,41 @@ export default function AITutor() {
       <div className="flex flex-col lg:flex-row gap-6 mb-6">
         {/* Visualization area - 65% */}
         <div className="w-full lg:w-2/3 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
-          <ChemistryVisualizer 
-            currentStage={currentStage} 
-            progress={progressPercentage}
-            currentTime={currentTime}
-          />
+          <div className="h-full flex flex-col">
+            <Tabs 
+              defaultValue="table" 
+              value={activeTab} 
+              onValueChange={(value) => setActiveTab(value as 'table' | 'atom')}
+              className="h-full flex flex-col"
+            >
+              <div className="border-b">
+                <TabsList className="w-auto px-4 h-12">
+                  <TabsTrigger value="table" className="flex items-center gap-2">
+                    <Table className="h-4 w-4" />
+                    Periodic Table
+                  </TabsTrigger>
+                  <TabsTrigger value="atom" className="flex items-center gap-2">
+                    <Atom className="h-4 w-4" />
+                    Atomic Structure
+                  </TabsTrigger>
+                </TabsList>
+              </div>
+              <TabsContent value="table" className="flex-1 h-full m-0 overflow-hidden">
+                <div className="w-full h-full">
+                  <ChemistryVisualizer 
+                    currentStage={currentStage} 
+                    progress={progressPercentage}
+                    currentTime={currentTime}
+                  />
+                </div>
+              </TabsContent>
+              <TabsContent value="atom" className="flex-1 h-full m-0">
+                <div className="w-full h-full bg-[#121212]">
+                  <CircularPeriodicTable />
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
         </div>
         
         {/* Avatar area - 25% */}
@@ -151,9 +183,24 @@ export default function AITutor() {
         </div>
       )}
       
-      {/* Interactive Circular Periodic Table */}
-      <div className="w-full bg-[#121212] rounded-xl shadow-md overflow-hidden border border-gray-800 h-[600px] mb-6">
-        <CircularPeriodicTable />
+      {/* Footer info area */}
+      <div className="w-full bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 p-4 mb-6">
+        <div className="flex flex-wrap items-center gap-x-8 gap-y-2">
+          <div className="flex items-center">
+            <span className="text-gray-500 mr-2">Exploring:</span>
+            <span className="text-blue-600 font-medium">Electron Configuration</span>
+          </div>
+          
+          <div className="flex items-center">
+            <span className="text-gray-500 mr-2">Element:</span>
+            <span className="text-blue-600 font-medium">Oxygen (O)</span>
+          </div>
+          
+          <div className="flex items-center">
+            <span className="text-gray-500 mr-2">Status:</span>
+            <span className="text-gray-700">Waiting for response...</span>
+          </div>
+        </div>
       </div>
     </div>
   );
