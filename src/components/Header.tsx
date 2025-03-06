@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, User } from 'lucide-react';
+import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, User, ChartLine } from 'lucide-react';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -27,6 +26,7 @@ const Header = () => {
     { path: '/analytics', label: 'Analytics', icon: <BarChart className="w-5 h-5 mr-2" /> },
     { path: '/schedule', label: 'Schedule', icon: <Calendar className="w-5 h-5 mr-2" /> },
     { path: '/chat', label: 'AI Tutor', icon: <MessageCircle className="w-5 h-5 mr-2" /> },
+    { path: '/test-charts', label: 'Test Charts', icon: <ChartLine className="w-5 h-5 mr-2" /> },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -46,7 +46,6 @@ const Header = () => {
           <span className="text-xl font-bold text-gradient">AI+ Education</span>
         </Link>
         
-        {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-1">
           {navLinks.map((link) => (
             <Link
@@ -68,7 +67,6 @@ const Header = () => {
           </Link>
         </nav>
         
-        {/* Mobile Menu Button */}
         <button 
           className="md:hidden p-2 focus:outline-none"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -82,7 +80,6 @@ const Header = () => {
         </button>
       </div>
       
-      {/* Mobile Navigation */}
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-background/95 dark:bg-background/95 backdrop-blur-md pt-20 px-4 animate-fade-in">
           <nav className="flex flex-col space-y-4">
