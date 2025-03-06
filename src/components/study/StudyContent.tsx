@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -432,7 +433,7 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
                     )}
                     {questionNum === 2 && (
                       <>
-                        |k| > 6 (i.e., k < -6 or k > 6)
+                        |k| &gt; 6 (i.e., k &lt; -6 or k &gt; 6)
                       </>
                     )}
                     {questionNum === 3 && (
