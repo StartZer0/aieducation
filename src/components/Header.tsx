@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, ChartLine, FileText, Calculator, School, UserIcon, Beaker, Flask } from 'lucide-react';
+import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, ChartLine, FileText, Calculator, School, UserIcon, Beaker, FlaskConical } from 'lucide-react';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -30,7 +29,7 @@ const Header = () => {
     { path: '/explain-to-me', label: 'Concept Explainer', icon: <School className="w-5 h-5 mr-2" /> },
     { path: '/essay-analysis', label: 'Essay Feedback', icon: <FileText className="w-5 h-5 mr-2" /> },
     { path: '/test-chats', label: 'Learning Examples', icon: <Beaker className="w-5 h-5 mr-2" /> },
-    { path: '/test-chats2', label: 'Advanced Examples', icon: <Flask className="w-5 h-5 mr-2" /> },
+    { path: '/test-chats2', label: 'Advanced Examples', icon: <FlaskConical className="w-5 h-5 mr-2" /> },
   ];
 
   const isActive = (path: string) => location.pathname === path;
