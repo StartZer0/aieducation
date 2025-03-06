@@ -27,14 +27,22 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   }, [currentIndex, text, speed]);
   
   const formatText = (content: string) => {
-    // First, handle LaTeX formula blocks
+    // First, handle LaTeX formula blocks with proper rendering
     let processedText = content.replace(/\\[\[(.*?)\\]\]/gs, (match, formula) => {
-      return `<div class="bg-gray-100 p-2 rounded my-2 font-mono">${formula}</div>`;
+      return `<div class="bg-gray-100 p-2 rounded my-2 font-mono text-center">${formula}</div>`;
     });
+    
+    // Handle math inline text
+    processedText = processedText.replace(/\\[(.*?)\\]/g, (match, formula) => {
+      return `<span class="inline-block bg-gray-100 px-1 rounded text-sm font-mono">${formula}</span>`;
+    });
+    
+    // Remove markdown headers (###)
+    processedText = processedText.replace(/^###\s+(.*?)$/gm, '<h3 class="text-base font-bold mb-2">$1</h3>');
     
     // Handle text formatting for highlighted words
     Object.entries(highlightTerms).forEach(([term, color]) => {
-      const regex = new RegExp(`(${term})`, 'gi');
+      const regex = new RegExp(`(${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
       processedText = processedText.replace(regex, `<span style="color:${color};font-weight:bold;">$1</span>`);
     });
     

@@ -35,7 +35,7 @@ Newton discovered these laws that explain how everything moves in our world - fr
     "Third Law: Every Push Has a Push Back": "#3182ce"
   };
 
-  const aStudentText = `### Newton's First Law: The Law of Inertia
+  const aStudentText = `Newton's First Law: The Law of Inertia
 Statement:
 "An object at rest remains at rest, and an object in motion continues in uniform motion in a straight line unless acted upon by a net external force."
 
@@ -57,9 +57,7 @@ Example:
 - A stationary spacecraft in deep space will continue to remain at rest unless acted upon by an external force (e.g., a thrust from an engine).
 - A moving car will continue in motion unless external forces like friction and air resistance slow it down.
 
----
-
-### Newton's Second Law: The Law of Acceleration
+Newton's Second Law: The Law of Acceleration
 Statement:
 "The rate of change of momentum of an object is directly proportional to the net external force acting on it, and this change occurs in the direction of the applied force."
 
@@ -91,9 +89,7 @@ Example:
   a = \\frac{F}{m} = \\frac{10}{2} = 5 \\text{ m/s}^2
   \\]
 
----
-
-### Newton's Third Law: The Law of Action and Reaction
+Newton's Third Law: The Law of Action and Reaction
 Statement:
 "For every action, there is an equal and opposite reaction."
 
