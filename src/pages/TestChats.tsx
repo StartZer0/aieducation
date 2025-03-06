@@ -6,7 +6,7 @@ import TypewriterText from '@/components/test-charts/TypewriterText';
 import AStudentContent from '@/components/test-charts/AStudentContent';
 import TypingAStudentContent from '@/components/test-charts/TypingAStudentContent';
 
-export default function TestCharts() {
+export default function TestChats() {
   const [showVisualLoader, setShowVisualLoader] = useState(true);
   
   // Hide loader after 2 seconds

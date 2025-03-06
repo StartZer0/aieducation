@@ -9,7 +9,8 @@ import Index from "./pages/Index";
 import Dashboard from "./pages/Dashboard";
 import Study from "./pages/Study";
 import Scheduler from "./pages/Scheduler";
-import TestCharts from "./pages/TestCharts";
+import TestChats from "./pages/TestChats";
+import TestChats2 from "./pages/TestChats2";
 import ExplainToMe from "./pages/ExplainToMe";
 import NotFound from "./pages/NotFound";
 
@@ -28,7 +29,8 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/study/:subjectId?/:topicId?" element={<Study />} />
             <Route path="/scheduler" element={<Scheduler />} />
-            <Route path="/test-charts" element={<TestCharts />} />
+            <Route path="/test-chats" element={<TestChats />} />
+            <Route path="/test-chats2" element={<TestChats2 />} />
             <Route path="/explain-to-me" element={<ExplainToMe />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
