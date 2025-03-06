@@ -67,11 +67,11 @@ const InteractiveElementVisualizer: React.FC<InteractiveElementVisualizerProps> 
     )}>
       <div className="h-full flex flex-col">
         {/* Main visualization area */}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden relative">
           {/* Periodic Table View */}
           <div className={cn(
-            "h-full w-full transition-all duration-500",
-            activeView === 'table' ? "opacity-100 z-10" : "opacity-0 absolute inset-0 pointer-events-none z-0"
+            "absolute inset-0 h-full w-full transition-all duration-500",
+            activeView === 'table' ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
           )}>
             <div className="h-full w-full bg-[#121212]">
               <CircularPeriodicTable 
@@ -83,8 +83,8 @@ const InteractiveElementVisualizer: React.FC<InteractiveElementVisualizerProps> 
           
           {/* Atomic Structure View */}
           <div className={cn(
-            "h-full w-full transition-all duration-500",
-            activeView === 'atom' ? "opacity-100 z-10" : "opacity-0 absolute inset-0 pointer-events-none z-0"
+            "absolute inset-0 h-full w-full transition-all duration-500",
+            activeView === 'atom' ? "opacity-100 z-10" : "opacity-0 pointer-events-none z-0"
           )}>
             <AtomicStructureVisualization 
               currentStage={currentStage} 

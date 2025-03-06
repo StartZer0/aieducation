@@ -2,10 +2,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Mic, MicOff, Info, Atom } from 'lucide-react';
+import { Mic, Info, Atom, Zap } from 'lucide-react';
 import AITutorAvatar from '@/components/ai-tutor/AITutorAvatar';
 import InteractiveElementVisualizer from '@/components/ai-tutor/InteractiveElementVisualizer';
 import { useToast } from '@/hooks/use-toast';
+import TutorInfoPanel from '@/components/ai-tutor/TutorInfoPanel';
 
 export default function AITutor() {
   const [currentStage, setCurrentStage] = useState(0);
@@ -55,7 +56,7 @@ export default function AITutor() {
     // Show the visualizer with a slight delay
     setTimeout(() => {
       setIsVisualizerVisible(true);
-    }, 2000);
+    }, 1000);
     
     animateSequence();
     
@@ -142,107 +143,101 @@ export default function AITutor() {
   };
 
   return (
-    <div className="container mx-auto py-4 px-4">
-      <div className="flex flex-col space-y-4">
-        {/* Title and tabs container */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-2">
-          <div className="flex items-center">
-            <Atom className="h-5 w-5 mr-2 text-blue-500" />
-            <h2 className="text-lg font-medium">Interactive Table with Atom Visualization</h2>
-          </div>
-          
-          <Tabs 
-            value={visualizerTab} 
-            onValueChange={(value) => setVisualizerTab(value as 'table' | 'atom')}
-            className="mr-2"
-          >
-            <TabsList>
-              <TabsTrigger value="table">Periodic Table</TabsTrigger>
-              <TabsTrigger value="atom">Atomic Structure</TabsTrigger>
-            </TabsList>
-          </Tabs>
-        </div>
-        
-        {/* Main content area with adjusted layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          {/* Visualization area - 75% */}
-          <div className="lg:col-span-3 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
-            <div className="h-full relative">
-              <div 
-                className={`absolute inset-0 transition-opacity duration-1000 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
-              >
-                <InteractiveElementVisualizer 
-                  currentStage={currentStage} 
-                  progress={progressPercentage}
-                  currentTime={currentTime}
-                  isVisible={isVisualizerVisible}
-                  activeView={visualizerTab}
-                />
+    <div className="container mx-auto py-6 px-4 max-w-7xl">
+      <div className="flex flex-col space-y-6">
+        {/* Main content area with side-by-side layout */}
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Left side: Visualization area - ~70% on desktop */}
+          <div className="lg:w-[70%] flex flex-col gap-4">
+            {/* Top section with tabs */}
+            <div className="flex items-center justify-between bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+              <div className="flex items-center">
+                <Atom className="h-5 w-5 mr-2 text-blue-500" />
+                <h2 className="text-lg font-medium">Interactive Chemistry Visualization</h2>
               </div>
               
-              {!isVisualizerVisible && (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="text-center text-gray-500">
-                    <Atom className="h-16 w-16 mx-auto mb-4 text-gray-400" />
-                    <p className="text-lg font-medium">Ask a question to see the interactive visualization</p>
-                    <p className="text-sm mt-2">Try asking about elements, electron configurations, or atomic structures</p>
-                  </div>
-                </div>
-              )}
+              <Tabs 
+                value={visualizerTab} 
+                onValueChange={(value) => setVisualizerTab(value as 'table' | 'atom')}
+                className="mr-2"
+              >
+                <TabsList>
+                  <TabsTrigger value="table" className="flex items-center gap-1">
+                    <Zap className="h-3.5 w-3.5" />
+                    <span>Periodic Table</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="atom" className="flex items-center gap-1">
+                    <Atom className="h-3.5 w-3.5" />
+                    <span>Atomic Structure</span>
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
             </div>
-          </div>
-          
-          {/* Avatar area - 25% */}
-          <div className="lg:col-span-1 bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 h-[500px]">
-            <AITutorAvatar 
-              currentStage={currentStage}
-              avatarText={stages[currentStage]?.avatarText || ""}
-              isUserMessage={stages[currentStage]?.isUser || false}
-              progress={progressPercentage}
-            />
-          </div>
-        </div>
-        
-        {/* Controls and info section with better spacing */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          {/* Controls */}
-          <div className="lg:col-span-3 flex justify-center gap-4 pt-2">
-            <Button
-              onClick={askQuestion}
-              className="flex items-center gap-2 py-2 px-6"
-              variant="outline"
-              disabled={isPlaying}
-            >
-              <Mic className="h-4 w-4" />
-              Ask Question
-            </Button>
-          </div>
-          
-          {/* Empty space for alignment */}
-          <div className="hidden lg:block lg:col-span-1"></div>
-        </div>
-        
-        {/* Progress bar */}
-        {isPlaying && (
-          <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-            <div 
-              className="bg-blue-500 h-2.5 rounded-full transition-all duration-100" 
-              style={{ width: `${progressPercentage}%` }}
-            ></div>
-          </div>
-        )}
-        
-        {/* Footer info area - moved to bottom */}
-        <div className="w-full mt-auto bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {getStageInfo().map((info, index) => (
-              <div key={index} className="flex items-center">
-                <span className="text-gray-500 mr-2">{info.label}:</span>
-                <span className={info.highlight ? "text-blue-600 font-medium" : "text-gray-700"}>
-                  {info.value}
-                </span>
+            
+            {/* Visualization area */}
+            <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 h-[450px]">
+              <div className="h-full relative">
+                <div 
+                  className={`absolute inset-0 transition-opacity duration-1000 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
+                >
+                  <InteractiveElementVisualizer 
+                    currentStage={currentStage} 
+                    progress={progressPercentage}
+                    currentTime={currentTime}
+                    isVisible={isVisualizerVisible}
+                    activeView={visualizerTab}
+                  />
+                </div>
+                
+                {!isVisualizerVisible && (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <div className="text-center text-gray-500 max-w-md p-6">
+                      <Atom className="h-16 w-16 mx-auto mb-4 text-blue-400 animate-pulse" />
+                      <p className="text-lg font-medium">Interactive Chemistry Tutor</p>
+                      <p className="text-sm mt-2 text-gray-400">Click the "Ask Question" button below to learn about the electron configuration of oxygen</p>
+                    </div>
+                  </div>
+                )}
               </div>
-            ))}
+            </div>
+            
+            {/* Controls */}
+            <div className="flex justify-center gap-4 pb-2">
+              <Button
+                onClick={askQuestion}
+                className="flex items-center gap-2 py-2 px-6 bg-blue-500 hover:bg-blue-600 transition-colors"
+                disabled={isPlaying}
+              >
+                <Mic className="h-4 w-4" />
+                Ask Question
+              </Button>
+            </div>
+            
+            {/* Progress bar */}
+            {isPlaying && (
+              <div className="w-full bg-gray-100 rounded-full h-2">
+                <div 
+                  className="bg-blue-500 h-2 rounded-full transition-all duration-100" 
+                  style={{ width: `${progressPercentage}%` }}
+                ></div>
+              </div>
+            )}
+          </div>
+          
+          {/* Right side: Avatar and info - ~30% on desktop */}
+          <div className="lg:w-[30%] flex flex-col gap-4">
+            {/* Avatar area */}
+            <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-100 h-[450px]">
+              <AITutorAvatar 
+                currentStage={currentStage}
+                avatarText={stages[currentStage]?.avatarText || ""}
+                isUserMessage={stages[currentStage]?.isUser || false}
+                progress={progressPercentage}
+              />
+            </div>
+            
+            {/* Info panel */}
+            <TutorInfoPanel stageInfo={getStageInfo()} />
           </div>
         </div>
       </div>
