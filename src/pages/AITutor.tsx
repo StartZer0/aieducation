@@ -12,6 +12,7 @@ export default function AITutor() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [isVisualizerVisible, setIsVisualizerVisible] = useState(false);
+  const [visualizerTab, setVisualizerTab] = useState<'table' | 'atom'>('table');
   const animationRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const { toast } = useToast();
@@ -41,7 +42,7 @@ export default function AITutor() {
     }
   ];
 
-  const startExplanation = () => {
+  const askQuestion = () => {
     setIsPlaying(true);
     setCurrentTime(0);
     setCurrentStage(0);
@@ -59,7 +60,7 @@ export default function AITutor() {
     animateSequence();
     
     toast({
-      title: "Analysis Started",
+      title: "Question Asked",
       description: "Listen as the AI Tutor explains oxygen's electron configuration",
     });
   };
@@ -75,6 +76,13 @@ export default function AITutor() {
       if (elapsed >= stages[i].time) {
         if (currentStage !== i) {
           setCurrentStage(i);
+          
+          // Auto switch to atom view when reaching electron configuration explanation
+          if (i >= 2) {
+            setVisualizerTab('atom');
+          } else {
+            setVisualizerTab('table');
+          }
         }
         break;
       }
@@ -115,6 +123,16 @@ export default function AITutor() {
                 <Atom className="h-4 w-4 mr-2 text-blue-500" />
                 <span className="font-medium">Interactive Table with Atom Visualization</span>
               </div>
+              <Tabs 
+                value={visualizerTab} 
+                onValueChange={(value) => setVisualizerTab(value as 'table' | 'atom')}
+                className="mr-2"
+              >
+                <TabsList>
+                  <TabsTrigger value="table">Periodic Table</TabsTrigger>
+                  <TabsTrigger value="atom">Atomic Structure</TabsTrigger>
+                </TabsList>
+              </Tabs>
             </div>
             
             <div className="flex-1 h-full relative">
@@ -126,6 +144,7 @@ export default function AITutor() {
                   progress={progressPercentage}
                   currentTime={currentTime}
                   isVisible={isVisualizerVisible}
+                  activeView={visualizerTab}
                 />
               </div>
               
@@ -156,7 +175,7 @@ export default function AITutor() {
       {/* Controls */}
       <div className="flex justify-center gap-4 mb-8">
         <Button
-          onClick={startExplanation}
+          onClick={askQuestion}
           className="flex items-center gap-2 py-2 px-6"
           variant="outline"
           disabled={isPlaying}

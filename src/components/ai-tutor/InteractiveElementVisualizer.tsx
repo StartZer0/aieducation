@@ -9,15 +9,16 @@ interface InteractiveElementVisualizerProps {
   progress: number;
   currentTime: number;
   isVisible: boolean;
+  activeView: 'table' | 'atom';
 }
 
 const InteractiveElementVisualizer: React.FC<InteractiveElementVisualizerProps> = ({ 
   currentStage,
   progress,
   currentTime,
-  isVisible
+  isVisible,
+  activeView
 }) => {
-  const [activeView, setActiveView] = useState<'table' | 'atom'>('table');
   const [animationPhase, setAnimationPhase] = useState(0);
   
   // Element data for oxygen
@@ -36,15 +37,6 @@ const InteractiveElementVisualizer: React.FC<InteractiveElementVisualizerProps> 
     description: 'Colorless gas essential for respiration and combustion. Makes up about 21% of Earth\'s atmosphere.'
   };
   
-  // Auto switch between table and atom view based on the current stage
-  useEffect(() => {
-    if (currentStage <= 1) {
-      setActiveView('table');
-    } else if (currentStage >= 2) {
-      setActiveView('atom');
-    }
-  }, [currentStage]);
-
   // Animation phase based on visibility and stage
   useEffect(() => {
     if (!isVisible) {
@@ -112,7 +104,7 @@ const InteractiveElementVisualizer: React.FC<InteractiveElementVisualizerProps> 
         <div className="flex-1 overflow-hidden">
           {/* Periodic Table */}
           <div className={cn(
-            "h-full w-full transition-all duration-1000",
+            "h-full w-full transition-all duration-500",
             activeView === 'table' ? "opacity-100" : "opacity-0 absolute inset-0 pointer-events-none"
           )}>
             <div className="h-full w-full bg-[#121212]">
@@ -125,7 +117,7 @@ const InteractiveElementVisualizer: React.FC<InteractiveElementVisualizerProps> 
           
           {/* Atomic Structure */}
           <div className={cn(
-            "h-full w-full transition-all duration-1000",
+            "h-full w-full transition-all duration-500",
             activeView === 'atom' ? "opacity-100" : "opacity-0 absolute inset-0 pointer-events-none"
           )}>
             <AtomicStructureVisualization 
