@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { ArrowLeft, ThumbsUp, ThumbsDown, X } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -17,7 +16,6 @@ export function DetailedExplanation({ title, onBack, term, content, onClose }: D
   const { toast } = useToast();
   const [feedbackGiven, setFeedbackGiven] = useState(false);
   
-  // Use onClose if provided, otherwise fallback to onBack
   const handleClose = onClose || onBack;
 
   const handleFeedback = (isPositive: boolean) => {
@@ -34,7 +32,6 @@ export function DetailedExplanation({ title, onBack, term, content, onClose }: D
     });
   };
 
-  // Custom HTML content for specific terms
   const renderContentForTerm = () => {
     if (term === 'function') {
       return (
@@ -165,7 +162,6 @@ export function DetailedExplanation({ title, onBack, term, content, onClose }: D
       );
     }
     
-    // Default content for other terms
     return (
       <div className="prose dark:prose-invert prose-blue max-w-none">
         <h1>Quadratic Functions: Detailed Explanation</h1>
@@ -359,56 +355,6 @@ export function DetailedExplanation({ title, onBack, term, content, onClose }: D
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex flex-col overflow-hidden">
-      {/* Header */}
-      <div className="p-4 border-b flex items-center justify-between bg-white/95 dark:bg-background/95">
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" onClick={onBack}>
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-          <h2 className="font-semibold">{title}</h2>
-        </div>
-        <Button variant="ghost" size="icon" onClick={handleClose}>
-          <X className="h-4 w-4" />
-        </Button>
-      </div>
-      
-      {/* Content with scrolling */}
-      <div className="flex-grow overflow-y-auto bg-white/80 dark:bg-background/80">
-        <div className="max-w-3xl mx-auto py-6 px-8 bg-white dark:bg-background shadow-lg my-4 rounded-lg">
-          {renderContentForTerm()}
-        </div>
-      </div>
-      
-      {/* Footer */}
-      <div className="p-4 border-t bg-white/95 dark:bg-background/95">
-        <div className="flex items-center justify-between">
-          <Button variant="ghost" onClick={onBack}>
-            <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to content
-          </Button>
-          <div className="flex items-center gap-2">
-            <Button 
-              variant="outline"
-              className="flex items-center gap-2 text-green-600 hover:bg-green-50"
-              onClick={() => handleFeedback(true)}
-              disabled={feedbackGiven}
-            >
-              <ThumbsUp className="h-4 w-4" />
-              Helpful
-            </Button>
-            <Button 
-              variant="outline"
-              className="flex items-center gap-2 text-red-600 hover:bg-red-50"
-              onClick={() => handleFeedback(false)}
-              disabled={feedbackGiven}
-            >
-              <ThumbsDown className="h-4 w-4" />
-              Not helpful
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+    <div className="fixed inset-0 z-50 bg-background/70 backdrop-blur-sm flex flex-col overflow-hidden">
+      <
+

@@ -32,6 +32,7 @@ interface StudyContentProps {
 export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subjectId, topicId }: StudyContentProps) {
   const [explanationLevel, setExplanationLevel] = useState('medium');
   const [activeTab, setActiveTab] = useState('content');
+  const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
   const { toast } = useToast();
   
   const getContent = () => {
@@ -329,114 +330,129 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
     );
   };
   
-  const renderQuestions = () => (
-    <div className="space-y-4">
-      <Card className="p-6">
-        <div className="flex items-start mb-3">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 mt-0.5">
-            <HelpCircle className="w-5 h-5 text-primary" />
-          </div>
-          <h4 className="text-lg font-semibold">Question 1</h4>
-        </div>
-        <p className="mb-3">
-          How would the graph of f(x) = 2x² - 4x + 5 differ from the graph of g(x) = -2x² - 4x + 5? 
-          Think about the shape, direction, and key points.
-        </p>
-        <Button 
-          variant="outline" 
-          className="text-sm"
-          onClick={() => checkAnswer("Question 1", "")}
-        >
-          Check Answer
-        </Button>
-      </Card>
+  const renderQuestions = () => {
+    const [showAnswers, setShowAnswers] = useState<Record<number, boolean>>({});
+
+    const checkAnswer = (questionNumber: number, submittedAnswer: string) => {
+      const answers = {
+        1: "The graph of f(x) opens upward with a minimum point, while g(x) opens downward with a maximum point due to the coefficient of x² being positive (2) and negative (-2) respectively.",
+        2: "|k| > 6 (i.e., k < -6 or k > 6)",
+        3: "f(x) = x² + 2x + 1",
+        4: "Maximum height: 20.9m at t = 2.04s; hits ground at t = 4.2s"
+      };
+
+      const correct = submittedAnswer.toLowerCase().includes(answers[questionNumber as keyof typeof answers].toLowerCase());
       
-      <Card className="p-6">
-        <div className="flex items-start mb-3">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 mt-0.5">
-            <HelpCircle className="w-5 h-5 text-primary" />
-          </div>
-          <h4 className="text-lg font-semibold">Question 2</h4>
-        </div>
-        <p className="mb-3">
-          The quadratic equation 3x² - kx + 3 = 0 has two distinct real roots. What are the possible values of k?
-        </p>
-        <Button 
-          variant="outline" 
-          className="text-sm"
-          onClick={() => checkAnswer("Question 2", "")}
-        >
-          Check Answer
-        </Button>
-      </Card>
-      
-      <Card className="p-6">
-        <div className="flex items-start mb-3">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 mt-0.5">
-            <HelpCircle className="w-5 h-5 text-primary" />
-          </div>
-          <h4 className="text-lg font-semibold">Question 3</h4>
-        </div>
-        <p className="mb-3">
-          If a parabola passes through the points (1, 4), (2, 7), and (3, 12), determine the quadratic function in the form f(x) = ax² + bx + c.
-        </p>
-        <Button 
-          variant="outline" 
-          className="text-sm"
-          onClick={() => checkAnswer("Question 3", "")}
-        >
-          Check Answer
-        </Button>
-      </Card>
-      
-      <Card className="p-6">
-        <div className="flex items-start mb-3">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 mt-0.5">
-            <HelpCircle className="w-5 h-5 text-primary" />
-          </div>
-          <h4 className="text-lg font-semibold">Question 4</h4>
-        </div>
-        <p className="mb-3">
-          A ball is thrown upward with an initial velocity of 20 m/s from a height of 1.5 m. Its height h in meters after t seconds is given by h(t) = -4.9t² + 20t + 1.5. Find the maximum height reached by the ball and when it hits the ground.
-        </p>
-        <Button 
-          variant="outline" 
-          className="text-sm"
-          onClick={() => checkAnswer("Question 4", "")}
-        >
-          Check Answer
-        </Button>
-      </Card>
-    </div>
-  );
-  
-  const checkAnswer = (question: string, submittedAnswer: string) => {
-    const correctAnswers: Record<string, string> = {
-      "Question 1": "The graph of f(x) = 2x² - 4x + 5 opens upward and has a minimum, while g(x) = -2x² - 4x + 5 opens downward and has a maximum.",
-      "Question 2": "k must satisfy |k| > 6 (i.e., k < -6 or k > 6) for the discriminant to be positive.",
-      "Question 3": "f(x) = x² + 2x + 1",
-      "Question 4": "Maximum height: 20.9 meters at t = 2.04 seconds. Hits ground at t = 4.2 seconds."
+      toast({
+        title: correct ? "Correct! 🎉" : "Not quite right",
+        description: correct 
+          ? "Great job! Your understanding of quadratic functions is solid."
+          : "Let's review this concept. Here's a hint: Think about how the coefficients affect the shape and direction of the parabola.",
+        variant: "default",
+        className: correct 
+          ? "bg-green-50 border-green-200 text-green-800 dark:bg-green-900/30"
+          : "bg-orange-50 border-orange-200 text-orange-800 dark:bg-orange-900/30",
+      });
+
+      setShowAnswers(prev => ({...prev, [questionNumber]: true}));
     };
-    
-    const isCorrect = Math.random() > 0.5;
-    
-    if (isCorrect) {
-      toast({
-        title: "Correct! 🎉",
-        description: "Great job! Your understanding of quadratic functions is solid.",
-        variant: "default",
-        className: "bg-green-50 border-green-200 text-green-800",
-      });
-    } else {
-      toast({
-        title: "Not quite right",
-        description: "Let's review the concept again. Try focusing on how the coefficient 'a' affects the shape.",
-        variant: "default",
-        className: "bg-orange-50 border-orange-200 text-orange-800",
-      });
-    }
-    
-    return isCorrect;
+
+    return (
+      <div className="space-y-4">
+        {[1, 2, 3, 4].map((questionNum) => (
+          <Card key={questionNum} className="p-6">
+            <div className="flex items-start mb-3">
+              <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mr-3 mt-0.5">
+                <HelpCircle className="w-5 h-5 text-primary" />
+              </div>
+              <h4 className="text-lg font-semibold">Question {questionNum}</h4>
+            </div>
+            
+            <p className="mb-4">
+              {questionNum === 1 && (
+                <>
+                  How would the graph of f(x) = 2x² - 4x + 5 differ from the graph of g(x) = -2x² - 4x + 5?
+                  Think about the shape, direction, and key points.
+                </>
+              )}
+              {questionNum === 2 && (
+                <>
+                  The quadratic equation 3x² - kx + 3 = 0 has two distinct real roots. What are the possible values of k?
+                </>
+              )}
+              {questionNum === 3 && (
+                <>
+                  If a parabola passes through the points (1, 4), (2, 7), and (3, 12), determine the quadratic function in the form f(x) = ax² + bx + c.
+                </>
+              )}
+              {questionNum === 4 && (
+                <>
+                  A ball is thrown upward with an initial velocity of 20 m/s from a height of 1.5 m. Its height h in meters after t seconds is given by h(t) = -4.9t² + 20t + 1.5. Find the maximum height reached by the ball and when it hits the ground.
+                </>
+              )}
+            </p>
+
+            <div className="space-y-4">
+              <textarea
+                className="w-full min-h-[100px] p-3 rounded-md border bg-background"
+                placeholder="Write your answer here..."
+                value={userAnswers[questionNum] || ''}
+                onChange={(e) => setUserAnswers(prev => ({...prev, [questionNum]: e.target.value}))}
+              />
+              
+              <div className="flex justify-between items-center">
+                <Button 
+                  variant="outline" 
+                  className="text-sm"
+                  onClick={() => checkAnswer(questionNum, userAnswers[questionNum] || '')}
+                  disabled={!userAnswers[questionNum]}
+                >
+                  Check Answer
+                </Button>
+                
+                {showAnswers[questionNum] && (
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="text-xs text-muted-foreground"
+                    onClick={() => setShowAnswers(prev => ({...prev, [questionNum]: !prev[questionNum]}))}
+                  >
+                    Show Sample Answer
+                  </Button>
+                )}
+              </div>
+
+              {showAnswers[questionNum] && (
+                <div className="mt-4 p-4 bg-muted/50 rounded-lg">
+                  <p className="text-sm text-muted-foreground">
+                    Sample answer: {questionNum === 1 && (
+                      <>
+                        The graph of f(x) opens upward with a minimum point, while g(x) opens downward with a maximum point due to the coefficient of x² being positive (2) and negative (-2) respectively.
+                      </>
+                    )}
+                    {questionNum === 2 && (
+                      <>
+                        |k| > 6 (i.e., k < -6 or k > 6)
+                      </>
+                    )}
+                    {questionNum === 3 && (
+                      <>
+                        f(x) = x² + 2x + 1
+                      </>
+                    )}
+                    {questionNum === 4 && (
+                      <>
+                        Maximum height: 20.9m at t = 2.04s; hits ground at t = 4.2s
+                      </>
+                    )}
+                  </p>
+                </div>
+              )}
+            </div>
+          </Card>
+        ))}
+      </div>
+    );
   };
   
   return (
@@ -546,4 +562,3 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
     </div>
   );
 }
-

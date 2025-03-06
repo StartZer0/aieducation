@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronRight, BookOpen } from 'lucide-react';
 
@@ -23,10 +22,8 @@ interface StudyNavigationProps {
 export function StudyNavigation({ subject, activeTopic, onNavigate }: StudyNavigationProps) {
   const [expandedTopics, setExpandedTopics] = useState<Record<string, boolean>>({});
   
-  // Auto-expand parents of the active topic
   useEffect(() => {
     if (activeTopic) {
-      // Function to find all parent topics of a given topic ID
       const findParentTopics = (topics: Topic[], targetId: string, path: string[] = []): string[] | null => {
         for (const topic of topics) {
           if (topic.id === targetId) {
@@ -64,9 +61,7 @@ export function StudyNavigation({ subject, activeTopic, onNavigate }: StudyNavig
     }));
   };
   
-  // Get progress color for the topic (simulated for now)
   const getProgressColor = (id: string) => {
-    // Simulate different progress states
     const progressMapping: Record<string, { color: string, width: string }> = {
       'linear-equations': { color: 'bg-green-400', width: 'w-full' },
       'quadratic-functions': { color: 'bg-blue-400', width: 'w-2/3' },
@@ -89,8 +84,10 @@ export function StudyNavigation({ subject, activeTopic, onNavigate }: StudyNavig
         <div key={topic.id} className="animate-fade-in" style={{ animationDuration: '0.2s' }}>
           <div className="relative">
             <div 
-              className={`flex items-center py-1.5 px-2 rounded-md ${
-                isActive(topic.id) ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 font-medium' : 'hover:bg-blue-50 dark:hover:bg-blue-900/20'
+              className={`flex items-center py-1.5 px-2 rounded-md transition-all duration-200 ${
+                isActive(topic.id) 
+                  ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 font-medium' 
+                  : 'hover:bg-blue-50 dark:hover:bg-blue-900/20'
               }`}
               onClick={() => onNavigate(`/study/${subject.id}/${topic.id}`)}
             >
@@ -117,9 +114,14 @@ export function StudyNavigation({ subject, activeTopic, onNavigate }: StudyNavig
               </span>
             </div>
             
-            {/* Progress bar */}
-            <div className="h-1 bg-gray-100 dark:bg-gray-800 rounded-full mx-8 mt-1">
-              <div className={`h-full ${progress.color} rounded-full ${progress.width}`}></div>
+            <div className="h-1 bg-gray-100 dark:bg-gray-800 rounded-full mx-8 mt-1 overflow-hidden">
+              <div 
+                className={`h-full rounded-full transition-all duration-1000 ease-out ${progress.color}`}
+                style={{ 
+                  width: progress.width,
+                  backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.2) 100%)'
+                }}
+              />
             </div>
           </div>
           
@@ -129,7 +131,7 @@ export function StudyNavigation({ subject, activeTopic, onNavigate }: StudyNavig
             </div>
           )}
         </div>
-      )
+      );
     });
   };
   
