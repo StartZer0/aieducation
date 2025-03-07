@@ -13,8 +13,10 @@ export default function AITutor() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [isVisualizerVisible, setIsVisualizerVisible] = useState(false);
-  const [visualizerTab, setVisualizerTab] = useState<'table' | 'atom'>('table');
+  const [visualizerTab, setVisualizerTab] = useState('table');
   const [selectedElement, setSelectedElement] = useState(null);
+  const [showElementLabels, setShowElementLabels] = useState(true); // Always show element labels
+  const [preventOverlays, setPreventOverlays] = useState(true); // Never show explanation overlays
   const animationRef = useRef(null);
   const startTimeRef = useRef(null);
   const { toast } = useToast();
@@ -141,6 +143,25 @@ export default function AITutor() {
   const handleElementSelect = (element) => {
     console.log("Element selected:", element);
     setSelectedElement(element);
+    
+    // Move all explanation data to the details section
+    // This ensures no overlays are shown on the elements themselves
+    if (element) {
+      // If we're in the demo, pause it when a user manually selects an element
+      if (isPlaying) {
+        setIsPlaying(false);
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+        }
+        startTimeRef.current = null;
+      }
+      
+      // Focus the details section so users can see the information has moved there
+      const detailsSection = document.getElementById('element-details-section');
+      if (detailsSection) {
+        detailsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
   };
 
   return (
@@ -190,11 +211,12 @@ export default function AITutor() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border-b">
               <div className="flex items-center mb-3 sm:mb-0">
                 <Atom className="h-5 w-5 mr-2 text-blue-500" />
+                <h3 className="text-sm font-medium">Interactive Chemistry Visualizer</h3>
               </div>
               
               <Tabs 
                 value={visualizerTab} 
-                onValueChange={(value) => setVisualizerTab(value as 'table' | 'atom')}
+                onValueChange={(value) => setVisualizerTab(value)}
                 className="mr-0"
               >
                 <TabsList>
@@ -210,8 +232,9 @@ export default function AITutor() {
               </Tabs>
             </div>
             
-            <div className="h-[600px] relative bg-gray-900 flex flex-col">
-              <div className="flex-grow relative">
+            <div className="flex flex-col bg-gray-900">
+              {/* Visualization area with maintained height and width adjusted to 100% */}
+              <div className="h-[500px] relative">
                 <div 
                   className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
                 >
@@ -222,32 +245,57 @@ export default function AITutor() {
                     isVisible={isVisualizerVisible}
                     activeView={visualizerTab}
                     elementSize="md" 
-                    spacing="normal"
+                    spacing="wide" 
                     onElementSelect={handleElementSelect}
+                    showElementOverlay={false} // Prevent displaying explanations over elements
+                    disableElementLabels={false} // Keep element labels but no explanations
+                    widthMode="full" // Use full width without scaling
                   />
                 </div>
+                
+                {!isVisualizerVisible && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="text-center max-w-md p-6 bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl text-white">
+                      <Atom className="h-16 w-16 mx-auto mb-4 text-blue-400" />
+                      <p className="text-lg font-medium mb-2">Chemistry Learning</p>
+                      <p className="text-sm text-gray-300 mb-4">
+                        Click the "Ask Question" button to learn about the electron configuration of oxygen
+                      </p>
+                      <Button 
+                        onClick={askQuestion} 
+                        variant="outline" 
+                        className="border-blue-500 text-blue-400 hover:bg-blue-900 hover:bg-opacity-30"
+                      >
+                        Start Demo
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
               
-              <div className="h-32 bg-gray-800 p-4 overflow-auto">
+              {/* Element details section that receives all explanations */}
+              <div id="element-details-section" className="h-32 bg-gray-800 p-4 overflow-auto border-t border-gray-700">
                 {selectedElement ? (
                   <div className="text-white">
-                    <h3 className="text-xl font-bold mb-2">{selectedElement.name} ({selectedElement.symbol})</h3>
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-xl font-bold">{selectedElement.name}</h3>
+                      <div className="bg-gray-700 px-2 py-1 rounded-md flex items-center">
+                        <span className="text-gray-300 text-xs mr-1">Symbol:</span>
+                        <span className="text-lg font-semibold">{selectedElement.symbol}</span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm mt-2">
                       <div>
-                        <p className="text-gray-400">Atomic Number</p>
-                        <p className="font-medium">{selectedElement.atomicNumber}</p>
+                        <span className="text-gray-400">Atomic Number:</span>
+                        <span className="font-medium ml-1">{selectedElement.atomicNumber}</span>
                       </div>
                       <div>
-                        <p className="text-gray-400">Electron Configuration</p>
-                        <p className="font-medium">{selectedElement.electronConfig}</p>
+                        <span className="text-gray-400">Atomic Mass:</span>
+                        <span className="font-medium ml-1">{selectedElement.atomicMass} u</span>
                       </div>
-                      <div>
-                        <p className="text-gray-400">Valence Electrons</p>
-                        <p className="font-medium">{selectedElement.valenceElectrons}</p>
-                      </div>
-                      <div>
-                        <p className="text-gray-400">Reactivity</p>
-                        <p className="font-medium">{selectedElement.reactivity}</p>
+                      <div className="col-span-2">
+                        <span className="text-gray-400">Electron Configuration:</span>
+                        <span className="font-medium ml-1">{selectedElement.electronConfig}</span>
                       </div>
                     </div>
                   </div>
@@ -257,25 +305,6 @@ export default function AITutor() {
                   </div>
                 )}
               </div>
-              
-              {!isVisualizerVisible && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-center max-w-md p-6 bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl text-white">
-                    <Atom className="h-16 w-16 mx-auto mb-4 text-blue-400" />
-                    <p className="text-lg font-medium mb-2">Chemistry Learning</p>
-                    <p className="text-sm text-gray-300 mb-4">
-                      Click the "Ask Question" button to learn about the electron configuration of oxygen
-                    </p>
-                    <Button 
-                      onClick={askQuestion} 
-                      variant="outline" 
-                      className="border-blue-500 text-blue-400 hover:bg-blue-900 hover:bg-opacity-30"
-                    >
-                      Start Demo
-                    </Button>
-                  </div>
-                </div>
-              )}
             </div>
           </div>
         </div>
