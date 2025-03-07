@@ -171,7 +171,7 @@ export default function AITutor() {
           <div className="bg-white rounded-xl shadow-md border border-gray-100 h-auto overflow-hidden">
             <div className="p-3 bg-blue-50 border-b border-blue-100 flex items-center">
               <HelpCircle className="h-4 w-4 mr-2 text-blue-600" />
-              <h3 className="text-sm font-medium">Chemistry Tutor</h3>
+              <h3 className="text-sm font-medium">Tutor</h3>
             </div>
             <div className="p-4 pb-6">
               <AITutorAvatar 
