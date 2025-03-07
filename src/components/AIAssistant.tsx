@@ -20,10 +20,17 @@ const AIAssistant = () => {
   const toggleMinimized = () => {
     setIsMinimized(!isMinimized);
     if (isMinimized) {
-      // Add welcome message when opening for the first time if no messages
+      // Add welcome message when opening for the first time
       if (messages.length === 0) {
+        setIsTyping(true);
         setTimeout(() => {
-          addBotMessage("Hi there! I'm your AI tutor. What would you like to learn about today? You can ask me about any subject or topic you're studying.");
+          setMessages([{
+            id: generateId(),
+            content: "Hi there! I'm your AI tutor. What would you like to learn about today?",
+            isUser: false,
+            timestamp: new Date()
+          }]);
+          setIsTyping(false);
         }, 600);
       }
     }
@@ -226,6 +233,6 @@ const AIAssistant = () => {
       )}
     </div>
   );
-};
+}
 
 export default AIAssistant;
