@@ -19,16 +19,21 @@ interface Message {
 }
 
 export function StudyAIChat({ subjectId, topicId, topicTitle }: StudyAIChatProps) {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: '1',
-      role: 'assistant',
-      content: `Hi there! I'm your learning assistant for ${topicTitle}. What would you like to learn about today?`
-    }
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  
+  // Set the initial message when component mounts
+  useEffect(() => {
+    setMessages([
+      {
+        id: '1',
+        role: 'assistant',
+        content: `Hi there! I'm your learning assistant for ${topicTitle}. What would you like to learn about today?`
+      }
+    ]);
+  }, [topicTitle]);
   
   useEffect(() => {
     // Scroll to bottom whenever messages change
