@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote, Sparkles, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -38,6 +39,7 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [displayedResponse, setDisplayedResponse] = useState('');
+  const [fullResponse, setFullResponse] = useState(''); // Add the missing fullResponse state
   const [showGraph, setShowGraph] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
@@ -69,6 +71,24 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
     setIsTyping(true);
     setDisplayedResponse('');
     setShowGraph(false);
+    
+    // Set a sample response for demo purposes
+    const exampleResponse = `Quadratic functions are polynomial functions with the highest degree of 2. The standard form is f(x) = ax² + bx + c where a, b, and c are constants and a ≠ 0.
+
+The graph of a quadratic function is a parabola. The coefficient 'a' determines the shape and direction of the parabola:
+- When a > 0, the parabola opens upward
+- When a < 0, the parabola opens downward
+- The larger the absolute value of 'a', the narrower the parabola
+
+Key features of a quadratic function include:
+1. The vertex (h,k) where h = -b/(2a) and k = f(h)
+2. The axis of symmetry at x = -b/(2a)
+3. The y-intercept at f(0) = c
+4. The x-intercepts (if they exist) where ax² + bx + c = 0
+
+Would you like me to explain more about any of these aspects?`;
+    
+    setFullResponse(exampleResponse);
     
     toast({
       title: "Processing your question",
