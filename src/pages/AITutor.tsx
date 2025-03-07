@@ -259,7 +259,7 @@ export default function AITutor() {
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="text-center max-w-md p-6 bg-gray-800 bg-opacity-50 backdrop-blur-sm rounded-xl text-white">
                       <Atom className="h-16 w-16 mx-auto mb-4 text-blue-400" />
-                      <p className="text-lg font-medium mb-2">Chemistry Learning</p>
+                      <p className="text-lg font-medium mb-2">AI Learning</p>
                       <p className="text-sm text-gray-300 mb-4">
                         Click the "Ask Question" button to learn about the electron configuration of oxygen
                       </p>
