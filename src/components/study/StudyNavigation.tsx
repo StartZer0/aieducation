@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, ChevronRight, BookOpen } from 'lucide-react';
 
@@ -62,14 +63,38 @@ export function StudyNavigation({ subject, activeTopic, onNavigate }: StudyNavig
   };
   
   const getProgressColor = (id: string) => {
+    // Enhanced progress mapping with more varied completion levels
     const progressMapping: Record<string, { color: string, width: string }> = {
       'linear-equations': { color: 'bg-green-400', width: 'w-full' },
       'quadratic-functions': { color: 'bg-blue-400', width: 'w-2/3' },
       'inequalities': { color: 'bg-orange-400', width: 'w-1/4' },
-      'functions-and-graphs': { color: 'bg-yellow-400', width: 'w-1/6' }
+      'functions-and-graphs': { color: 'bg-yellow-400', width: 'w-1/6' },
+      'coordinate-geometry': { color: 'bg-purple-400', width: 'w-3/4' },
+      'trigonometry': { color: 'bg-pink-400', width: 'w-1/2' },
+      'calculus-introduction': { color: 'bg-indigo-400', width: 'w-1/3' },
+      'statistics': { color: 'bg-cyan-400', width: 'w-4/5' },
+      'probability': { color: 'bg-emerald-400', width: 'w-3/5' },
+      'exponents': { color: 'bg-violet-400', width: 'w-9/10' },
+      'polynomials': { color: 'bg-rose-400', width: 'w-2/5' },
+      'logarithms': { color: 'bg-amber-400', width: 'w-1/8' },
+      'rational-functions': { color: 'bg-lime-400', width: 'w-7/10' },
+      'matrices': { color: 'bg-sky-400', width: 'w-1/10' },
+      'vectors': { color: 'bg-fuchsia-400', width: 'w-2/10' }
     };
     
-    return progressMapping[id] || { color: 'bg-gray-200', width: 'w-0' };
+    // If topic id isn't in mapping, generate a random progress
+    if (!progressMapping[id]) {
+      const randomProgress = Math.floor(Math.random() * 100);
+      const randomColorIndex = Math.floor(Math.random() * 5);
+      const colors = ['bg-blue-400', 'bg-green-400', 'bg-orange-400', 'bg-purple-400', 'bg-teal-400'];
+      
+      return { 
+        color: colors[randomColorIndex], 
+        width: `w-[${randomProgress}%]` 
+      };
+    }
+    
+    return progressMapping[id];
   };
   
   const isActive = (id: string) => {

@@ -23,7 +23,7 @@ const AIAssistant = () => {
       // Add welcome message when opening for the first time if no messages
       if (messages.length === 0) {
         setTimeout(() => {
-          addBotMessage("Hi there! I'm your AI tutor. How can I help you with your studies today? Ask me anything about the current topic you're studying.");
+          addBotMessage("Hi there! I'm your AI tutor. What would you like to learn about today? You can ask me about any subject or topic you're studying.");
         }, 600);
       }
     }
@@ -74,11 +74,31 @@ const AIAssistant = () => {
       setMessages(prev => [...prev, newMessage]);
       setInputValue('');
       
+      // Check if message contains "quadratic functions" to deliver specific content
+      if (inputValue.toLowerCase().includes("quadratic") || inputValue.toLowerCase().includes("function")) {
+        // Typing indicator
+        setTimeout(() => {
+          addBotMessage("Quadratic functions are an important topic in algebra. Let me explain the key concepts:");
+        }, 800);
+        
+        // First part of explanation
+        setTimeout(() => {
+          addBotMessage("A quadratic function has the form f(x) = ax² + bx + c, where a, b, and c are constants and a ≠ 0. The graph of a quadratic function is called a parabola.");
+        }, 2500);
+        
+        // Second part with more details
+        setTimeout(() => {
+          addBotMessage("Key properties of quadratic functions include:\n\n• The vertex represents the minimum or maximum point\n• The axis of symmetry is a vertical line through the vertex\n• The y-intercept is at (0, c)\n• The x-intercepts (if they exist) are the solutions to ax² + bx + c = 0");
+        }, 5000);
+        
+        return;
+      }
+      
       // Get current page context to provide more relevant responses
       const currentTopic = window.location.pathname.split('/').pop() || '';
       const contextBasedResponses: Record<string, string[]> = {
         'quadratic-functions': [
-          "For quadratic functions, remember that the standard form is ax² + bx + c where a ≠ 0. The graph is always a parabola.",
+          "Quadratic functions have the form f(x) = ax² + bx + c where a ≠ 0. The graph is always a parabola.",
           "The discriminant (b² - 4ac) tells us about the nature of the roots: positive means two distinct real roots, zero means one repeated root, negative means no real roots.",
           "To find the vertex of a quadratic function f(x) = ax² + bx + c, use the formula x = -b/(2a) for the x-coordinate, then calculate f(-b/(2a)) for the y-coordinate.",
           "When analyzing the graph of a quadratic function, pay attention to: the direction it opens (based on the sign of a), the vertex position, and where it crosses the axes.",
