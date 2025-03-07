@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ContentRenderer } from './ContentRenderer';
 import { InteractiveFunctionGraph } from './InteractiveFunctionGraph';
 import { useToast } from '@/hooks/use-toast';
+import InteractiveQuadraticFunctions from './InteractiveQuadraticFunctions';
 
 interface StudyContentProps {
   title: string;
@@ -34,34 +35,18 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
   const [explanationLevel, setExplanationLevel] = useState('medium');
   const [activeTab, setActiveTab] = useState('content');
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
-  const [message, setMessage] = useState("Explain to me unit 1.1 Quadratic Functions.");
+  const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [displayedResponse, setDisplayedResponse] = useState('');
   const [showGraph, setShowGraph] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
-  const fullResponse = `A quadratic function is a polynomial function of degree 2, written in the form f(x) = ax² + bx + c where a, b, and c are constants and a ≠ 0.
-
-Key features of quadratic functions:
-
-1. The graph of a quadratic function is called a parabola
-2. When a > 0, the parabola opens upward with a minimum value
-3. When a < 0, the parabola opens downward with a maximum value
-4. The vertex is at (-b/2a, f(-b/2a))
-5. The axis of symmetry is the vertical line x = -b/2a
-6. The y-intercept is at (0, c)
-7. The x-intercepts (roots) can be found using the quadratic formula: x = (-b ± √(b² - 4ac))/2a
-
-The discriminant (b² - 4ac) tells us about the roots:
-- If b² - 4ac > 0: Two distinct real roots
-- If b² - 4ac = 0: One repeated real root
-- If b² - 4ac < 0: No real roots (two complex roots)
-
-For example, with f(x) = x² + 2x + 1:
-- The vertex is at (-1, 0)
-- The axis of symmetry is x = -1
-- The discriminant is 0, so there's one repeated root at x = -1`;
+  useEffect(() => {
+    if (topicId === 'quadratic-functions') {
+      setMessage("What would you like to learn about quadratic functions?");
+    }
+  }, [topicId]);
 
   useEffect(() => {
     if (isTyping && displayedResponse.length < fullResponse.length) {
@@ -98,6 +83,10 @@ For example, with f(x) = x² + 2x + 1:
 
   const getContent = () => {
     if (subjectId === 'mathematics' && topicId === 'quadratic-functions') {
+      if (explanationLevel === 'ai') {
+        return <InteractiveQuadraticFunctions />;
+      }
+      
       return (
         <div className="space-y-6">
           <p>
@@ -287,7 +276,7 @@ For example, with f(x) = x² + 2x + 1:
       },
       {
         question: "What does the discriminant tell us?",
-        answer: "The discriminant (b² - 4ac) indicates the number and type of roots of a quadratic equation: >0 means two distinct real roots, =0 means one repeated root, <0 means no real roots.",
+        answer: "The discriminant (b² - 4ac) indicates the number and type of roots: >0 means two distinct real roots, =0 means one repeated root, <0 means no real roots.",
         type: "CONCEPT"
       }
     ];
