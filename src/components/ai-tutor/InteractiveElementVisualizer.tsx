@@ -13,6 +13,11 @@ interface InteractiveElementVisualizerProps {
   elementSize?: string;
   spacing?: string;
   onElementSelect?: (element: any) => void;
+  showElementOverlay?: boolean;
+  disableElementLabels?: boolean;
+  widthMode?: string;
+  maxWidth?: string;
+  horizontalLayout?: string;
 }
 
 const InteractiveElementVisualizer: React.FC<InteractiveElementVisualizerProps> = ({ 
@@ -23,7 +28,12 @@ const InteractiveElementVisualizer: React.FC<InteractiveElementVisualizerProps> 
   activeView,
   elementSize,
   spacing,
-  onElementSelect
+  onElementSelect,
+  showElementOverlay = false,
+  disableElementLabels = false,
+  widthMode = "default",
+  maxWidth = "100%",
+  horizontalLayout = "default"
 }) => {
   const [animationPhase, setAnimationPhase] = useState(0);
   

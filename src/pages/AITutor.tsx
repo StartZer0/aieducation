@@ -17,8 +17,8 @@ export default function AITutor() {
   const [isVisualizerVisible, setIsVisualizerVisible] = useState(false);
   const [visualizerTab, setVisualizerTab] = useState<VisualizerTabType>("table");
   const [selectedElement, setSelectedElement] = useState(null);
-  const [showElementLabels, setShowElementLabels] = useState(true); // Always show element labels
-  const [preventOverlays, setPreventOverlays] = useState(true); // Never show explanation overlays
+  const [showElementLabels, setShowElementLabels] = useState(true);
+  const [preventOverlays, setPreventOverlays] = useState(true);
   const animationRef = useRef(null);
   const startTimeRef = useRef(null);
   const { toast } = useToast();
