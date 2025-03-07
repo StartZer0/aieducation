@@ -384,17 +384,17 @@ const InteractiveQuadraticFunctions = () => {
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded-lg">
-              <h3 className="font-medium mb-2">The 'a' Value</h3>
+              <h3 className="font-medium mb-2">The &apos;a&apos; Value</h3>
               <p className="text-sm">Controls how steep or wide the parabola is.</p>
               <ul className="text-sm list-disc ml-4 mt-2">
-                <li>If a > 0: Opens upward (∪)</li>
-                <li>If a < 0: Opens downward (∩)</li>
+                <li>If a &gt; 0: Opens upward (∪)</li>
+                <li>If a &lt; 0: Opens downward (∩)</li>
                 <li>Larger |a|: Steeper curve</li>
                 <li>Smaller |a|: Wider curve</li>
               </ul>
             </div>
             <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded-lg">
-              <h3 className="font-medium mb-2">The 'b' Value</h3>
+              <h3 className="font-medium mb-2">The &apos;b&apos; Value</h3>
               <p className="text-sm">Influences the left-right position of the vertex.</p>
               <ul className="text-sm list-disc ml-4 mt-2">
                 <li>Changing b shifts the parabola horizontally</li>
@@ -403,7 +403,7 @@ const InteractiveQuadraticFunctions = () => {
               </ul>
             </div>
             <div className="bg-blue-50 dark:bg-blue-950/20 p-3 rounded-lg">
-              <h3 className="font-medium mb-2">The 'c' Value</h3>
+              <h3 className="font-medium mb-2">The &apos;c&apos; Value</h3>
               <p className="text-sm">The y-intercept - where the parabola crosses the y-axis.</p>
               <ul className="text-sm list-disc ml-4 mt-2">
                 <li>When x = 0, f(0) = c</li>
@@ -413,20 +413,21 @@ const InteractiveQuadraticFunctions = () => {
             </div>
           </div>
           <p className="mb-4">
-            You'll find quadratic functions everywhere in real life! They describe the path of a thrown ball, the shape of satellite dishes, and even how light focuses in mirrors and lenses.
+            You&apos;ll find quadratic functions everywhere in real life! They describe the path of a thrown ball, the shape of satellite dishes, and even how light focuses in mirrors and lenses.
           </p>
           <div className="bg-yellow-50 dark:bg-yellow-950/20 p-4 rounded-lg border border-yellow-100 dark:border-yellow-900">
             <h3 className="font-medium mb-2">Try This!</h3>
             <p className="text-sm">Use the sliders above to explore how changing a, b, and c affects the parabola. Notice how:</p>
             <ul className="text-sm list-disc ml-4 mt-2">
-              <li>Changing 'a' makes the parabola steeper or flatter</li>
-              <li>Changing 'b' moves the parabola left and right</li>
-              <li>Changing 'c' moves the entire parabola up and down</li>
+              <li>Changing &apos;a&apos; makes the parabola steeper or flatter</li>
+              <li>Changing &apos;b&apos; moves the parabola left and right</li>
+              <li>Changing &apos;c&apos; moves the entire parabola up and down</li>
             </ul>
           </div>
         </div>
       )}
       
+      {/* Standard Form Section */}
       {activeSection === 'standard' && (
         <div className="content-section">
           <h2 className="text-2xl font-semibold mb-4 text-blue-700">Standard Form</h2>
@@ -463,7 +464,7 @@ const InteractiveQuadraticFunctions = () => {
             </div>
           </div>
           <p className="mb-4">
-            The graph of a quadratic function always forms a parabola. The parabola can open upward (if a > 0) or downward (if a < 0).
+            The graph of a quadratic function always forms a parabola. The parabola can open upward (if a &gt; 0) or downward (if a &lt; 0).
           </p>
           <div className="bg-yellow-50 dark:bg-yellow-950/20 p-4 rounded-lg border border-yellow-100 dark:border-yellow-900">
             <h3 className="font-medium mb-2">Try This!</h3>
@@ -477,7 +478,7 @@ const InteractiveQuadraticFunctions = () => {
         </div>
       )}
       
-      {/* More sections follow the same structure... */}
+      {/* Vertex Section */}
       {activeSection === 'vertex' && (
         <div className="content-section">
           <h2 className="text-2xl font-semibold mb-4 text-blue-700">The Vertex</h2>
@@ -495,12 +496,38 @@ const InteractiveQuadraticFunctions = () => {
               This gives us the point (x,y) where the parabola reaches its maximum or minimum value.
             </p>
           </div>
-          
-          {/* Vertex content continued... */}
         </div>
       )}
       
-      {/* More sections would go here... */}
+      {/* Roots Section */}
+      {activeSection === 'roots' && (
+        <div className="content-section">
+          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Finding Roots</h2>
+          <p className="mb-4">
+            The roots (or x-intercepts) are where the parabola crosses the x-axis. At these points, f(x) = 0.
+          </p>
+        </div>
+      )}
+      
+      {/* Forms Section */}
+      {activeSection === 'forms' && (
+        <div className="content-section">
+          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Different Forms</h2>
+          <p className="mb-4">
+            A quadratic function can be expressed in different forms, each highlighting different properties.
+          </p>
+        </div>
+      )}
+      
+      {/* Applications Section */}
+      {activeSection === 'applications' && (
+        <div className="content-section">
+          <h2 className="text-2xl font-semibold mb-4 text-blue-700">Real-World Applications</h2>
+          <p className="mb-4">
+            Quadratic functions appear in many real-world situations, like projectile motion and optimization problems.
+          </p>
+        </div>
+      )}
       
       {/* Navigation Footer */}
       <div className="mt-8 flex justify-between">
