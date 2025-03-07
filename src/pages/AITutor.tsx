@@ -207,7 +207,7 @@ export default function AITutor() {
         </div>
         
         <div className="lg:col-span-3 flex flex-col gap-4">
-          <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden h-full">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border-b">
               <div className="flex items-center mb-3 sm:mb-0">
                 <Atom className="h-5 w-5 mr-2 text-blue-500" />
@@ -232,9 +232,9 @@ export default function AITutor() {
               </Tabs>
             </div>
             
-            <div className="flex flex-col bg-gray-900">
-              {/* Visualization area with maintained height and width adjusted to 100% */}
-              <div className="h-[500px] relative">
+            <div className="flex flex-col bg-gray-900 h-full">
+              {/* Visualization area with maximized height and width */}
+              <div className="h-[560px] relative">
                 <div 
                   className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
                 >
@@ -244,12 +244,14 @@ export default function AITutor() {
                     currentTime={currentTime}
                     isVisible={isVisualizerVisible}
                     activeView={visualizerTab}
-                    elementSize="md" 
-                    spacing="wide" 
+                    elementSize="lg" 
+                    spacing="stretch" 
                     onElementSelect={handleElementSelect}
-                    showElementOverlay={false} // Prevent displaying explanations over elements
-                    disableElementLabels={false} // Keep element labels but no explanations
-                    widthMode="full" // Use full width without scaling
+                    showElementOverlay={false}
+                    disableElementLabels={false}
+                    widthMode="expand"
+                    maxWidth="100%"
+                    horizontalLayout="expanded"
                   />
                 </div>
                 
@@ -274,8 +276,8 @@ export default function AITutor() {
               </div>
               
               {/* Element details section that receives all explanations */}
-              <div id="element-details-section" className="h-32 bg-gray-800 p-4 overflow-auto border-t border-gray-700">
-                {selectedElement ? (
+              <div id="element-details-section" className="h-24 bg-gray-800 p-3 overflow-auto border-t border-gray-700">
+                {selectedElement && (
                   <div className="text-white">
                     <div className="flex justify-between items-center">
                       <h3 className="text-xl font-bold">{selectedElement.name}</h3>
@@ -298,10 +300,6 @@ export default function AITutor() {
                         <span className="font-medium ml-1">{selectedElement.electronConfig}</span>
                       </div>
                     </div>
-                  </div>
-                ) : (
-                  <div className="text-gray-400 text-center h-full flex items-center justify-center">
-                    <p>Click on an element to view its details</p>
                   </div>
                 )}
               </div>
