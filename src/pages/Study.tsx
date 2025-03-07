@@ -33,12 +33,12 @@ const Study = () => {
         
         toast({
           title: `${topicTitle || 'Topic'} loaded`,
-          description: "Select different explanation levels or use the tabs to explore content in various formats.",
+          description: "Select different explanation levels or use the tabs to explore content in various formats. Try the new AI Tutor tab for interactive learning!",
           className: "bg-blue-50 border-blue-200 text-blue-800 dark:bg-blue-900/30 dark:border-blue-800 dark:text-blue-200",
         });
       }
     }
-  }, [subjectId, topicId]);
+  }, [subjectId, topicId, toast]);
   
   return (
     <StudyLayout 

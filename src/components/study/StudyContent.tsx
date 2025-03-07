@@ -1,10 +1,10 @@
-
-import React, { useState, useEffect } from 'react';
-import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote, Sparkles, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
 import { ContentRenderer } from './ContentRenderer';
 import { InteractiveFunctionGraph } from './InteractiveFunctionGraph';
 import { useToast } from '@/hooks/use-toast';
@@ -34,8 +34,67 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
   const [explanationLevel, setExplanationLevel] = useState('medium');
   const [activeTab, setActiveTab] = useState('content');
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
+  const [message, setMessage] = useState("Explain to me unit 1.1 Quadratic Functions.");
+  const [isTyping, setIsTyping] = useState(false);
+  const [displayedResponse, setDisplayedResponse] = useState('');
+  const chatEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
+  const fullResponse = `import React, { useState } from 'react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+
+const QuadraticFunctionsExplanation = () => {
+  const [a, setA] = useState(1);
+  const [b, setB] = useState(0);
+  const [c, setC] = useState(0);
+  const [showRoots, setShowRoots] = useState(true);
+  const [showVertex, setShowVertex] = useState(true);
+  
+  const vertexX = -b / (2 * a);
+  const vertexY = a * vertexX * vertexX + b * vertexX + c;
+  
+  const discriminant = b * b - 4 * a * c;
+  const hasRealRoots = discriminant >= 0;
+  const root1 = hasRealRoots ? (-b + Math.sqrt(discriminant)) / (2 * a) : null;
+  const root2 = hasRealRoots ? (-b - Math.sqrt(discriminant)) / (2 * a) : null;
+  
+  const generateData = () => {
+    const data = [];
+    const start = vertexX - 5;
+    const end = vertexX + 5;
+    
+    for (let x = start; x <= end; x += 0.2) {
+      const y = a * x * x + b * x + c;
+      data.push({ x, y });
+    }
+    
+    return data;
+  };`;
+
+  useEffect(() => {
+    if (isTyping && displayedResponse.length < fullResponse.length) {
+      const timer = setTimeout(() => {
+        setDisplayedResponse(fullResponse.substring(0, displayedResponse.length + 10));
+      }, 20);
+      return () => clearTimeout(timer);
+    } else if (isTyping && displayedResponse.length >= fullResponse.length) {
+      setIsTyping(false);
+    }
+  }, [isTyping, displayedResponse, fullResponse]);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [displayedResponse]);
+
+  const handleSendMessage = () => {
+    if (message.trim() === '') return;
+    setIsTyping(true);
+    setDisplayedResponse('');
+    setTimeout(() => {
+      chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+  };
+
   const getContent = () => {
     if (subjectId === 'mathematics' && topicId === 'quadratic-functions') {
       return (
@@ -456,6 +515,56 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
     );
   };
   
+  const renderAITutor = () => {
+    return (
+      <div className="flex flex-col h-full">
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div className="flex items-start gap-3">
+            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+              <span className="text-blue-600 text-sm font-medium">You</span>
+            </div>
+            <div className="bg-muted p-3 rounded-lg max-w-[85%]">
+              <p>{message}</p>
+            </div>
+          </div>
+          
+          {displayedResponse && (
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-blue-400 flex items-center justify-center flex-shrink-0">
+                <Sparkles className="w-4 h-4 text-white" />
+              </div>
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg max-w-[85%]">
+                <pre className="whitespace-pre-wrap font-mono text-xs sm:text-sm overflow-x-auto">
+                  {displayedResponse}
+                </pre>
+              </div>
+            </div>
+          )}
+          <div ref={chatEndRef} />
+        </div>
+        
+        <div className="border-t p-4">
+          <div className="flex gap-2">
+            <Textarea 
+              value={message} 
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Ask about quadratic functions..."
+              className="min-h-[60px] resize-none"
+            />
+            <Button 
+              className="flex-shrink-0" 
+              size="icon" 
+              onClick={handleSendMessage}
+              disabled={isTyping || message.trim() === ''}
+            >
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <nav className="flex items-center space-x-1 p-4 border-b border-border text-sm">
@@ -498,6 +607,10 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
                 <Book className="w-4 h-4 mr-2" />
                 Content
               </TabsTrigger>
+              <TabsTrigger value="ai" className="flex items-center">
+                <Sparkles className="w-4 h-4 mr-2" />
+                AI Tutor
+              </TabsTrigger>
               <TabsTrigger value="summary" className="flex items-center">
                 <FileText className="w-4 h-4 mr-2" />
                 Summary
@@ -517,6 +630,10 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
             <div className="max-w-3xl mx-auto h-full">
               <TabsContent value="content" className="mt-0 h-full">
                 <ContentRenderer content={getContent()} />
+              </TabsContent>
+              
+              <TabsContent value="ai" className="mt-0 h-full">
+                <ContentRenderer content={renderAITutor()} />
               </TabsContent>
               
               <TabsContent value="summary" className="mt-0 h-full">
