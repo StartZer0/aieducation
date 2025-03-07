@@ -211,7 +211,7 @@ export default function AITutor() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border-b">
               <div className="flex items-center mb-3 sm:mb-0">
                 <Atom className="h-5 w-5 mr-2 text-blue-500" />
-                <h3 className="text-sm font-medium">Interactive Chemistry Visualizer</h3>
+                <h3 className="text-sm font-medium">Interactive Visualizer</h3>
               </div>
               
               <Tabs 
