@@ -37,39 +37,31 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
   const [message, setMessage] = useState("Explain to me unit 1.1 Quadratic Functions.");
   const [isTyping, setIsTyping] = useState(false);
   const [displayedResponse, setDisplayedResponse] = useState('');
+  const [showGraph, setShowGraph] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
-  const fullResponse = `import React, { useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+  const fullResponse = `A quadratic function is a polynomial function of degree 2, written in the form f(x) = ax² + bx + c where a, b, and c are constants and a ≠ 0.
 
-const QuadraticFunctionsExplanation = () => {
-  const [a, setA] = useState(1);
-  const [b, setB] = useState(0);
-  const [c, setC] = useState(0);
-  const [showRoots, setShowRoots] = useState(true);
-  const [showVertex, setShowVertex] = useState(true);
-  
-  const vertexX = -b / (2 * a);
-  const vertexY = a * vertexX * vertexX + b * vertexX + c;
-  
-  const discriminant = b * b - 4 * a * c;
-  const hasRealRoots = discriminant >= 0;
-  const root1 = hasRealRoots ? (-b + Math.sqrt(discriminant)) / (2 * a) : null;
-  const root2 = hasRealRoots ? (-b - Math.sqrt(discriminant)) / (2 * a) : null;
-  
-  const generateData = () => {
-    const data = [];
-    const start = vertexX - 5;
-    const end = vertexX + 5;
-    
-    for (let x = start; x <= end; x += 0.2) {
-      const y = a * x * x + b * x + c;
-      data.push({ x, y });
-    }
-    
-    return data;
-  };`;
+Key features of quadratic functions:
+
+1. The graph of a quadratic function is called a parabola
+2. When a > 0, the parabola opens upward with a minimum value
+3. When a < 0, the parabola opens downward with a maximum value
+4. The vertex is at (-b/2a, f(-b/2a))
+5. The axis of symmetry is the vertical line x = -b/2a
+6. The y-intercept is at (0, c)
+7. The x-intercepts (roots) can be found using the quadratic formula: x = (-b ± √(b² - 4ac))/2a
+
+The discriminant (b² - 4ac) tells us about the roots:
+- If b² - 4ac > 0: Two distinct real roots
+- If b² - 4ac = 0: One repeated real root
+- If b² - 4ac < 0: No real roots (two complex roots)
+
+For example, with f(x) = x² + 2x + 1:
+- The vertex is at (-1, 0)
+- The axis of symmetry is x = -1
+- The discriminant is 0, so there's one repeated root at x = -1`;
 
   useEffect(() => {
     if (isTyping && displayedResponse.length < fullResponse.length) {
@@ -79,6 +71,7 @@ const QuadraticFunctionsExplanation = () => {
       return () => clearTimeout(timer);
     } else if (isTyping && displayedResponse.length >= fullResponse.length) {
       setIsTyping(false);
+      setShowGraph(true);
     }
   }, [isTyping, displayedResponse, fullResponse]);
 
@@ -90,6 +83,14 @@ const QuadraticFunctionsExplanation = () => {
     if (message.trim() === '') return;
     setIsTyping(true);
     setDisplayedResponse('');
+    setShowGraph(false);
+    
+    toast({
+      title: "Processing your question",
+      description: "Generating response about quadratic functions...",
+      className: "bg-blue-50 border-blue-200 text-blue-800",
+    });
+    
     setTimeout(() => {
       chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
@@ -534,9 +535,21 @@ const QuadraticFunctionsExplanation = () => {
                 <Sparkles className="w-4 h-4 text-white" />
               </div>
               <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg max-w-[85%]">
-                <pre className="whitespace-pre-wrap font-mono text-xs sm:text-sm overflow-x-auto">
+                <p className="whitespace-pre-wrap text-sm">
                   {displayedResponse}
-                </pre>
+                </p>
+                
+                {showGraph && (
+                  <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800">
+                    <h4 className="text-sm font-medium mb-2">Interactive Quadratic Function</h4>
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-3">
+                      <InteractiveFunctionGraph 
+                        containerId="ai-function-graph" 
+                        className="mt-2"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}

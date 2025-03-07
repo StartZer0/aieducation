@@ -8,12 +8,14 @@ import InteractiveElementVisualizer from '@/components/ai-tutor/InteractiveEleme
 import { useToast } from '@/hooks/use-toast';
 import TutorInfoPanel from '@/components/ai-tutor/TutorInfoPanel';
 
+type VisualizerTabType = "table" | "atom";
+
 export default function AITutor() {
   const [currentStage, setCurrentStage] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [isVisualizerVisible, setIsVisualizerVisible] = useState(false);
-  const [visualizerTab, setVisualizerTab] = useState('table');
+  const [visualizerTab, setVisualizerTab] = useState<VisualizerTabType>("table");
   const [selectedElement, setSelectedElement] = useState(null);
   const [showElementLabels, setShowElementLabels] = useState(true); // Always show element labels
   const [preventOverlays, setPreventOverlays] = useState(true); // Never show explanation overlays
@@ -78,9 +80,9 @@ export default function AITutor() {
           setCurrentStage(i);
           
           if (i >= 2) {
-            setVisualizerTab('atom');
+            setVisualizerTab("atom");
           } else {
-            setVisualizerTab('table');
+            setVisualizerTab("table");
           }
         }
         break;
@@ -140,14 +142,11 @@ export default function AITutor() {
     }
   };
 
-  const handleElementSelect = (element) => {
+  const handleElementSelect = (element: any) => {
     console.log("Element selected:", element);
     setSelectedElement(element);
     
-    // Move all explanation data to the details section
-    // This ensures no overlays are shown on the elements themselves
     if (element) {
-      // If we're in the demo, pause it when a user manually selects an element
       if (isPlaying) {
         setIsPlaying(false);
         if (animationRef.current) {
@@ -156,7 +155,6 @@ export default function AITutor() {
         startTimeRef.current = null;
       }
       
-      // Focus the details section so users can see the information has moved there
       const detailsSection = document.getElementById('element-details-section');
       if (detailsSection) {
         detailsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -216,7 +214,7 @@ export default function AITutor() {
               
               <Tabs 
                 value={visualizerTab} 
-                onValueChange={(value) => setVisualizerTab(value)}
+                onValueChange={(value) => setVisualizerTab(value as VisualizerTabType)}
                 className="mr-0"
               >
                 <TabsList>
@@ -233,7 +231,6 @@ export default function AITutor() {
             </div>
             
             <div className="flex flex-col bg-gray-900 h-full">
-              {/* Visualization area with maximized height and width */}
               <div className="h-[560px] relative">
                 <div 
                   className={`absolute inset-0 transition-opacity duration-500 ${isVisualizerVisible ? 'opacity-100' : 'opacity-0'}`}
@@ -275,7 +272,6 @@ export default function AITutor() {
                 )}
               </div>
               
-              {/* Element details section that receives all explanations */}
               <div id="element-details-section" className="h-24 bg-gray-800 p-3 overflow-auto border-t border-gray-700">
                 {selectedElement && (
                   <div className="text-white">
