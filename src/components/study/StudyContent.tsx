@@ -39,16 +39,23 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [displayedResponse, setDisplayedResponse] = useState('');
-  const [fullResponse, setFullResponse] = useState(''); // Add the missing fullResponse state
+  const [fullResponse, setFullResponse] = useState('');
   const [showGraph, setShowGraph] = useState(false);
   const chatEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
+  // Initial AI tutor message state
+  const [initialAIMessage, setInitialAIMessage] = useState('');
+  const [chatStarted, setChatStarted] = useState(false);
+  
   useEffect(() => {
+    // Set initial AI tutor message based on the current topic
     if (topicId === 'quadratic-functions') {
-      setMessage("What would you like to learn about quadratic functions?");
+      setInitialAIMessage("Hello! I'm your AI tutor for quadratic functions. What would you like to learn about them? I can explain the standard form, vertex form, or how to find roots.");
+    } else {
+      setInitialAIMessage(`Hello! I'm your AI tutor for ${title}. What would you like to learn about this topic?`);
     }
-  }, [topicId]);
+  }, [topicId, title]);
 
   useEffect(() => {
     if (isTyping && displayedResponse.length < fullResponse.length) {
@@ -68,6 +75,12 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
 
   const handleSendMessage = () => {
     if (message.trim() === '') return;
+    
+    // Set chat as started if this is the first user message
+    if (!chatStarted) {
+      setChatStarted(true);
+    }
+    
     setIsTyping(true);
     setDisplayedResponse('');
     setShowGraph(false);
@@ -529,14 +542,27 @@ Would you like me to explain more about any of these aspects?`;
     return (
       <div className="flex flex-col h-full">
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {/* Initial AI tutor message */}
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-blue-600 text-sm font-medium">You</span>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-blue-400 flex items-center justify-center flex-shrink-0">
+              <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <div className="bg-muted p-3 rounded-lg max-w-[85%]">
-              <p>{message}</p>
+            <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg max-w-[85%]">
+              <p className="text-sm">{initialAIMessage}</p>
             </div>
           </div>
+          
+          {/* User message (only show if chat has started) */}
+          {chatStarted && (
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                <span className="text-blue-600 text-sm font-medium">You</span>
+              </div>
+              <div className="bg-muted p-3 rounded-lg max-w-[85%]">
+                <p>{message}</p>
+              </div>
+            </div>
+          )}
           
           {displayedResponse && (
             <div className="flex items-start gap-3">
