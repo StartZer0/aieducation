@@ -300,7 +300,7 @@ const Architecture = () => {
                     </div>
                     <div>
                       <span className="font-medium">Optimized Inference</span>
-                      <p className="text-xs text-muted-foreground">Quantized models for low-latency responses (<200ms)</p>
+                      <p className="text-xs text-muted-foreground">Quantized models for low-latency responses (&lt;200ms)</p>
                     </div>
                   </li>
                   <li className="flex items-start gap-2">
