@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, School, FileText, Beaker, FlaskConical, Layers, User } from 'lucide-react';
@@ -8,11 +7,6 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const isArchitecturePage = location.pathname === '/architecture';
-  
-  // Hide the header completely on the architecture page
-  if (isArchitecturePage) {
-    return null;
-  }
   
   useEffect(() => {
     const handleScroll = () => {
@@ -45,7 +39,7 @@ const Header = () => {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || isArchitecturePage ? 'bg-white/80 dark:bg-card/80 backdrop-blur-md shadow-md py-3' : 'bg-transparent py-5'
+        isScrolled ? 'bg-white/80 dark:bg-card/80 backdrop-blur-md shadow-md py-3' : 'bg-transparent py-5'
       }`}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">
