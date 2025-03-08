@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Server, Database, Brain, Cpu, Layers, Code, BookOpen, Users, BarChart3,
   Lightbulb, ChevronRight, Zap, ArrowRight, Globe, Star, GitBranch, 
-  GraduationCap, Atom
+  GraduationCap, Atom, CheckIcon, Clock
 } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -240,7 +239,7 @@ const Architecture = () => {
                 description: "Creates personalized examples and practice problems on-demand"
               }
             ].map((feature, index) => (
-              <Card key={index} className="border-t-4" style={{ borderTopColor: feature.icon.props.className.split(' ')[1].replace('text-', 'var(--') + ')'}} >
+              <Card key={index} className="border-t-4 border-t-blue-500">
                 <CardHeader className="pb-2">
                   <div className="mb-2">{feature.icon}</div>
                   <CardTitle className="text-lg">{feature.title}</CardTitle>
@@ -911,3 +910,4 @@ const Architecture = () => {
 export default Architecture;
 
 import { CheckIcon, Clock } from 'lucide-react';
+
