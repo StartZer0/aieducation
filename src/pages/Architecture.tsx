@@ -1,314 +1,343 @@
 
 import React from 'react';
 import { 
-  BookOpen, Database, Brain, Cpu, Layers, Code, Users, BarChart3,
-  ChevronRight, Zap, ArrowRight, GraduationCap, CheckCircle,
-  Server, Cloud, Network, HardDrive, Terminal, Globe, Settings,
-  Package, Router
+  Brain, MessageCircle, BookOpen, GraduationCap, Database, Server, 
+  Globe, Users, Monitor, Cpu, Network, ArrowRight, School, AirVent,
+  BookMarked, Bot, FileText, PanelLeft, PanelRight, Webhook, Lightbulb,
+  Beaker, Truck, Container, LayoutGrid, Workflow, AppWindow, 
+  AlertCircle, HardDrive
 } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 
 const Architecture = () => {
   return (
-    <div className="container max-w-7xl mx-auto h-screen flex flex-col p-4 pt-16">
-      {/* Enhanced Title Bar with stronger gradient */}
-      <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-teal-500 rounded-lg shadow-lg p-4 mb-4 transform hover:scale-[1.01] transition-transform">
-        <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
-          AI+ Education LLM Architecture
-        </h1>
-        <p className="text-sm text-white/90 max-w-2xl">
-          Our specialized approach to training and deploying Large Language Models for educational excellence
-        </p>
-      </div>
-
-      {/* Main Architecture View - Enhanced with gradients and shadow effects */}
-      <div className="relative bg-white dark:bg-slate-900 rounded-lg border-2 border-blue-100 dark:border-blue-900/30 shadow-xl overflow-hidden flex-1 flex flex-col p-3">
-        {/* Top Section: LLM Training Pipeline */}
-        <div className="mb-3">
-          <h3 className="text-sm font-bold text-center bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-md py-1.5 mb-3 shadow-sm">LLM Training Pipeline</h3>
-          
-          {/* Pipeline Stages in horizontal flow with enhanced visuals */}
-          <div className="flex flex-row gap-3 min-w-max px-1">
-            {/* Stage 1: Data Collection - Enhanced */}
-            <div className="relative bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/40 dark:to-blue-900/20 p-3 rounded-lg border-2 border-blue-200 dark:border-blue-800/30 flex-1 min-w-[130px] shadow-md hover:shadow-lg transition-shadow">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="h-7 w-7 bg-blue-600 dark:bg-blue-700 rounded-full flex items-center justify-center shadow-inner">
-                  <Database className="h-4 w-4 text-white" />
-                </div>
-                <h3 className="text-sm font-bold text-blue-700 dark:text-blue-400">1. Data Collection</h3>
-              </div>
-              
-              <ul className="text-[10px] space-y-1.5">
-                <li className="flex items-start gap-1.5">
-                  <BookOpen className="h-3 w-3 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium">250+ A-Level textbooks</span>
-                </li>
-                <li className="flex items-start gap-1.5">
-                  <Code className="h-3 w-3 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium">50,000+ Q&A pairs</span>
-                </li>
-                <li className="flex items-start gap-1.5">
-                  <Users className="h-3 w-3 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium">100+ subject specialists</span>
-                </li>
-              </ul>
-              
-              {/* Flow arrow - Enhanced */}
-              <div className="absolute -right-3 top-1/2 -translate-y-1/2 z-10">
-                <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-full p-1 shadow-md">
-                  <ArrowRight className="h-4 w-4 text-white" />
-                </div>
-              </div>
-            </div>
-
-            {/* Stage 2: Knowledge Structuring - Enhanced */}
-            <div className="relative bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-950/40 dark:to-purple-900/20 p-3 rounded-lg border-2 border-purple-200 dark:border-purple-800/30 flex-1 min-w-[130px] shadow-md hover:shadow-lg transition-shadow">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="h-7 w-7 bg-purple-600 dark:bg-purple-700 rounded-full flex items-center justify-center shadow-inner">
-                  <Layers className="h-4 w-4 text-white" />
-                </div>
-                <h3 className="text-sm font-bold text-purple-700 dark:text-purple-400">2. Knowledge Structuring</h3>
-              </div>
-              
-              <ul className="text-[10px] space-y-1.5">
-                <li className="flex items-start gap-1.5">
-                  <Zap className="h-3 w-3 text-purple-600 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium">Curriculum taxonomies</span>
-                </li>
-                <li className="flex items-start gap-1.5">
-                  <ChevronRight className="h-3 w-3 text-purple-600 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium">Concept prerequisites</span>
-                </li>
-                <li className="flex items-start gap-1.5">
-                  <Cpu className="h-3 w-3 text-purple-600 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium">Multiple explanation levels</span>
-                </li>
-              </ul>
-              
-              {/* Flow arrow - Enhanced */}
-              <div className="absolute -right-3 top-1/2 -translate-y-1/2 z-10">
-                <div className="bg-gradient-to-r from-purple-500 to-teal-500 rounded-full p-1 shadow-md">
-                  <ArrowRight className="h-4 w-4 text-white" />
-                </div>
-              </div>
-            </div>
-
-            {/* Stage 3: LLM Training - Enhanced */}
-            <div className="relative bg-gradient-to-br from-teal-50 to-teal-100/50 dark:from-teal-950/40 dark:to-teal-900/20 p-3 rounded-lg border-2 border-teal-200 dark:border-teal-800/30 flex-1 min-w-[130px] shadow-md hover:shadow-lg transition-shadow">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="h-7 w-7 bg-teal-600 dark:bg-teal-700 rounded-full flex items-center justify-center shadow-inner">
-                  <Brain className="h-4 w-4 text-white" />
-                </div>
-                <h3 className="text-sm font-bold text-teal-700 dark:text-teal-400">3. LLM Training</h3>
-              </div>
-              
-              <ul className="text-[10px] space-y-1.5">
-                <li className="flex items-start gap-1.5">
-                  <ChevronRight className="h-3 w-3 text-teal-600 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium">70B parameter model</span>
-                </li>
-                <li className="flex items-start gap-1.5">
-                  <ChevronRight className="h-3 w-3 text-teal-600 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium">Subject-specific datasets</span>
-                </li>
-                <li className="flex items-start gap-1.5">
-                  <ChevronRight className="h-3 w-3 text-teal-600 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium">RLHF with teacher ratings</span>
-                </li>
-              </ul>
-              
-              {/* Flow arrow - Enhanced */}
-              <div className="absolute -right-3 top-1/2 -translate-y-1/2 z-10">
-                <div className="bg-gradient-to-r from-teal-500 to-blue-500 rounded-full p-1 shadow-md">
-                  <ArrowRight className="h-4 w-4 text-white" />
-                </div>
-              </div>
-            </div>
-
-            {/* Stage 4: Deployment - Enhanced */}
-            <div className="relative bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/40 dark:to-blue-900/20 p-3 rounded-lg border-2 border-blue-200 dark:border-blue-800/30 flex-1 min-w-[130px] shadow-md hover:shadow-lg transition-shadow">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="h-7 w-7 bg-blue-600 dark:bg-blue-700 rounded-full flex items-center justify-center shadow-inner">
-                  <GraduationCap className="h-4 w-4 text-white" />
-                </div>
-                <h3 className="text-sm font-bold text-blue-700 dark:text-blue-400">4. Deployment</h3>
-              </div>
-              
-              <ul className="text-[10px] space-y-1.5">
-                <li className="flex items-start gap-1.5">
-                  <BarChart3 className="h-3 w-3 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium">94% exam accuracy</span>
-                </li>
-                <li className="flex items-start gap-1.5">
-                  <Cpu className="h-3 w-3 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium">&lt;200ms response time</span>
-                </li>
-                <li className="flex items-start gap-1.5">
-                  <CheckCircle className="h-3 w-3 text-blue-600 flex-shrink-0 mt-0.5" />
-                  <span className="font-medium">Monthly updates</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        
-        {/* Middle Section: Distributed Backend Infrastructure - Enhanced */}
-        <div className="relative mb-3">
-          <h3 className="text-sm font-bold mb-3 text-center bg-gradient-to-r from-teal-600 to-teal-500 text-white rounded-md py-1.5 shadow-sm">Distributed Backend Infrastructure</h3>
-          
-          <div className="flex justify-center mb-2">
-            <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-teal-500 rounded-full flex items-center justify-center shadow-md">
-              <Cloud className="h-4 w-4 text-white" />
-            </div>
-          </div>
-          
-          {/* Kubernetes Cluster - Enhanced with glassmorphism effect */}
-          <div className="border-2 border-teal-200 dark:border-teal-800/30 rounded-lg p-3 bg-gradient-to-br from-teal-50/80 to-blue-50/80 dark:from-teal-950/20 dark:to-blue-950/20 backdrop-blur-sm relative mb-2 shadow-lg">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="h-7 w-7 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full flex items-center justify-center shadow-sm">
-                <Package className="h-4 w-4 text-white" />
-              </div>
-              <h3 className="text-sm font-bold text-teal-700 dark:text-teal-400">Kubernetes Orchestration</h3>
-            </div>
-            
-            {/* Pod Grid - Enhanced with hover effects */}
-            <div className="grid grid-cols-3 gap-2 mb-2">
-              {/* LLM Inference Pods */}
-              <div className="border-2 border-teal-200 dark:border-teal-900/50 bg-white/80 dark:bg-slate-800/80 p-1.5 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 transform duration-200 flex flex-col items-center">
-                <Brain className="h-4 w-4 text-teal-600" />
-                <span className="text-[9px] font-bold text-center">LLM Inference</span>
-                <Badge variant="outline" className="text-[7px] bg-teal-100/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 mt-1">12 pods</Badge>
-              </div>
-              
-              {/* API Gateway Pods */}
-              <div className="border-2 border-teal-200 dark:border-teal-900/50 bg-white/80 dark:bg-slate-800/80 p-1.5 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 transform duration-200 flex flex-col items-center">
-                <Router className="h-4 w-4 text-teal-600" />
-                <span className="text-[9px] font-bold text-center">API Gateway</span>
-                <Badge variant="outline" className="text-[7px] bg-teal-100/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 mt-1">4 pods</Badge>
-              </div>
-              
-              {/* Data Processing Pods */}
-              <div className="border-2 border-teal-200 dark:border-teal-900/50 bg-white/80 dark:bg-slate-800/80 p-1.5 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 transform duration-200 flex flex-col items-center">
-                <Cpu className="h-4 w-4 text-teal-600" />
-                <span className="text-[9px] font-bold text-center">Data Processing</span>
-                <Badge variant="outline" className="text-[7px] bg-teal-100/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 mt-1">8 pods</Badge>
-              </div>
-              
-              {/* Content Cache Pods */}
-              <div className="border-2 border-teal-200 dark:border-teal-900/50 bg-white/80 dark:bg-slate-800/80 p-1.5 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 transform duration-200 flex flex-col items-center">
-                <HardDrive className="h-4 w-4 text-teal-600" />
-                <span className="text-[9px] font-bold text-center">Content Cache</span>
-                <Badge variant="outline" className="text-[7px] bg-teal-100/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 mt-1">6 pods</Badge>
-              </div>
-              
-              {/* Monitoring Pods */}
-              <div className="border-2 border-teal-200 dark:border-teal-900/50 bg-white/80 dark:bg-slate-800/80 p-1.5 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 transform duration-200 flex flex-col items-center">
-                <BarChart3 className="h-4 w-4 text-teal-600" />
-                <span className="text-[9px] font-bold text-center">Monitoring</span>
-                <Badge variant="outline" className="text-[7px] bg-teal-100/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 mt-1">3 pods</Badge>
-              </div>
-              
-              {/* Autoscaler */}
-              <div className="border-2 border-teal-200 dark:border-teal-900/50 bg-white/80 dark:bg-slate-800/80 p-1.5 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 transform duration-200 flex flex-col items-center">
-                <Settings className="h-4 w-4 text-teal-600 animate-pulse-soft" />
-                <span className="text-[9px] font-bold text-center">Autoscaler</span>
-                <Badge variant="outline" className="text-[7px] bg-teal-100/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 mt-1">Dynamic</Badge>
-              </div>
-            </div>
-            
-            {/* Infrastructure Metrics - More visually striking */}
-            <div className="flex flex-wrap gap-1.5 justify-center">
-              <div className="flex items-center gap-1 text-[8px] font-bold rounded-full bg-gradient-to-r from-blue-500 to-blue-600 px-2 py-1 text-white shadow-sm">
-                <Server className="h-3 w-3 text-white" />
-                <span>99.99% uptime</span>
-              </div>
-              <div className="flex items-center gap-1 text-[8px] font-bold rounded-full bg-gradient-to-r from-teal-500 to-teal-600 px-2 py-1 text-white shadow-sm">
-                <Globe className="h-3 w-3 text-white" />
-                <span>Global CDN</span>
-              </div>
-              <div className="flex items-center gap-1 text-[8px] font-bold rounded-full bg-gradient-to-r from-purple-500 to-purple-600 px-2 py-1 text-white shadow-sm">
-                <Network className="h-3 w-3 text-white" />
-                <span>Auto-scaling</span>
-              </div>
-              <div className="flex items-center gap-1 text-[8px] font-bold rounded-full bg-gradient-to-r from-blue-500 to-blue-600 px-2 py-1 text-white shadow-sm">
-                <Database className="h-3 w-3 text-white" />
-                <span>Distributed storage</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Bottom Section: Data Flow Architecture - Enhanced */}
-        <div className="relative">
-          <h3 className="text-sm font-bold mb-3 text-center bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-md py-1.5 shadow-sm">Data Flow Architecture</h3>
-          
-          <div className="flex flex-row justify-between items-center gap-1 px-4">
-            <div className="flex flex-col items-center">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md hover:shadow-lg transition-shadow transform hover:scale-110 duration-200">
-                <Users className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-[9px] font-bold mt-1">Users</span>
-            </div>
-            
-            <ArrowRight className="h-5 w-5 text-blue-500" />
-            
-            <div className="flex flex-col items-center">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-md hover:shadow-lg transition-shadow transform hover:scale-110 duration-200">
-                <Router className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-[9px] font-bold mt-1">API Gateway</span>
-            </div>
-            
-            <ArrowRight className="h-5 w-5 text-purple-500" />
-            
-            <div className="flex flex-col items-center">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-md hover:shadow-lg transition-shadow transform hover:scale-110 duration-200">
-                <Brain className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-[9px] font-bold mt-1">LLM Inference</span>
-            </div>
-            
-            <ArrowRight className="h-5 w-5 text-teal-500" />
-            
-            <div className="flex flex-col items-center">
-              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md hover:shadow-lg transition-shadow transform hover:scale-110 duration-200">
-                <Database className="h-5 w-5 text-white" />
-              </div>
-              <span className="text-[9px] font-bold mt-1">Knowledge Base</span>
-            </div>
-          </div>
+    <div className="container max-w-7xl mx-auto h-screen flex flex-col p-4">
+      {/* Header with significant top padding to prevent overlap with site header */}
+      <div className="pt-20 pb-2">
+        <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 rounded-xl shadow-xl p-4 mb-4 transform hover:scale-[1.01] transition-transform">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+            AI+ Education LLM Architecture
+          </h1>
+          <p className="text-sm text-white/90 max-w-2xl">
+            Our specialized approach to training and deploying Large Language Models for educational excellence
+          </p>
         </div>
       </div>
-      
-      {/* Key Results - Enhanced with Card components and animations */}
-      <div className="grid grid-cols-3 gap-3 mt-3">
-        <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow transform hover:scale-105 duration-200 border-0">
-          <div className="h-full bg-gradient-to-br from-blue-500 to-blue-700">
-            <CardContent className="p-2 text-center text-white">
-              <h3 className="text-xl font-bold">42%</h3>
-              <p className="text-[9px] font-medium">Improved Test Scores</p>
-            </CardContent>
+
+      {/* Main Architecture Diagram - Visual Application Architecture Pattern */}
+      <div className="flex-1 grid grid-cols-3 gap-3 overflow-hidden">
+        {/* Left Column - Training Pipeline */}
+        <div className="flex flex-col gap-3">
+          {/* Training Pipeline Title */}
+          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl p-3 text-white font-bold text-center shadow-lg border-2 border-blue-400">
+            <div className="flex items-center justify-center gap-2">
+              <Workflow className="h-5 w-5" />
+              <span>Training Pipeline</span>
+            </div>
           </div>
-        </Card>
+          
+          {/* Student User */}
+          <Card className="overflow-hidden shadow-xl border-2 border-blue-200 dark:border-blue-900 hover:shadow-blue-200/20 dark:hover:shadow-blue-900/20 transition-all duration-300 hover:scale-[1.02]">
+            <CardContent className="p-3 flex flex-col items-center">
+              <div className="bg-blue-100 dark:bg-blue-900/30 rounded-full p-3 mb-2">
+                <Users className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              </div>
+              <h3 className="font-bold text-lg">A-Level Students</h3>
+              <p className="text-xs text-center mt-1 text-muted-foreground">Personalized learning assistants</p>
+            </CardContent>
+          </Card>
+          
+          {/* Text Collection */}
+          <Card className="overflow-hidden shadow-xl border-2 border-indigo-200 dark:border-indigo-900 hover:shadow-indigo-200/20 dark:hover:shadow-indigo-900/20 transition-all duration-300 hover:scale-[1.02]">
+            <CardContent className="p-3 flex items-center justify-between">
+              <div className="flex flex-col">
+                <h3 className="font-bold">Data Collection</h3>
+                <ul className="text-xs space-y-1 mt-2">
+                  <li className="flex items-center gap-1">
+                    <BookMarked className="h-3 w-3 text-indigo-600" />
+                    <span>250+ A-Level textbooks</span>
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <FileText className="h-3 w-3 text-indigo-600" />
+                    <span>50,000+ Q&A pairs</span>
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <School className="h-3 w-3 text-indigo-600" />
+                    <span>Expert teacher input</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full h-12 w-12 flex items-center justify-center">
+                <BookOpen className="h-6 w-6 text-white" />
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Preprocessing */}
+          <Card className="overflow-hidden shadow-xl border-2 border-purple-200 dark:border-purple-900 hover:shadow-purple-200/20 dark:hover:shadow-purple-900/20 transition-all duration-300 hover:scale-[1.02]">
+            <CardContent className="p-3 flex items-center justify-between">
+              <div className="flex flex-col">
+                <h3 className="font-bold">Pre-processing</h3>
+                <ul className="text-xs space-y-1 mt-2">
+                  <li className="flex items-center gap-1">
+                    <Lightbulb className="h-3 w-3 text-purple-600" />
+                    <span>Concept extraction</span>
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <Network className="h-3 w-3 text-purple-600" />
+                    <span>Knowledge graphs</span>
+                  </li>
+                  <li className="flex items-center gap-1">
+                    <AlertCircle className="h-3 w-3 text-purple-600" />
+                    <span>Error identification</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full h-12 w-12 flex items-center justify-center">
+                <Beaker className="h-6 w-6 text-white" />
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Distribution */}
+          <Card className="overflow-hidden shadow-xl border-2 border-cyan-200 dark:border-cyan-900 hover:shadow-cyan-200/20 dark:hover:shadow-cyan-900/20 transition-all duration-300 hover:scale-[1.02]">
+            <CardContent className="p-3 flex items-center justify-between">
+              <div className="flex flex-col">
+                <h3 className="font-bold">Distribution</h3>
+                <div className="flex gap-1 mt-2">
+                  <Truck className="h-6 w-6 text-cyan-600 animate-pulse" />
+                  <Container className="h-6 w-6 text-cyan-600" />
+                </div>
+                <div className="text-xs mt-1">Global CDN deployment</div>
+              </div>
+              <div className="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full h-12 w-12 flex items-center justify-center">
+                <Globe className="h-6 w-6 text-white" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
         
-        <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow transform hover:scale-105 duration-200 border-0">
-          <div className="h-full bg-gradient-to-br from-purple-500 to-purple-700">
-            <CardContent className="p-2 text-center text-white">
-              <h3 className="text-xl font-bold">3.5x</h3>
-              <p className="text-[9px] font-medium">Student Engagement</p>
-            </CardContent>
+        {/* Middle Column - AI Models */}
+        <div className="flex flex-col gap-3">
+          {/* AI Models Title */}
+          <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl p-3 text-white font-bold text-center shadow-lg border-2 border-purple-400">
+            <div className="flex items-center justify-center gap-2">
+              <Brain className="h-5 w-5" />
+              <span>AI Education Models</span>
+            </div>
           </div>
-        </Card>
+          
+          {/* Central Brain */}
+          <div className="relative">
+            <Card className="overflow-hidden shadow-xl border-2 border-fuchsia-200 dark:border-fuchsia-900 hover:shadow-fuchsia-200/20 dark:hover:shadow-fuchsia-900/20 transition-all duration-300 hover:scale-[1.02] mb-3 z-10">
+              <CardContent className="p-3 flex items-center justify-center">
+                <div className="flex flex-col items-center">
+                  <div className="bg-gradient-to-br from-fuchsia-500 to-purple-700 rounded-full h-20 w-20 flex items-center justify-center shadow-lg animate-pulse">
+                    <Brain className="h-10 w-10 text-white" />
+                  </div>
+                  <h3 className="font-bold text-lg mt-2">Core LLM</h3>
+                  <div className="flex flex-wrap justify-center gap-1 mt-2">
+                    <Badge className="bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-200">70B Parameters</Badge>
+                    <Badge className="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-200">RLHF Tuned</Badge>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Connection Lines */}
+            <div className="absolute top-1/2 left-0 w-full flex justify-between z-0">
+              <div className="h-0.5 w-10 bg-gradient-to-r from-blue-500 to-transparent"></div>
+              <div className="h-0.5 w-10 bg-gradient-to-l from-blue-500 to-transparent"></div>
+            </div>
+          </div>
+          
+          {/* Specialized Models Grid */}
+          <div className="grid grid-cols-2 gap-3">
+            {/* Tutor Model */}
+            <Card className="overflow-hidden shadow-xl border-2 border-pink-200 dark:border-pink-900 hover:shadow-pink-200/20 dark:hover:shadow-pink-900/20 transition-all duration-300 hover:scale-[1.02]">
+              <CardContent className="p-3">
+                <div className="flex flex-col items-center">
+                  <div className="bg-gradient-to-br from-pink-500 to-rose-600 rounded-full p-2 mb-1">
+                    <MessageCircle className="h-5 w-5 text-white" />
+                  </div>
+                  <h3 className="font-bold text-sm">AI Tutor</h3>
+                  <p className="text-[10px] text-center mt-1 text-muted-foreground">Interactive learning</p>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Exam Model */}
+            <Card className="overflow-hidden shadow-xl border-2 border-amber-200 dark:border-amber-900 hover:shadow-amber-200/20 dark:hover:shadow-amber-900/20 transition-all duration-300 hover:scale-[1.02]">
+              <CardContent className="p-3">
+                <div className="flex flex-col items-center">
+                  <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-full p-2 mb-1">
+                    <FileText className="h-5 w-5 text-white" />
+                  </div>
+                  <h3 className="font-bold text-sm">Exam Solver</h3>
+                  <p className="text-[10px] text-center mt-1 text-muted-foreground">Test preparation</p>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Concept Model */}
+            <Card className="overflow-hidden shadow-xl border-2 border-emerald-200 dark:border-emerald-900 hover:shadow-emerald-200/20 dark:hover:shadow-emerald-900/20 transition-all duration-300 hover:scale-[1.02]">
+              <CardContent className="p-3">
+                <div className="flex flex-col items-center">
+                  <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full p-2 mb-1">
+                    <Lightbulb className="h-5 w-5 text-white" />
+                  </div>
+                  <h3 className="font-bold text-sm">Concept Explainer</h3>
+                  <p className="text-[10px] text-center mt-1 text-muted-foreground">Clear explanations</p>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {/* Visual Model */}
+            <Card className="overflow-hidden shadow-xl border-2 border-sky-200 dark:border-sky-900 hover:shadow-sky-200/20 dark:hover:shadow-sky-900/20 transition-all duration-300 hover:scale-[1.02]">
+              <CardContent className="p-3">
+                <div className="flex flex-col items-center">
+                  <div className="bg-gradient-to-br from-sky-500 to-blue-600 rounded-full p-2 mb-1">
+                    <LayoutGrid className="h-5 w-5 text-white" />
+                  </div>
+                  <h3 className="font-bold text-sm">Visual Solver</h3>
+                  <p className="text-[10px] text-center mt-1 text-muted-foreground">Diagrams & charts</p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
+          {/* Fine-tuning */}
+          <Card className="overflow-hidden shadow-xl border-2 border-violet-200 dark:border-violet-900 hover:shadow-violet-200/20 dark:hover:shadow-violet-900/20 transition-all duration-300 hover:scale-[1.02]">
+            <CardContent className="p-3 flex items-center justify-between">
+              <div className="flex flex-col">
+                <h3 className="font-bold">Continuous Fine-tuning</h3>
+                <div className="text-xs mt-1">Based on student interactions</div>
+              </div>
+              <div className="bg-gradient-to-br from-violet-500 to-purple-600 rounded-full h-12 w-12 flex items-center justify-center">
+                <AirVent className="h-6 w-6 text-white" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
         
-        <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow transform hover:scale-105 duration-200 border-0">
-          <div className="h-full bg-gradient-to-br from-teal-500 to-teal-700">
-            <CardContent className="p-2 text-center text-white">
-              <h3 className="text-xl font-bold">68%</h3>
-              <p className="text-[9px] font-medium">Less Study Time</p>
-            </CardContent>
+        {/* Right Column - Infrastructure */}
+        <div className="flex flex-col gap-3">
+          {/* Infrastructure Title */}
+          <div className="bg-gradient-to-r from-cyan-500 to-teal-600 rounded-xl p-3 text-white font-bold text-center shadow-lg border-2 border-cyan-400">
+            <div className="flex items-center justify-center gap-2">
+              <Server className="h-5 w-5" />
+              <span>Infrastructure</span>
+            </div>
           </div>
-        </Card>
+          
+          {/* Kubernetes */}
+          <Card className="overflow-hidden shadow-xl border-2 border-blue-200 dark:border-blue-900 hover:shadow-blue-200/20 dark:hover:shadow-blue-900/20 transition-all duration-300 hover:scale-[1.02]">
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold">Kubernetes Cluster</h3>
+                <div className="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full p-2">
+                  <Container className="h-5 w-5 text-white" />
+                </div>
+              </div>
+              
+              {/* Mini Pod Grid */}
+              <div className="grid grid-cols-3 gap-1 mt-2">
+                {[
+                  { name: "LLM Inference", icon: <Brain className="h-3 w-3" />, count: 12 },
+                  { name: "API Gateway", icon: <Webhook className="h-3 w-3" />, count: 4 },
+                  { name: "Data Processing", icon: <Cpu className="h-3 w-3" />, count: 8 },
+                  { name: "Content Cache", icon: <HardDrive className="h-3 w-3" />, count: 6 },
+                  { name: "Monitoring", icon: <Monitor className="h-3 w-3" />, count: 3 },
+                  { name: "Autoscaler", icon: <ArrowRight className="h-3 w-3" />, count: "∞" }
+                ].map((pod, i) => (
+                  <div key={i} className="bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-md p-1 flex flex-col items-center">
+                    <div className="text-cyan-600">{pod.icon}</div>
+                    <div className="text-[8px] font-medium text-center">{pod.name}</div>
+                    <Badge variant="outline" className="text-[7px] mt-0.5 h-3 px-1 bg-cyan-100/50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300">{pod.count}</Badge>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Applications */}
+          <Card className="overflow-hidden shadow-xl border-2 border-emerald-200 dark:border-emerald-900 hover:shadow-emerald-200/20 dark:hover:shadow-emerald-900/20 transition-all duration-300 hover:scale-[1.02]">
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold">User Applications</h3>
+                <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full p-2">
+                  <AppWindow className="h-5 w-5 text-white" />
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-1 mt-2">
+                {[
+                  "Web Dashboard", "Mobile App", "Browser Extension", "LMS Integration"
+                ].map((app, i) => (
+                  <div key={i} className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-100 dark:border-emerald-800 rounded-md p-1.5 text-center">
+                    <div className="text-[9px] font-medium">{app}</div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Data Stores */}
+          <Card className="overflow-hidden shadow-xl border-2 border-indigo-200 dark:border-indigo-900 hover:shadow-indigo-200/20 dark:hover:shadow-indigo-900/20 transition-all duration-300 hover:scale-[1.02]">
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <h3 className="font-bold">Data Stores</h3>
+                <div className="bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full p-2">
+                  <Database className="h-5 w-5 text-white" />
+                </div>
+              </div>
+              
+              <div className="flex gap-1 justify-between mt-2">
+                {[
+                  { name: "Vector DB", size: "12TB" },
+                  { name: "Knowledge Base", size: "8TB" },
+                  { name: "User Data", size: "3TB" }
+                ].map((store, i) => (
+                  <div key={i} className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 border border-indigo-100 dark:border-indigo-800 rounded-md flex-1 p-1.5 text-center">
+                    <div className="text-[9px] font-medium">{store.name}</div>
+                    <div className="text-[8px] text-indigo-600 dark:text-indigo-400">{store.size}</div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+          
+          {/* Performance Metrics */}
+          <div className="grid grid-cols-3 gap-2">
+            <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow border-0">
+              <div className="h-full bg-gradient-to-br from-blue-500 to-blue-700">
+                <CardContent className="p-2 text-center text-white">
+                  <h3 className="text-xl font-extrabold">42%</h3>
+                  <p className="text-[8px] font-medium">Higher Scores</p>
+                </CardContent>
+              </div>
+            </Card>
+            
+            <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow border-0">
+              <div className="h-full bg-gradient-to-br from-purple-500 to-purple-700">
+                <CardContent className="p-2 text-center text-white">
+                  <h3 className="text-xl font-extrabold">3.5x</h3>
+                  <p className="text-[8px] font-medium">Engagement</p>
+                </CardContent>
+              </div>
+            </Card>
+            
+            <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow border-0">
+              <div className="h-full bg-gradient-to-br from-teal-500 to-teal-700">
+                <CardContent className="p-2 text-center text-white">
+                  <h3 className="text-xl font-extrabold">68%</h3>
+                  <p className="text-[8px] font-medium">Less Study Time</p>
+                </CardContent>
+              </div>
+            </Card>
+          </div>
+        </div>
       </div>
     </div>
   );
