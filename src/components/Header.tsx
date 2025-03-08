@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, School, FileText, Beaker, FlaskConical, Layers, User } from 'lucide-react';
@@ -22,16 +23,16 @@ const Header = () => {
   }, [location.pathname]);
 
   const navLinks = [
-    { path: '/', label: 'Home', icon: <Book className="w-5 h-5 mr-2" /> },
-    { path: '/dashboard', label: 'My Subjects', icon: <GraduationCap className="w-5 h-5 mr-2" /> },
-    { path: '/analytics', label: 'Learning Analytics', icon: <BarChart className="w-5 h-5 mr-2" /> },
-    { path: '/schedule', label: 'Study Schedule', icon: <Calendar className="w-5 h-5 mr-2" /> },
-    { path: '/ai-tutor', label: 'AI Tutor', icon: <MessageCircle className="w-5 h-5 mr-2" /> },
-    { path: '/explain-to-me', label: 'Concept Explainer', icon: <School className="w-5 h-5 mr-2" /> },
-    { path: '/essay-analysis', label: 'Essay Feedback', icon: <FileText className="w-5 h-5 mr-2" /> },
-    { path: '/test-chats', label: 'Learning Examples', icon: <Beaker className="w-5 h-5 mr-2" /> },
-    { path: '/test-chats2', label: 'Advanced Examples', icon: <FlaskConical className="w-5 h-5 mr-2" /> },
-    { path: '/architecture', label: 'System Architecture', icon: <Layers className="w-5 h-5 mr-2" /> },
+    { path: '/', label: 'Home', icon: <Book className="w-5 h-5 mr-2" />, show: true },
+    { path: '/dashboard', label: 'My Subjects', icon: <GraduationCap className="w-5 h-5 mr-2" />, show: true },
+    { path: '/analytics', label: 'Learning Analytics', icon: <BarChart className="w-5 h-5 mr-2" />, show: true },
+    { path: '/schedule', label: 'Study Schedule', icon: <Calendar className="w-5 h-5 mr-2" />, show: true },
+    { path: '/ai-tutor', label: 'AI Tutor', icon: <MessageCircle className="w-5 h-5 mr-2" />, show: true },
+    { path: '/explain-to-me', label: 'Exam Paper Solver', icon: <School className="w-5 h-5 mr-2" />, show: true },
+    { path: '/essay-analysis', label: 'Essay Feedback', icon: <FileText className="w-5 h-5 mr-2" />, show: true },
+    { path: '/test-chats', label: 'Learning Examples', icon: <Beaker className="w-5 h-5 mr-2" />, show: false },
+    { path: '/test-chats2', label: 'Advanced Examples', icon: <FlaskConical className="w-5 h-5 mr-2" />, show: false },
+    { path: '/architecture', label: 'System Architecture', icon: <Layers className="w-5 h-5 mr-2" />, show: false },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -52,7 +53,7 @@ const Header = () => {
         </Link>
         
         <nav className="hidden md:flex items-center space-x-1">
-          {navLinks.map((link) => (
+          {navLinks.filter(link => link.show).map((link) => (
             <Link
               key={link.path}
               to={link.path}
@@ -90,7 +91,7 @@ const Header = () => {
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-background/95 dark:bg-background/95 backdrop-blur-md pt-20 px-4 animate-fade-in">
           <nav className="flex flex-col space-y-4">
-            {navLinks.map((link) => (
+            {navLinks.filter(link => link.show).map((link) => (
               <Link
                 key={link.path}
                 to={link.path}
