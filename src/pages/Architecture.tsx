@@ -18,11 +18,12 @@ const Architecture = () => {
         </p>
       </div>
 
-      {/* Main Flowchart - Condensed to fit on one screen */}
-      <div className="bg-white dark:bg-card rounded-xl p-4 border shadow-sm">
+      {/* Main Flowchart - Designed as a single flowing diagram */}
+      <div className="relative bg-white dark:bg-card rounded-xl p-4 border shadow-sm">
         <h2 className="text-lg font-bold mb-3 text-center">LLM Training Pipeline</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+        {/* Pipeline Stages in horizontal flow */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Stage 1: Data Collection */}
           <div className="relative bg-blue-50/50 dark:bg-blue-950/20 p-3 rounded-lg border border-blue-100 dark:border-blue-900/30">
             <div className="flex items-center gap-2 mb-2">
@@ -46,6 +47,11 @@ const Architecture = () => {
                 <span>Expert knowledge from 100+ subject specialists</span>
               </li>
             </ul>
+            
+            {/* Flow arrow - only visible on larger screens */}
+            <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10">
+              <ArrowRight className="h-5 w-5 text-blue-400" />
+            </div>
           </div>
 
           {/* Stage 2: Knowledge Structuring */}
@@ -71,6 +77,11 @@ const Architecture = () => {
                 <span>Multiple explanation levels for different learning styles</span>
               </li>
             </ul>
+            
+            {/* Flow arrow - only visible on larger screens */}
+            <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10">
+              <ArrowRight className="h-5 w-5 text-purple-400" />
+            </div>
           </div>
 
           {/* Stage 3: LLM Training */}
@@ -96,9 +107,14 @@ const Architecture = () => {
                 <span>RLHF with teacher ratings & Socratic method training</span>
               </li>
             </ul>
+            
+            {/* Flow arrow - only visible on larger screens */}
+            <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10">
+              <ArrowRight className="h-5 w-5 text-teal-400" />
+            </div>
           </div>
 
-          {/* Stage 4: Evaluation */}
+          {/* Stage 4: Evaluation & Deployment */}
           <div className="relative bg-blue-50/50 dark:bg-blue-950/20 p-3 rounded-lg border border-blue-100 dark:border-blue-900/30">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-8 w-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
@@ -125,7 +141,7 @@ const Architecture = () => {
         </div>
       </div>
       
-      {/* Key Results - Condensed */}
+      {/* Key Results - Compact display */}
       <div className="grid grid-cols-3 gap-3 mt-3">
         <div className="rounded-lg p-3 text-center text-white bg-gradient-to-br from-blue-500 to-blue-700">
           <h3 className="text-2xl font-bold">42%</h3>
