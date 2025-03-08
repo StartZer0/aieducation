@@ -9,23 +9,22 @@ import {
 
 const Architecture = () => {
   return (
-    <div className="container max-w-7xl mx-auto h-screen flex flex-col p-2">
-      <div className="text-center mb-1">
-        <h1 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-teal-500">
+    <div className="container max-w-7xl mx-auto h-screen flex flex-col p-4 pt-20">
+      {/* Title bar with improved spacing and visibility */}
+      <div className="bg-gradient-to-r from-blue-600 to-teal-500 rounded-lg shadow-md p-3 mb-3">
+        <h1 className="text-xl font-bold text-white">
           AI+ Education LLM Architecture
         </h1>
-        <p className="text-xs text-muted-foreground max-w-2xl mx-auto">
+        <p className="text-xs text-white/90 max-w-2xl mx-auto">
           Our specialized approach to training and deploying Large Language Models on educational content
         </p>
       </div>
 
-      {/* Single Combined Architecture View - No Scrolling */}
-      <div className="relative bg-white dark:bg-card rounded-lg border shadow-sm overflow-hidden flex-1 flex flex-col p-2">
-        <h2 className="text-sm font-bold text-center">End-to-End AI Education Platform</h2>
-        
+      {/* Main Architecture View - No Scrolling */}
+      <div className="relative bg-white dark:bg-slate-900 rounded-lg border shadow-md overflow-hidden flex-1 flex flex-col p-3">
         {/* Top Section: LLM Training Pipeline */}
-        <div className="mb-1">
-          <h3 className="text-xs font-semibold text-center text-blue-700 dark:text-blue-400">LLM Training Pipeline</h3>
+        <div className="mb-2">
+          <h3 className="text-xs font-semibold text-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-md py-1 mb-2">LLM Training Pipeline</h3>
           
           {/* Pipeline Stages in horizontal flow */}
           <div className="flex flex-row gap-2 min-w-max px-1">
@@ -147,17 +146,11 @@ const Architecture = () => {
         </div>
         
         {/* Middle Section: Distributed Backend Infrastructure */}
-        <div className="relative">
-          <h3 className="text-xs font-semibold mb-1 text-center text-teal-700 dark:text-teal-400">Distributed Backend Infrastructure</h3>
+        <div className="relative mb-2">
+          <h3 className="text-xs font-semibold mb-1 text-center bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 rounded-md py-1">Distributed Backend Infrastructure</h3>
           
-          <div className="flex flex-col items-center justify-center">
-            {/* Down arrow connecting sections */}
-            <div className="flex justify-center">
-              <div className="h-4 w-0.5 bg-gradient-to-b from-blue-500 to-teal-500"></div>
-            </div>
-            
-            {/* Cloud Infrastructure Icon */}
-            <div className="h-6 w-6 bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/60 dark:to-teal-900/60 rounded-full flex items-center justify-center">
+          <div className="flex justify-center mb-1">
+            <div className="h-5 w-5 bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/60 dark:to-teal-900/60 rounded-full flex items-center justify-center">
               <Cloud className="h-3 w-3 text-teal-600 dark:text-teal-400" />
             </div>
           </div>
@@ -216,21 +209,21 @@ const Architecture = () => {
               </div>
             </div>
             
-            {/* Infrastructure Metrics */}
+            {/* Infrastructure Metrics - Made more compact */}
             <div className="flex flex-wrap gap-1 justify-center">
-              <div className="flex items-center gap-0.5 text-[8px] rounded-full bg-blue-100 dark:bg-blue-900/30 px-1.5 py-0.5">
+              <div className="flex items-center gap-0.5 text-[7px] rounded-full bg-blue-100 dark:bg-blue-900/30 px-1 py-0.5">
                 <Server className="h-2 w-2 text-blue-600" />
                 <span>99.99% uptime</span>
               </div>
-              <div className="flex items-center gap-0.5 text-[8px] rounded-full bg-teal-100 dark:bg-teal-900/30 px-1.5 py-0.5">
+              <div className="flex items-center gap-0.5 text-[7px] rounded-full bg-teal-100 dark:bg-teal-900/30 px-1 py-0.5">
                 <Globe className="h-2 w-2 text-teal-600" />
                 <span>Global CDN</span>
               </div>
-              <div className="flex items-center gap-0.5 text-[8px] rounded-full bg-purple-100 dark:bg-purple-900/30 px-1.5 py-0.5">
+              <div className="flex items-center gap-0.5 text-[7px] rounded-full bg-purple-100 dark:bg-purple-900/30 px-1 py-0.5">
                 <Network className="h-2 w-2 text-purple-600" />
                 <span>Auto-scaling</span>
               </div>
-              <div className="flex items-center gap-0.5 text-[8px] rounded-full bg-blue-100 dark:bg-blue-900/30 px-1.5 py-0.5">
+              <div className="flex items-center gap-0.5 text-[7px] rounded-full bg-blue-100 dark:bg-blue-900/30 px-1 py-0.5">
                 <Database className="h-2 w-2 text-blue-600" />
                 <span>Distributed storage</span>
               </div>
@@ -240,16 +233,9 @@ const Architecture = () => {
         
         {/* Bottom Section: Data Flow Architecture */}
         <div className="relative">
-          <h3 className="text-xs font-semibold mb-1 text-center text-blue-700 dark:text-blue-400">Data Flow Architecture</h3>
+          <h3 className="text-xs font-semibold mb-1 text-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-md py-1">Data Flow Architecture</h3>
           
-          <div className="flex flex-col items-center justify-center">
-            {/* Down arrow connecting sections */}
-            <div className="flex justify-center">
-              <div className="h-4 w-0.5 bg-gradient-to-b from-teal-500 to-blue-500"></div>
-            </div>
-          </div>
-          
-          <div className="flex flex-row justify-between items-center gap-1">
+          <div className="flex flex-row justify-between items-center gap-1 px-4">
             <div className="flex flex-col items-center">
               <div className="h-6 w-6 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/60 dark:to-blue-800/60 flex items-center justify-center">
                 <Users className="h-3 w-3 text-blue-600 dark:text-blue-400" />
@@ -288,7 +274,7 @@ const Architecture = () => {
       </div>
       
       {/* Key Results - Compact display */}
-      <div className="grid grid-cols-3 gap-1 mt-1">
+      <div className="grid grid-cols-3 gap-2 mt-2">
         <div className="rounded-lg p-1 text-center text-white bg-gradient-to-br from-blue-500 to-blue-700">
           <h3 className="text-sm font-bold">42%</h3>
           <p className="text-[8px]">Improved Test Scores</p>
