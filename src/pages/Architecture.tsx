@@ -18,14 +18,14 @@ const Architecture = () => {
         </p>
       </div>
 
-      {/* Main Flowchart - Designed as a single flowing diagram */}
-      <div className="relative bg-white dark:bg-card rounded-xl p-4 border shadow-sm">
+      {/* Main Flowchart - Single flowing architectural diagram */}
+      <div className="relative bg-white dark:bg-card rounded-xl p-4 border shadow-sm overflow-x-auto">
         <h2 className="text-lg font-bold mb-3 text-center">LLM Training Pipeline</h2>
         
         {/* Pipeline Stages in horizontal flow */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="flex flex-col md:flex-row gap-4 min-w-max md:min-w-0">
           {/* Stage 1: Data Collection */}
-          <div className="relative bg-blue-50/50 dark:bg-blue-950/20 p-3 rounded-lg border border-blue-100 dark:border-blue-900/30">
+          <div className="relative bg-blue-50/50 dark:bg-blue-950/20 p-3 rounded-lg border border-blue-100 dark:border-blue-900/30 flex-1">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-8 w-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
                 <Database className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -48,14 +48,19 @@ const Architecture = () => {
               </li>
             </ul>
             
-            {/* Flow arrow - only visible on larger screens */}
-            <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10">
+            {/* Flow arrow */}
+            <div className="hidden md:flex absolute -right-2 top-1/2 -translate-y-1/2 z-10">
               <ArrowRight className="h-5 w-5 text-blue-400" />
+            </div>
+            
+            {/* Mobile flow arrow (vertical) */}
+            <div className="md:hidden flex justify-center mt-2">
+              <ArrowRight className="h-5 w-5 text-blue-400 transform rotate-90" />
             </div>
           </div>
 
           {/* Stage 2: Knowledge Structuring */}
-          <div className="relative bg-purple-50/50 dark:bg-purple-950/20 p-3 rounded-lg border border-purple-100 dark:border-purple-900/30">
+          <div className="relative bg-purple-50/50 dark:bg-purple-950/20 p-3 rounded-lg border border-purple-100 dark:border-purple-900/30 flex-1">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-8 w-8 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
                 <Layers className="h-4 w-4 text-purple-600 dark:text-purple-400" />
@@ -78,14 +83,19 @@ const Architecture = () => {
               </li>
             </ul>
             
-            {/* Flow arrow - only visible on larger screens */}
-            <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10">
+            {/* Flow arrow */}
+            <div className="hidden md:flex absolute -right-2 top-1/2 -translate-y-1/2 z-10">
               <ArrowRight className="h-5 w-5 text-purple-400" />
+            </div>
+            
+            {/* Mobile flow arrow (vertical) */}
+            <div className="md:hidden flex justify-center mt-2">
+              <ArrowRight className="h-5 w-5 text-purple-400 transform rotate-90" />
             </div>
           </div>
 
           {/* Stage 3: LLM Training */}
-          <div className="relative bg-teal-50/50 dark:bg-teal-950/20 p-3 rounded-lg border border-teal-100 dark:border-teal-900/30">
+          <div className="relative bg-teal-50/50 dark:bg-teal-950/20 p-3 rounded-lg border border-teal-100 dark:border-teal-900/30 flex-1">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-8 w-8 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center">
                 <Brain className="h-4 w-4 text-teal-600 dark:text-teal-400" />
@@ -108,14 +118,19 @@ const Architecture = () => {
               </li>
             </ul>
             
-            {/* Flow arrow - only visible on larger screens */}
-            <div className="hidden md:flex absolute -right-3 top-1/2 -translate-y-1/2 z-10">
+            {/* Flow arrow */}
+            <div className="hidden md:flex absolute -right-2 top-1/2 -translate-y-1/2 z-10">
               <ArrowRight className="h-5 w-5 text-teal-400" />
+            </div>
+            
+            {/* Mobile flow arrow (vertical) */}
+            <div className="md:hidden flex justify-center mt-2">
+              <ArrowRight className="h-5 w-5 text-teal-400 transform rotate-90" />
             </div>
           </div>
 
-          {/* Stage 4: Evaluation & Deployment */}
-          <div className="relative bg-blue-50/50 dark:bg-blue-950/20 p-3 rounded-lg border border-blue-100 dark:border-blue-900/30">
+          {/* Stage 4: Deployment */}
+          <div className="relative bg-blue-50/50 dark:bg-blue-950/20 p-3 rounded-lg border border-blue-100 dark:border-blue-900/30 flex-1">
             <div className="flex items-center gap-2 mb-2">
               <div className="h-8 w-8 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
                 <GraduationCap className="h-4 w-4 text-blue-600 dark:text-blue-400" />
@@ -142,7 +157,7 @@ const Architecture = () => {
       </div>
       
       {/* Key Results - Compact display */}
-      <div className="grid grid-cols-3 gap-3 mt-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
         <div className="rounded-lg p-3 text-center text-white bg-gradient-to-br from-blue-500 to-blue-700">
           <h3 className="text-2xl font-bold">42%</h3>
           <p className="text-xs">Improved Test Scores</p>
