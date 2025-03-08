@@ -1,13 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, ChartLine, FileText, Calculator, School, User, Beaker, FlaskConical, Layers } from 'lucide-react';
+import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, School, FileText, Beaker, FlaskConical, Layers, User } from 'lucide-react';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const isArchitecturePage = location.pathname === '/architecture';
+  
+  // Hide the header completely on the architecture page
+  if (isArchitecturePage) {
+    return null;
+  }
   
   useEffect(() => {
     const handleScroll = () => {
