@@ -6,289 +6,309 @@ import {
   Server, Cloud, Network, HardDrive, Terminal, Globe, Settings,
   Package, Router
 } from 'lucide-react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 
 const Architecture = () => {
   return (
-    <div className="container max-w-7xl mx-auto h-screen flex flex-col p-4 pt-20">
-      {/* Title bar with improved spacing and visibility */}
-      <div className="bg-gradient-to-r from-blue-600 to-teal-500 rounded-lg shadow-md p-3 mb-3">
-        <h1 className="text-xl font-bold text-white">
+    <div className="container max-w-7xl mx-auto h-screen flex flex-col p-4 pt-16">
+      {/* Enhanced Title Bar with stronger gradient */}
+      <div className="bg-gradient-to-r from-blue-600 via-blue-500 to-teal-500 rounded-lg shadow-lg p-4 mb-4 transform hover:scale-[1.01] transition-transform">
+        <h1 className="text-2xl md:text-3xl font-bold text-white tracking-tight">
           AI+ Education LLM Architecture
         </h1>
-        <p className="text-xs text-white/90 max-w-2xl mx-auto">
-          Our specialized approach to training and deploying Large Language Models on educational content
+        <p className="text-sm text-white/90 max-w-2xl">
+          Our specialized approach to training and deploying Large Language Models for educational excellence
         </p>
       </div>
 
-      {/* Main Architecture View - No Scrolling */}
-      <div className="relative bg-white dark:bg-slate-900 rounded-lg border shadow-md overflow-hidden flex-1 flex flex-col p-3">
+      {/* Main Architecture View - Enhanced with gradients and shadow effects */}
+      <div className="relative bg-white dark:bg-slate-900 rounded-lg border-2 border-blue-100 dark:border-blue-900/30 shadow-xl overflow-hidden flex-1 flex flex-col p-3">
         {/* Top Section: LLM Training Pipeline */}
-        <div className="mb-2">
-          <h3 className="text-xs font-semibold text-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-md py-1 mb-2">LLM Training Pipeline</h3>
+        <div className="mb-3">
+          <h3 className="text-sm font-bold text-center bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-md py-1.5 mb-3 shadow-sm">LLM Training Pipeline</h3>
           
-          {/* Pipeline Stages in horizontal flow */}
-          <div className="flex flex-row gap-2 min-w-max px-1">
-            {/* Stage 1: Data Collection */}
-            <div className="relative bg-blue-50/50 dark:bg-blue-950/20 p-2 rounded-lg border border-blue-100 dark:border-blue-900/30 flex-1 min-w-[120px]">
-              <div className="flex items-center gap-1 mb-1">
-                <div className="h-5 w-5 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                  <Database className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+          {/* Pipeline Stages in horizontal flow with enhanced visuals */}
+          <div className="flex flex-row gap-3 min-w-max px-1">
+            {/* Stage 1: Data Collection - Enhanced */}
+            <div className="relative bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/40 dark:to-blue-900/20 p-3 rounded-lg border-2 border-blue-200 dark:border-blue-800/30 flex-1 min-w-[130px] shadow-md hover:shadow-lg transition-shadow">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="h-7 w-7 bg-blue-600 dark:bg-blue-700 rounded-full flex items-center justify-center shadow-inner">
+                  <Database className="h-4 w-4 text-white" />
                 </div>
-                <h3 className="text-xs font-semibold text-blue-700 dark:text-blue-400">1. Data Collection</h3>
+                <h3 className="text-sm font-bold text-blue-700 dark:text-blue-400">1. Data Collection</h3>
               </div>
               
-              <ul className="text-[8px] space-y-1">
-                <li className="flex items-start gap-1">
-                  <BookOpen className="h-2 w-2 text-blue-500 flex-shrink-0 mt-0.5" />
-                  <span>250+ A-Level textbooks</span>
+              <ul className="text-[10px] space-y-1.5">
+                <li className="flex items-start gap-1.5">
+                  <BookOpen className="h-3 w-3 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium">250+ A-Level textbooks</span>
                 </li>
-                <li className="flex items-start gap-1">
-                  <Code className="h-2 w-2 text-blue-500 flex-shrink-0 mt-0.5" />
-                  <span>50,000+ Q&A pairs</span>
+                <li className="flex items-start gap-1.5">
+                  <Code className="h-3 w-3 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium">50,000+ Q&A pairs</span>
                 </li>
-                <li className="flex items-start gap-1">
-                  <Users className="h-2 w-2 text-blue-500 flex-shrink-0 mt-0.5" />
-                  <span>100+ subject specialists</span>
+                <li className="flex items-start gap-1.5">
+                  <Users className="h-3 w-3 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium">100+ subject specialists</span>
                 </li>
               </ul>
               
-              {/* Flow arrow */}
-              <div className="absolute -right-1 top-1/2 -translate-y-1/2 z-10">
-                <ArrowRight className="h-3 w-3 text-blue-400" />
+              {/* Flow arrow - Enhanced */}
+              <div className="absolute -right-3 top-1/2 -translate-y-1/2 z-10">
+                <div className="bg-gradient-to-r from-blue-500 to-purple-500 rounded-full p-1 shadow-md">
+                  <ArrowRight className="h-4 w-4 text-white" />
+                </div>
               </div>
             </div>
 
-            {/* Stage 2: Knowledge Structuring */}
-            <div className="relative bg-purple-50/50 dark:bg-purple-950/20 p-2 rounded-lg border border-purple-100 dark:border-purple-900/30 flex-1 min-w-[120px]">
-              <div className="flex items-center gap-1 mb-1">
-                <div className="h-5 w-5 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center">
-                  <Layers className="h-3 w-3 text-purple-600 dark:text-purple-400" />
+            {/* Stage 2: Knowledge Structuring - Enhanced */}
+            <div className="relative bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-950/40 dark:to-purple-900/20 p-3 rounded-lg border-2 border-purple-200 dark:border-purple-800/30 flex-1 min-w-[130px] shadow-md hover:shadow-lg transition-shadow">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="h-7 w-7 bg-purple-600 dark:bg-purple-700 rounded-full flex items-center justify-center shadow-inner">
+                  <Layers className="h-4 w-4 text-white" />
                 </div>
-                <h3 className="text-xs font-semibold text-purple-700 dark:text-purple-400">2. Knowledge Structuring</h3>
+                <h3 className="text-sm font-bold text-purple-700 dark:text-purple-400">2. Knowledge Structuring</h3>
               </div>
               
-              <ul className="text-[8px] space-y-1">
-                <li className="flex items-start gap-1">
-                  <Zap className="h-2 w-2 text-purple-500 flex-shrink-0 mt-0.5" />
-                  <span>Curriculum taxonomies</span>
+              <ul className="text-[10px] space-y-1.5">
+                <li className="flex items-start gap-1.5">
+                  <Zap className="h-3 w-3 text-purple-600 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium">Curriculum taxonomies</span>
                 </li>
-                <li className="flex items-start gap-1">
-                  <ChevronRight className="h-2 w-2 text-purple-500 flex-shrink-0 mt-0.5" />
-                  <span>Concept prerequisites</span>
+                <li className="flex items-start gap-1.5">
+                  <ChevronRight className="h-3 w-3 text-purple-600 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium">Concept prerequisites</span>
                 </li>
-                <li className="flex items-start gap-1">
-                  <Cpu className="h-2 w-2 text-purple-500 flex-shrink-0 mt-0.5" />
-                  <span>Multiple explanation levels</span>
+                <li className="flex items-start gap-1.5">
+                  <Cpu className="h-3 w-3 text-purple-600 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium">Multiple explanation levels</span>
                 </li>
               </ul>
               
-              {/* Flow arrow */}
-              <div className="absolute -right-1 top-1/2 -translate-y-1/2 z-10">
-                <ArrowRight className="h-3 w-3 text-purple-400" />
+              {/* Flow arrow - Enhanced */}
+              <div className="absolute -right-3 top-1/2 -translate-y-1/2 z-10">
+                <div className="bg-gradient-to-r from-purple-500 to-teal-500 rounded-full p-1 shadow-md">
+                  <ArrowRight className="h-4 w-4 text-white" />
+                </div>
               </div>
             </div>
 
-            {/* Stage 3: LLM Training */}
-            <div className="relative bg-teal-50/50 dark:bg-teal-950/20 p-2 rounded-lg border border-teal-100 dark:border-teal-900/30 flex-1 min-w-[120px]">
-              <div className="flex items-center gap-1 mb-1">
-                <div className="h-5 w-5 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center">
-                  <Brain className="h-3 w-3 text-teal-600 dark:text-teal-400" />
+            {/* Stage 3: LLM Training - Enhanced */}
+            <div className="relative bg-gradient-to-br from-teal-50 to-teal-100/50 dark:from-teal-950/40 dark:to-teal-900/20 p-3 rounded-lg border-2 border-teal-200 dark:border-teal-800/30 flex-1 min-w-[130px] shadow-md hover:shadow-lg transition-shadow">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="h-7 w-7 bg-teal-600 dark:bg-teal-700 rounded-full flex items-center justify-center shadow-inner">
+                  <Brain className="h-4 w-4 text-white" />
                 </div>
-                <h3 className="text-xs font-semibold text-teal-700 dark:text-teal-400">3. LLM Training</h3>
+                <h3 className="text-sm font-bold text-teal-700 dark:text-teal-400">3. LLM Training</h3>
               </div>
               
-              <ul className="text-[8px] space-y-1">
-                <li className="flex items-start gap-1">
-                  <ChevronRight className="h-2 w-2 text-teal-500 flex-shrink-0 mt-0.5" />
-                  <span>70B parameter model</span>
+              <ul className="text-[10px] space-y-1.5">
+                <li className="flex items-start gap-1.5">
+                  <ChevronRight className="h-3 w-3 text-teal-600 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium">70B parameter model</span>
                 </li>
-                <li className="flex items-start gap-1">
-                  <ChevronRight className="h-2 w-2 text-teal-500 flex-shrink-0 mt-0.5" />
-                  <span>Subject-specific datasets</span>
+                <li className="flex items-start gap-1.5">
+                  <ChevronRight className="h-3 w-3 text-teal-600 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium">Subject-specific datasets</span>
                 </li>
-                <li className="flex items-start gap-1">
-                  <ChevronRight className="h-2 w-2 text-teal-500 flex-shrink-0 mt-0.5" />
-                  <span>RLHF with teacher ratings</span>
+                <li className="flex items-start gap-1.5">
+                  <ChevronRight className="h-3 w-3 text-teal-600 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium">RLHF with teacher ratings</span>
                 </li>
               </ul>
               
-              {/* Flow arrow */}
-              <div className="absolute -right-1 top-1/2 -translate-y-1/2 z-10">
-                <ArrowRight className="h-3 w-3 text-teal-400" />
+              {/* Flow arrow - Enhanced */}
+              <div className="absolute -right-3 top-1/2 -translate-y-1/2 z-10">
+                <div className="bg-gradient-to-r from-teal-500 to-blue-500 rounded-full p-1 shadow-md">
+                  <ArrowRight className="h-4 w-4 text-white" />
+                </div>
               </div>
             </div>
 
-            {/* Stage 4: Deployment */}
-            <div className="relative bg-blue-50/50 dark:bg-blue-950/20 p-2 rounded-lg border border-blue-100 dark:border-blue-900/30 flex-1 min-w-[120px]">
-              <div className="flex items-center gap-1 mb-1">
-                <div className="h-5 w-5 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
-                  <GraduationCap className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+            {/* Stage 4: Deployment - Enhanced */}
+            <div className="relative bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/40 dark:to-blue-900/20 p-3 rounded-lg border-2 border-blue-200 dark:border-blue-800/30 flex-1 min-w-[130px] shadow-md hover:shadow-lg transition-shadow">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="h-7 w-7 bg-blue-600 dark:bg-blue-700 rounded-full flex items-center justify-center shadow-inner">
+                  <GraduationCap className="h-4 w-4 text-white" />
                 </div>
-                <h3 className="text-xs font-semibold text-blue-700 dark:text-blue-400">4. Deployment</h3>
+                <h3 className="text-sm font-bold text-blue-700 dark:text-blue-400">4. Deployment</h3>
               </div>
               
-              <ul className="text-[8px] space-y-1">
-                <li className="flex items-start gap-1">
-                  <BarChart3 className="h-2 w-2 text-blue-500 flex-shrink-0 mt-0.5" />
-                  <span>94% exam accuracy</span>
+              <ul className="text-[10px] space-y-1.5">
+                <li className="flex items-start gap-1.5">
+                  <BarChart3 className="h-3 w-3 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium">94% exam accuracy</span>
                 </li>
-                <li className="flex items-start gap-1">
-                  <Cpu className="h-2 w-2 text-blue-500 flex-shrink-0 mt-0.5" />
-                  <span>&lt;200ms response time</span>
+                <li className="flex items-start gap-1.5">
+                  <Cpu className="h-3 w-3 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium">&lt;200ms response time</span>
                 </li>
-                <li className="flex items-start gap-1">
-                  <CheckCircle className="h-2 w-2 text-blue-500 flex-shrink-0 mt-0.5" />
-                  <span>Monthly updates</span>
+                <li className="flex items-start gap-1.5">
+                  <CheckCircle className="h-3 w-3 text-blue-600 flex-shrink-0 mt-0.5" />
+                  <span className="font-medium">Monthly updates</span>
                 </li>
               </ul>
             </div>
           </div>
         </div>
         
-        {/* Middle Section: Distributed Backend Infrastructure */}
-        <div className="relative mb-2">
-          <h3 className="text-xs font-semibold mb-1 text-center bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 rounded-md py-1">Distributed Backend Infrastructure</h3>
+        {/* Middle Section: Distributed Backend Infrastructure - Enhanced */}
+        <div className="relative mb-3">
+          <h3 className="text-sm font-bold mb-3 text-center bg-gradient-to-r from-teal-600 to-teal-500 text-white rounded-md py-1.5 shadow-sm">Distributed Backend Infrastructure</h3>
           
-          <div className="flex justify-center mb-1">
-            <div className="h-5 w-5 bg-gradient-to-br from-blue-100 to-teal-100 dark:from-blue-900/60 dark:to-teal-900/60 rounded-full flex items-center justify-center">
-              <Cloud className="h-3 w-3 text-teal-600 dark:text-teal-400" />
+          <div className="flex justify-center mb-2">
+            <div className="h-8 w-8 bg-gradient-to-br from-blue-500 to-teal-500 rounded-full flex items-center justify-center shadow-md">
+              <Cloud className="h-4 w-4 text-white" />
             </div>
           </div>
           
-          {/* Kubernetes Cluster */}
-          <div className="border border-dashed border-teal-200 dark:border-teal-800 rounded-lg p-2 bg-gradient-to-br from-blue-50/30 to-teal-50/30 dark:from-blue-950/10 dark:to-teal-950/10 relative mb-1">
-            <div className="flex items-center justify-center gap-1 mb-1">
-              <div className="h-5 w-5 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center">
-                <Package className="h-3 w-3 text-teal-600 dark:text-teal-400" />
+          {/* Kubernetes Cluster - Enhanced with glassmorphism effect */}
+          <div className="border-2 border-teal-200 dark:border-teal-800/30 rounded-lg p-3 bg-gradient-to-br from-teal-50/80 to-blue-50/80 dark:from-teal-950/20 dark:to-blue-950/20 backdrop-blur-sm relative mb-2 shadow-lg">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <div className="h-7 w-7 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full flex items-center justify-center shadow-sm">
+                <Package className="h-4 w-4 text-white" />
               </div>
-              <h3 className="text-xs font-semibold text-teal-700 dark:text-teal-400">Kubernetes Orchestration</h3>
+              <h3 className="text-sm font-bold text-teal-700 dark:text-teal-400">Kubernetes Orchestration</h3>
             </div>
             
-            {/* Pod Grid */}
-            <div className="grid grid-cols-3 gap-1 mb-1">
+            {/* Pod Grid - Enhanced with hover effects */}
+            <div className="grid grid-cols-3 gap-2 mb-2">
               {/* LLM Inference Pods */}
-              <div className="border border-teal-200 dark:border-teal-900/30 bg-white dark:bg-slate-900/60 p-1 rounded-lg shadow-sm flex flex-col items-center">
-                <Brain className="h-3 w-3 text-teal-500" />
-                <span className="text-[8px] font-medium text-center">LLM Inference</span>
-                <span className="text-[6px] text-muted-foreground">12 pods</span>
+              <div className="border-2 border-teal-200 dark:border-teal-900/50 bg-white/80 dark:bg-slate-800/80 p-1.5 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 transform duration-200 flex flex-col items-center">
+                <Brain className="h-4 w-4 text-teal-600" />
+                <span className="text-[9px] font-bold text-center">LLM Inference</span>
+                <Badge variant="outline" className="text-[7px] bg-teal-100/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 mt-1">12 pods</Badge>
               </div>
               
               {/* API Gateway Pods */}
-              <div className="border border-teal-200 dark:border-teal-900/30 bg-white dark:bg-slate-900/60 p-1 rounded-lg shadow-sm flex flex-col items-center">
-                <Router className="h-3 w-3 text-teal-500" />
-                <span className="text-[8px] font-medium text-center">API Gateway</span>
-                <span className="text-[6px] text-muted-foreground">4 pods</span>
+              <div className="border-2 border-teal-200 dark:border-teal-900/50 bg-white/80 dark:bg-slate-800/80 p-1.5 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 transform duration-200 flex flex-col items-center">
+                <Router className="h-4 w-4 text-teal-600" />
+                <span className="text-[9px] font-bold text-center">API Gateway</span>
+                <Badge variant="outline" className="text-[7px] bg-teal-100/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 mt-1">4 pods</Badge>
               </div>
               
               {/* Data Processing Pods */}
-              <div className="border border-teal-200 dark:border-teal-900/30 bg-white dark:bg-slate-900/60 p-1 rounded-lg shadow-sm flex flex-col items-center">
-                <Cpu className="h-3 w-3 text-teal-500" />
-                <span className="text-[8px] font-medium text-center">Data Processing</span>
-                <span className="text-[6px] text-muted-foreground">8 pods</span>
+              <div className="border-2 border-teal-200 dark:border-teal-900/50 bg-white/80 dark:bg-slate-800/80 p-1.5 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 transform duration-200 flex flex-col items-center">
+                <Cpu className="h-4 w-4 text-teal-600" />
+                <span className="text-[9px] font-bold text-center">Data Processing</span>
+                <Badge variant="outline" className="text-[7px] bg-teal-100/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 mt-1">8 pods</Badge>
               </div>
               
               {/* Content Cache Pods */}
-              <div className="border border-teal-200 dark:border-teal-900/30 bg-white dark:bg-slate-900/60 p-1 rounded-lg shadow-sm flex flex-col items-center">
-                <HardDrive className="h-3 w-3 text-teal-500" />
-                <span className="text-[8px] font-medium text-center">Content Cache</span>
-                <span className="text-[6px] text-muted-foreground">6 pods</span>
+              <div className="border-2 border-teal-200 dark:border-teal-900/50 bg-white/80 dark:bg-slate-800/80 p-1.5 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 transform duration-200 flex flex-col items-center">
+                <HardDrive className="h-4 w-4 text-teal-600" />
+                <span className="text-[9px] font-bold text-center">Content Cache</span>
+                <Badge variant="outline" className="text-[7px] bg-teal-100/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 mt-1">6 pods</Badge>
               </div>
               
               {/* Monitoring Pods */}
-              <div className="border border-teal-200 dark:border-teal-900/30 bg-white dark:bg-slate-900/60 p-1 rounded-lg shadow-sm flex flex-col items-center">
-                <BarChart3 className="h-3 w-3 text-teal-500" />
-                <span className="text-[8px] font-medium text-center">Monitoring</span>
-                <span className="text-[6px] text-muted-foreground">3 pods</span>
+              <div className="border-2 border-teal-200 dark:border-teal-900/50 bg-white/80 dark:bg-slate-800/80 p-1.5 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 transform duration-200 flex flex-col items-center">
+                <BarChart3 className="h-4 w-4 text-teal-600" />
+                <span className="text-[9px] font-bold text-center">Monitoring</span>
+                <Badge variant="outline" className="text-[7px] bg-teal-100/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 mt-1">3 pods</Badge>
               </div>
               
               {/* Autoscaler */}
-              <div className="border border-teal-200 dark:border-teal-900/30 bg-white dark:bg-slate-900/60 p-1 rounded-lg shadow-sm flex flex-col items-center">
-                <Settings className="h-3 w-3 text-teal-500 animate-pulse-soft" />
-                <span className="text-[8px] font-medium text-center">Autoscaler</span>
-                <span className="text-[6px] text-muted-foreground">Dynamic</span>
+              <div className="border-2 border-teal-200 dark:border-teal-900/50 bg-white/80 dark:bg-slate-800/80 p-1.5 rounded-lg shadow-md hover:shadow-lg transition-shadow hover:scale-105 transform duration-200 flex flex-col items-center">
+                <Settings className="h-4 w-4 text-teal-600 animate-pulse-soft" />
+                <span className="text-[9px] font-bold text-center">Autoscaler</span>
+                <Badge variant="outline" className="text-[7px] bg-teal-100/50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 mt-1">Dynamic</Badge>
               </div>
             </div>
             
-            {/* Infrastructure Metrics - Made more compact */}
-            <div className="flex flex-wrap gap-1 justify-center">
-              <div className="flex items-center gap-0.5 text-[7px] rounded-full bg-blue-100 dark:bg-blue-900/30 px-1 py-0.5">
-                <Server className="h-2 w-2 text-blue-600" />
+            {/* Infrastructure Metrics - More visually striking */}
+            <div className="flex flex-wrap gap-1.5 justify-center">
+              <div className="flex items-center gap-1 text-[8px] font-bold rounded-full bg-gradient-to-r from-blue-500 to-blue-600 px-2 py-1 text-white shadow-sm">
+                <Server className="h-3 w-3 text-white" />
                 <span>99.99% uptime</span>
               </div>
-              <div className="flex items-center gap-0.5 text-[7px] rounded-full bg-teal-100 dark:bg-teal-900/30 px-1 py-0.5">
-                <Globe className="h-2 w-2 text-teal-600" />
+              <div className="flex items-center gap-1 text-[8px] font-bold rounded-full bg-gradient-to-r from-teal-500 to-teal-600 px-2 py-1 text-white shadow-sm">
+                <Globe className="h-3 w-3 text-white" />
                 <span>Global CDN</span>
               </div>
-              <div className="flex items-center gap-0.5 text-[7px] rounded-full bg-purple-100 dark:bg-purple-900/30 px-1 py-0.5">
-                <Network className="h-2 w-2 text-purple-600" />
+              <div className="flex items-center gap-1 text-[8px] font-bold rounded-full bg-gradient-to-r from-purple-500 to-purple-600 px-2 py-1 text-white shadow-sm">
+                <Network className="h-3 w-3 text-white" />
                 <span>Auto-scaling</span>
               </div>
-              <div className="flex items-center gap-0.5 text-[7px] rounded-full bg-blue-100 dark:bg-blue-900/30 px-1 py-0.5">
-                <Database className="h-2 w-2 text-blue-600" />
+              <div className="flex items-center gap-1 text-[8px] font-bold rounded-full bg-gradient-to-r from-blue-500 to-blue-600 px-2 py-1 text-white shadow-sm">
+                <Database className="h-3 w-3 text-white" />
                 <span>Distributed storage</span>
               </div>
             </div>
           </div>
         </div>
         
-        {/* Bottom Section: Data Flow Architecture */}
+        {/* Bottom Section: Data Flow Architecture - Enhanced */}
         <div className="relative">
-          <h3 className="text-xs font-semibold mb-1 text-center bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-md py-1">Data Flow Architecture</h3>
+          <h3 className="text-sm font-bold mb-3 text-center bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-md py-1.5 shadow-sm">Data Flow Architecture</h3>
           
           <div className="flex flex-row justify-between items-center gap-1 px-4">
             <div className="flex flex-col items-center">
-              <div className="h-6 w-6 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/60 dark:to-blue-800/60 flex items-center justify-center">
-                <Users className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md hover:shadow-lg transition-shadow transform hover:scale-110 duration-200">
+                <Users className="h-5 w-5 text-white" />
               </div>
-              <span className="text-[8px] font-medium">Users</span>
+              <span className="text-[9px] font-bold mt-1">Users</span>
             </div>
             
-            <ArrowRight className="h-3 w-3 text-gray-400" />
+            <ArrowRight className="h-5 w-5 text-blue-500" />
             
             <div className="flex flex-col items-center">
-              <div className="h-6 w-6 rounded-full bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/60 dark:to-purple-800/60 flex items-center justify-center">
-                <Router className="h-3 w-3 text-purple-600 dark:text-purple-400" />
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-md hover:shadow-lg transition-shadow transform hover:scale-110 duration-200">
+                <Router className="h-5 w-5 text-white" />
               </div>
-              <span className="text-[8px] font-medium">API Gateway</span>
+              <span className="text-[9px] font-bold mt-1">API Gateway</span>
             </div>
             
-            <ArrowRight className="h-3 w-3 text-gray-400" />
+            <ArrowRight className="h-5 w-5 text-purple-500" />
             
             <div className="flex flex-col items-center">
-              <div className="h-6 w-6 rounded-full bg-gradient-to-br from-teal-100 to-teal-200 dark:from-teal-900/60 dark:to-teal-800/60 flex items-center justify-center">
-                <Brain className="h-3 w-3 text-teal-600 dark:text-teal-400" />
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-teal-500 to-teal-600 flex items-center justify-center shadow-md hover:shadow-lg transition-shadow transform hover:scale-110 duration-200">
+                <Brain className="h-5 w-5 text-white" />
               </div>
-              <span className="text-[8px] font-medium">LLM Inference</span>
+              <span className="text-[9px] font-bold mt-1">LLM Inference</span>
             </div>
             
-            <ArrowRight className="h-3 w-3 text-gray-400" />
+            <ArrowRight className="h-5 w-5 text-teal-500" />
             
             <div className="flex flex-col items-center">
-              <div className="h-6 w-6 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/60 dark:to-blue-800/60 flex items-center justify-center">
-                <Database className="h-3 w-3 text-blue-600 dark:text-blue-400" />
+              <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-md hover:shadow-lg transition-shadow transform hover:scale-110 duration-200">
+                <Database className="h-5 w-5 text-white" />
               </div>
-              <span className="text-[8px] font-medium">Knowledge Base</span>
+              <span className="text-[9px] font-bold mt-1">Knowledge Base</span>
             </div>
           </div>
         </div>
       </div>
       
-      {/* Key Results - Compact display */}
-      <div className="grid grid-cols-3 gap-2 mt-2">
-        <div className="rounded-lg p-1 text-center text-white bg-gradient-to-br from-blue-500 to-blue-700">
-          <h3 className="text-sm font-bold">42%</h3>
-          <p className="text-[8px]">Improved Test Scores</p>
-        </div>
+      {/* Key Results - Enhanced with Card components and animations */}
+      <div className="grid grid-cols-3 gap-3 mt-3">
+        <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow transform hover:scale-105 duration-200 border-0">
+          <div className="h-full bg-gradient-to-br from-blue-500 to-blue-700">
+            <CardContent className="p-2 text-center text-white">
+              <h3 className="text-xl font-bold">42%</h3>
+              <p className="text-[9px] font-medium">Improved Test Scores</p>
+            </CardContent>
+          </div>
+        </Card>
         
-        <div className="rounded-lg p-1 text-center text-white bg-gradient-to-br from-purple-500 to-purple-700">
-          <h3 className="text-sm font-bold">3.5x</h3>
-          <p className="text-[8px]">Student Engagement</p>
-        </div>
+        <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow transform hover:scale-105 duration-200 border-0">
+          <div className="h-full bg-gradient-to-br from-purple-500 to-purple-700">
+            <CardContent className="p-2 text-center text-white">
+              <h3 className="text-xl font-bold">3.5x</h3>
+              <p className="text-[9px] font-medium">Student Engagement</p>
+            </CardContent>
+          </div>
+        </Card>
         
-        <div className="rounded-lg p-1 text-center text-white bg-gradient-to-br from-teal-500 to-teal-700">
-          <h3 className="text-sm font-bold">68%</h3>
-          <p className="text-[8px]">Less Study Time</p>
-        </div>
+        <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow transform hover:scale-105 duration-200 border-0">
+          <div className="h-full bg-gradient-to-br from-teal-500 to-teal-700">
+            <CardContent className="p-2 text-center text-white">
+              <h3 className="text-xl font-bold">68%</h3>
+              <p className="text-[9px] font-medium">Less Study Time</p>
+            </CardContent>
+          </div>
+        </Card>
       </div>
     </div>
   );
