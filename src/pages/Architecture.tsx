@@ -20,7 +20,7 @@ const Architecture = () => {
         </p>
       </div>
 
-      {/* Combined Architecture View */}
+      {/* Single Combined Architecture View */}
       <div className="relative bg-white dark:bg-card rounded-xl p-4 sm:p-6 border shadow-sm overflow-hidden mb-8">
         <h2 className="text-lg font-bold mb-6 text-center">End-to-End AI Education Platform</h2>
         
