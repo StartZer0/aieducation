@@ -908,6 +908,3 @@ const Architecture = () => {
 };
 
 export default Architecture;
-
-import { CheckIcon, Clock } from 'lucide-react';
-
