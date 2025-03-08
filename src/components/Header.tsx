@@ -1,13 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, ChartLine, FileText, Calculator, School, UserIcon, Beaker, FlaskConical, Layers } from 'lucide-react';
+import { Menu, X, Book, GraduationCap, BarChart, Calendar, MessageCircle, School, FileText, Beaker, FlaskConical, Layers } from 'lucide-react';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
-  const isArchitecturePage = location.pathname === '/architecture';
   
   useEffect(() => {
     const handleScroll = () => {
@@ -21,6 +19,12 @@ const Header = () => {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
+
+  // Add a special class to hide header on architecture page
+  const isArchitecturePage = location.pathname === '/architecture';
+  if (isArchitecturePage) {
+    return null; // Don't render the header on the architecture page
+  }
 
   const navLinks = [
     { path: '/', label: 'Home', icon: <Book className="w-5 h-5 mr-2" /> },
@@ -40,7 +44,7 @@ const Header = () => {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled || isArchitecturePage ? 'bg-white/80 dark:bg-card/80 backdrop-blur-md shadow-md py-3' : 'bg-transparent py-5'
+        isScrolled ? 'bg-white/80 dark:bg-card/80 backdrop-blur-md shadow-md py-3' : 'bg-transparent py-5'
       }`}
     >
       <div className="container mx-auto px-4 flex items-center justify-between">

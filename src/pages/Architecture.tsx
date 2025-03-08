@@ -1,342 +1,302 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { 
-  Brain, MessageCircle, BookOpen, GraduationCap, Database, Server, 
-  Globe, Users, Monitor, Cpu, Network, ArrowRight, School, AirVent,
-  BookMarked, Bot, FileText, PanelLeft, PanelRight, Webhook, Lightbulb,
-  Beaker, Truck, Container, LayoutGrid, Workflow, AppWindow, 
-  AlertCircle, HardDrive
+  Brain, Lightbulb, Server, Database, Container, 
+  Truck, FileText, MonitorSmartphone, Bot,
+  User, BookOpen, Network, Home, Settings
 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
 const Architecture = () => {
   return (
-    <div className="container max-w-7xl mx-auto h-screen flex flex-col p-4">
-      {/* Header with significant top padding to prevent overlap with site header */}
-      <div className="pt-20 pb-2">
-        <div className="bg-gradient-to-r from-indigo-600 via-blue-600 to-cyan-500 rounded-xl shadow-xl p-4 mb-4 transform hover:scale-[1.01] transition-transform">
-          <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
-            AI+ Education LLM Architecture
-          </h1>
-          <p className="text-sm text-white/90 max-w-2xl">
-            Our specialized approach to training and deploying Large Language Models for educational excellence
-          </p>
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-900 overflow-hidden">
+      {/* Custom Header for Architecture Page */}
+      <div className="bg-blue-600 dark:bg-blue-700 text-white py-3 px-5 flex justify-between items-center">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center">
+            <span className="text-blue-600 font-bold text-xl">A+</span>
+          </div>
+          <span className="text-xl font-bold">AI+ Education</span>
         </div>
+        <Link to="/" className="flex items-center gap-1 text-white hover:text-blue-100 transition-colors">
+          <Home size={16} />
+          <span>Home</span>
+        </Link>
       </div>
 
-      {/* Main Architecture Diagram - Visual Application Architecture Pattern */}
-      <div className="flex-1 grid grid-cols-3 gap-3 overflow-hidden">
-        {/* Left Column - Training Pipeline */}
-        <div className="flex flex-col gap-3">
-          {/* Training Pipeline Title */}
-          <div className="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl p-3 text-white font-bold text-center shadow-lg border-2 border-blue-400">
-            <div className="flex items-center justify-center gap-2">
-              <Workflow className="h-5 w-5" />
-              <span>Training Pipeline</span>
+      {/* Main Content - Blueprint Style Background */}
+      <div className="relative w-full" style={{ 
+        backgroundImage: 'linear-gradient(#6b98d6 1px, transparent 1px), linear-gradient(90deg, #6b98d6 1px, transparent 1px)',
+        backgroundSize: '40px 40px',
+        backgroundColor: '#f0f4ff',
+      }}>
+        {/* Main Title */}
+        <div className="text-center py-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-blue-800 dark:text-blue-300">
+            Application Architecture
+          </h1>
+          <div className="mt-1 inline-flex items-center justify-center bg-blue-800 dark:bg-blue-900 text-white font-bold text-2xl px-6 py-2 rounded-lg">
+            AIDUCATION
+          </div>
+          <p className="text-blue-600 mt-1">Applying architecture</p>
+        </div>
+      
+        {/* Main Architecture Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 px-6 py-8">
+          
+          {/* Column 1: Training Pipeline */}
+          <div className="md:col-span-1 flex flex-col gap-6">
+            <div className="text-center">
+              <h2 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-2">Training Pipeline</h2>
+            </div>
+            
+            {/* Student User */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-3 shadow-lg border border-blue-200 dark:border-blue-800 relative">
+              <div className="flex justify-center mb-4">
+                <img src="/lovable-uploads/5c188163-a81f-47e6-a2cf-767936b79c57.png" alt="Student" className="w-24 h-24 object-contain" />
+              </div>
+              <h3 className="font-bold text-center text-blue-700 dark:text-blue-300">AI Tutor</h3>
+            </div>
+            
+            {/* Text Collection */}
+            <div className="flex gap-2 items-center justify-center">
+              <div className="flex flex-col items-center">
+                <div className="w-4 h-4 bg-orange-400 rounded-full"></div>
+                <div className="w-0.5 h-20 bg-orange-400"></div>
+              </div>
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-3 shadow-lg border border-blue-200 dark:border-blue-800 flex-1">
+                <h3 className="font-bold text-center text-blue-700 dark:text-blue-300 mb-2">Text Tutor</h3>
+                <div className="flex justify-center">
+                  <div className="flex gap-1">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="w-6 h-16 bg-blue-100 dark:bg-blue-900/30 rounded border border-blue-300 dark:border-blue-700 flex items-center justify-center">
+                        <span className="text-[8px] rotate-90 text-blue-700 dark:text-blue-300">FILE</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Exam Solver */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-3 shadow-lg border border-blue-200 dark:border-blue-800">
+              <h3 className="font-bold text-center text-blue-700 dark:text-blue-300 mb-2">Exam Solver</h3>
+              <div className="flex justify-center mt-2">
+                <div className="w-12 h-12 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center">
+                  <Lightbulb className="w-6 h-6 text-yellow-500" />
+                </div>
+              </div>
+              <div className="mt-3 bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg border border-blue-100 dark:border-blue-800">
+                <div className="flex justify-between mb-1">
+                  <div className="w-4 h-4 bg-red-400 rounded-full"></div>
+                  <div className="w-4 h-4 bg-blue-400 rounded-full"></div>
+                </div>
+                <div className="h-0.5 bg-gray-300 dark:bg-gray-600 my-1"></div>
+                <div className="flex justify-between">
+                  <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
+                  <div className="w-4 h-4 bg-green-400 rounded-full"></div>
+                </div>
+              </div>
             </div>
           </div>
           
-          {/* Student User */}
-          <Card className="overflow-hidden shadow-xl border-2 border-blue-200 dark:border-blue-900 hover:shadow-blue-200/20 dark:hover:shadow-blue-900/20 transition-all duration-300 hover:scale-[1.02]">
-            <CardContent className="p-3 flex flex-col items-center">
-              <div className="bg-blue-100 dark:bg-blue-900/30 rounded-full p-3 mb-2">
-                <Users className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-              </div>
-              <h3 className="font-bold text-lg">A-Level Students</h3>
-              <p className="text-xs text-center mt-1 text-muted-foreground">Personalized learning assistants</p>
-            </CardContent>
-          </Card>
-          
-          {/* Text Collection */}
-          <Card className="overflow-hidden shadow-xl border-2 border-indigo-200 dark:border-indigo-900 hover:shadow-indigo-200/20 dark:hover:shadow-indigo-900/20 transition-all duration-300 hover:scale-[1.02]">
-            <CardContent className="p-3 flex items-center justify-between">
-              <div className="flex flex-col">
-                <h3 className="font-bold">Data Collection</h3>
-                <ul className="text-xs space-y-1 mt-2">
-                  <li className="flex items-center gap-1">
-                    <BookMarked className="h-3 w-3 text-indigo-600" />
-                    <span>250+ A-Level textbooks</span>
-                  </li>
-                  <li className="flex items-center gap-1">
-                    <FileText className="h-3 w-3 text-indigo-600" />
-                    <span>50,000+ Q&A pairs</span>
-                  </li>
-                  <li className="flex items-center gap-1">
-                    <School className="h-3 w-3 text-indigo-600" />
-                    <span>Expert teacher input</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full h-12 w-12 flex items-center justify-center">
-                <BookOpen className="h-6 w-6 text-white" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          {/* Preprocessing */}
-          <Card className="overflow-hidden shadow-xl border-2 border-purple-200 dark:border-purple-900 hover:shadow-purple-200/20 dark:hover:shadow-purple-900/20 transition-all duration-300 hover:scale-[1.02]">
-            <CardContent className="p-3 flex items-center justify-between">
-              <div className="flex flex-col">
-                <h3 className="font-bold">Pre-processing</h3>
-                <ul className="text-xs space-y-1 mt-2">
-                  <li className="flex items-center gap-1">
-                    <Lightbulb className="h-3 w-3 text-purple-600" />
-                    <span>Concept extraction</span>
-                  </li>
-                  <li className="flex items-center gap-1">
-                    <Network className="h-3 w-3 text-purple-600" />
-                    <span>Knowledge graphs</span>
-                  </li>
-                  <li className="flex items-center gap-1">
-                    <AlertCircle className="h-3 w-3 text-purple-600" />
-                    <span>Error identification</span>
-                  </li>
-                </ul>
-              </div>
-              <div className="bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full h-12 w-12 flex items-center justify-center">
-                <Beaker className="h-6 w-6 text-white" />
-              </div>
-            </CardContent>
-          </Card>
-          
-          {/* Distribution */}
-          <Card className="overflow-hidden shadow-xl border-2 border-cyan-200 dark:border-cyan-900 hover:shadow-cyan-200/20 dark:hover:shadow-cyan-900/20 transition-all duration-300 hover:scale-[1.02]">
-            <CardContent className="p-3 flex items-center justify-between">
-              <div className="flex flex-col">
-                <h3 className="font-bold">Distribution</h3>
-                <div className="flex gap-1 mt-2">
-                  <Truck className="h-6 w-6 text-cyan-600 animate-pulse" />
-                  <Container className="h-6 w-6 text-cyan-600" />
+          {/* Column 2: A-Level Testing */}
+          <div className="md:col-span-1 flex flex-col gap-6">
+            <div className="text-center">
+              <h2 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-2">on A-Level Testing</h2>
+            </div>
+            
+            {/* A-Level Tutor Screen */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-3 shadow-lg border border-blue-200 dark:border-blue-800">
+              <h3 className="font-bold text-center text-blue-700 dark:text-blue-300 mb-2">A-VEL TUTOR</h3>
+              <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-3 border border-blue-200 dark:border-blue-700">
+                <div className="grid grid-cols-2 gap-2">
+                  {['MATHS', 'EXAM', 'QUIZ', 'TUTOR', 'ASSIGN', 'REVIEW'].map((item, i) => (
+                    <div key={i} className={`p-2 rounded-lg text-center text-xs font-medium border ${i % 2 === 0 ? 'bg-blue-200 dark:bg-blue-800 border-blue-300 dark:border-blue-700' : 'bg-orange-200 dark:bg-orange-800/40 border-orange-300 dark:border-orange-700'}`}>
+                      {item}
+                    </div>
+                  ))}
                 </div>
-                <div className="text-xs mt-1">Global CDN deployment</div>
               </div>
-              <div className="bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full h-12 w-12 flex items-center justify-center">
-                <Globe className="h-6 w-6 text-white" />
+            </div>
+            
+            {/* Distribution */}
+            <div className="flex flex-col items-center gap-2">
+              <div className="flex items-center gap-2">
+                <Truck className="w-8 h-8 text-blue-600" />
+                <div className="bg-blue-600 text-white px-3 py-1 rounded-md text-sm font-bold">SOTTOR</div>
               </div>
-            </CardContent>
-          </Card>
+              <div className="w-0.5 h-10 bg-blue-400"></div>
+              <div className="w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 border-2 border-blue-400 dark:border-blue-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+                  <div className="w-4 h-4 rounded-full bg-orange-400"></div>
+                </div>
+              </div>
+              <h3 className="font-bold text-center text-blue-700 dark:text-blue-300">Distribute<br />BaaS/TPUs</h3>
+            </div>
+            
+            {/* A-Tutor */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-3 shadow-lg border border-blue-200 dark:border-blue-800 flex flex-col items-center">
+              <img src="/lovable-uploads/5c188163-a81f-47e6-a2cf-767936b79c57.png" alt="A-Tutor" className="w-24 h-24 object-contain" />
+              <h3 className="font-bold text-center text-blue-700 dark:text-blue-300 mt-1">A-Tutor</h3>
+            </div>
+          </div>
+          
+          {/* Column 3: Fine-tuning & Exam Solver */}
+          <div className="md:col-span-1 flex flex-col gap-6">
+            <div className="text-center relative">
+              <div className="absolute left-1/2 top-0 -translate-x-1/2 w-16 h-16 rounded-full bg-blue-600 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                  <div className="w-4 h-4 rounded-full bg-blue-600"></div>
+                </div>
+              </div>
+              <div className="pt-20">
+                <Lightbulb className="w-8 h-8 text-yellow-500 mx-auto" />
+                <h3 className="font-bold text-center text-blue-700 dark:text-blue-300">AI<br />Pre-processing</h3>
+              </div>
+            </div>
+            
+            {/* Fine-tuning + Exam-Based */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-3 shadow-lg border border-blue-200 dark:border-blue-800">
+              <h3 className="font-bold text-center text-blue-700 dark:text-blue-300 mb-1">fine-Tuning<br />+ Exam-Based<br />Visual Solvers</h3>
+              <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-2 border border-blue-200 dark:border-blue-700 mt-2 text-center">
+                <span className="text-blue-700 dark:text-blue-300 font-bold text-sm">ROHUND</span>
+              </div>
+            </div>
+            
+            {/* AI Tutor (Exam Solver) */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-3 shadow-lg border border-blue-200 dark:border-blue-800 flex flex-col items-center">
+              <div className="w-20 h-20 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center border-2 border-blue-400">
+                <Bot className="w-12 h-12 text-blue-600" />
+              </div>
+              <h3 className="font-bold text-center text-blue-700 dark:text-blue-300 mt-2">AI TUTOR<br />(Exam Solver)</h3>
+            </div>
+            
+            <div className="text-center">
+              <h3 className="font-bold text-xl text-blue-700 dark:text-blue-300">Exam Solver</h3>
+            </div>
+          </div>
+          
+          {/* Column 4: Fine-tuning */}
+          <div className="md:col-span-1 flex flex-col gap-6">
+            <div className="text-center">
+              <h3 className="font-bold text-blue-700 dark:text-blue-300 mb-2">AI Tutor</h3>
+              <div className="bg-blue-100 dark:bg-blue-900/30 rounded-xl p-3 shadow-lg border border-blue-200 dark:border-blue-800 inline-block">
+                <div className="w-16 h-16 mx-auto rounded-xl bg-white flex items-center justify-center">
+                  <span className="text-4xl font-bold text-blue-600">A</span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Exam Solvers */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-3 shadow-lg border border-blue-200 dark:border-blue-800">
+              <h3 className="font-bold text-center text-blue-700 dark:text-blue-300 mb-2">EXAM<br />SOLVERS</h3>
+            </div>
+            
+            {/* Continue fine-tuning */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-3 shadow-lg border border-blue-200 dark:border-blue-800">
+              <h3 className="font-bold text-center text-blue-700 dark:text-blue-300 mb-2">Continue<br />fine-tuning</h3>
+            </div>
+            
+            {/* Continue fine-tuning with */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-3 shadow-lg border border-blue-200 dark:border-blue-800">
+              <h3 className="font-bold text-center text-blue-700 dark:text-blue-300 mb-2">Continuous<br />fine-tuning with</h3>
+              <div className="flex justify-center gap-2 mt-2">
+                <div className="w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center border border-blue-400">
+                  <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+                </div>
+                <div className="w-8 h-8 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center border border-orange-400">
+                  <div className="w-4 h-4 bg-orange-500 rounded-full"></div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <h3 className="font-bold text-xl text-blue-700 dark:text-blue-300">Visual Solvers</h3>
+            </div>
+          </div>
+          
+          {/* Column 5: Infrastructure */}
+          <div className="md:col-span-1 flex flex-col gap-6">
+            <div className="text-center">
+              <h2 className="text-xl font-bold text-blue-700 dark:text-blue-300 mb-2">
+                <div className="flex items-center justify-center gap-1">
+                  <Container className="w-6 h-6" />
+                  <span>Kubernetes</span>
+                </div>
+              </h2>
+            </div>
+            
+            {/* AI Tutor */}
+            <div className="bg-white dark:bg-slate-800 rounded-xl p-3 shadow-lg border border-blue-200 dark:border-blue-800">
+              <h3 className="font-bold text-center text-blue-700 dark:text-blue-300 mb-2">AI TUTOR</h3>
+              <div className="w-16 h-16 mx-auto rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center border-2 border-blue-400">
+                <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center">
+                  <div className="w-4 h-4 rounded-full bg-red-400"></div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Model Scanning */}
+            <div className="flex flex-col items-center">
+              <h3 className="font-bold text-blue-700 dark:text-blue-300 mb-2">Model Scanning</h3>
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-3 shadow-lg border border-blue-200 dark:border-blue-800 w-full">
+                <div className="w-full aspect-square bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center border border-blue-200 dark:border-blue-700">
+                  <div className="w-3/4 h-3/4 rounded-full bg-white dark:bg-blue-800 flex items-center justify-center relative">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="h-1 w-full bg-blue-400"></div>
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center rotate-90">
+                      <div className="h-1 w-full bg-blue-400"></div>
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center rotate-45">
+                      <div className="h-1 w-full bg-blue-400"></div>
+                    </div>
+                    <div className="absolute inset-0 flex items-center justify-center rotate-[135deg]">
+                      <div className="h-1 w-full bg-blue-400"></div>
+                    </div>
+                    <div className="w-6 h-6 rounded-full bg-white border-2 border-blue-500 z-10"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Model Solvers */}
+            <div className="flex flex-col items-center">
+              <h3 className="font-bold text-blue-700 dark:text-blue-300 mb-2">Model Solvers</h3>
+              <div className="bg-white dark:bg-slate-800 rounded-xl p-3 shadow-lg border border-blue-200 dark:border-blue-800 w-full">
+                <div className="w-full aspect-video bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center border border-blue-200 dark:border-blue-700">
+                  <div className="w-4/5 h-4/5">
+                    <div className="h-full flex flex-col">
+                      <div className="h-1/4 bg-blue-200 dark:bg-blue-800 mb-1 rounded"></div>
+                      <div className="h-1/4 bg-blue-200 dark:bg-blue-800 mb-1 rounded"></div>
+                      <div className="h-1/4 bg-blue-200 dark:bg-blue-800 mb-1 rounded"></div>
+                      <div className="h-1/4 bg-blue-200 dark:bg-blue-800 rounded"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* AI Delivery */}
+            <div className="flex items-center gap-2 justify-center">
+              <div className="bg-blue-600 w-12 h-12 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-xl">AIU</span>
+              </div>
+              <Truck className="w-10 h-10 text-blue-600" />
+            </div>
+            
+            <div className="text-center">
+              <h3 className="font-bold text-xl text-blue-700 dark:text-blue-300">Visual Solvers</h3>
+            </div>
+          </div>
+          
         </div>
         
-        {/* Middle Column - AI Models */}
-        <div className="flex flex-col gap-3">
-          {/* AI Models Title */}
-          <div className="bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl p-3 text-white font-bold text-center shadow-lg border-2 border-purple-400">
-            <div className="flex items-center justify-center gap-2">
-              <Brain className="h-5 w-5" />
-              <span>AI Education Models</span>
-            </div>
-          </div>
-          
-          {/* Central Brain */}
-          <div className="relative">
-            <Card className="overflow-hidden shadow-xl border-2 border-fuchsia-200 dark:border-fuchsia-900 hover:shadow-fuchsia-200/20 dark:hover:shadow-fuchsia-900/20 transition-all duration-300 hover:scale-[1.02] mb-3 z-10">
-              <CardContent className="p-3 flex items-center justify-center">
-                <div className="flex flex-col items-center">
-                  <div className="bg-gradient-to-br from-fuchsia-500 to-purple-700 rounded-full h-20 w-20 flex items-center justify-center shadow-lg animate-pulse">
-                    <Brain className="h-10 w-10 text-white" />
-                  </div>
-                  <h3 className="font-bold text-lg mt-2">Core LLM</h3>
-                  <div className="flex flex-wrap justify-center gap-1 mt-2">
-                    <Badge className="bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-200">70B Parameters</Badge>
-                    <Badge className="bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-200">RLHF Tuned</Badge>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* Connection Lines */}
-            <div className="absolute top-1/2 left-0 w-full flex justify-between z-0">
-              <div className="h-0.5 w-10 bg-gradient-to-r from-blue-500 to-transparent"></div>
-              <div className="h-0.5 w-10 bg-gradient-to-l from-blue-500 to-transparent"></div>
-            </div>
-          </div>
-          
-          {/* Specialized Models Grid */}
-          <div className="grid grid-cols-2 gap-3">
-            {/* Tutor Model */}
-            <Card className="overflow-hidden shadow-xl border-2 border-pink-200 dark:border-pink-900 hover:shadow-pink-200/20 dark:hover:shadow-pink-900/20 transition-all duration-300 hover:scale-[1.02]">
-              <CardContent className="p-3">
-                <div className="flex flex-col items-center">
-                  <div className="bg-gradient-to-br from-pink-500 to-rose-600 rounded-full p-2 mb-1">
-                    <MessageCircle className="h-5 w-5 text-white" />
-                  </div>
-                  <h3 className="font-bold text-sm">AI Tutor</h3>
-                  <p className="text-[10px] text-center mt-1 text-muted-foreground">Interactive learning</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* Exam Model */}
-            <Card className="overflow-hidden shadow-xl border-2 border-amber-200 dark:border-amber-900 hover:shadow-amber-200/20 dark:hover:shadow-amber-900/20 transition-all duration-300 hover:scale-[1.02]">
-              <CardContent className="p-3">
-                <div className="flex flex-col items-center">
-                  <div className="bg-gradient-to-br from-amber-500 to-orange-600 rounded-full p-2 mb-1">
-                    <FileText className="h-5 w-5 text-white" />
-                  </div>
-                  <h3 className="font-bold text-sm">Exam Solver</h3>
-                  <p className="text-[10px] text-center mt-1 text-muted-foreground">Test preparation</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* Concept Model */}
-            <Card className="overflow-hidden shadow-xl border-2 border-emerald-200 dark:border-emerald-900 hover:shadow-emerald-200/20 dark:hover:shadow-emerald-900/20 transition-all duration-300 hover:scale-[1.02]">
-              <CardContent className="p-3">
-                <div className="flex flex-col items-center">
-                  <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full p-2 mb-1">
-                    <Lightbulb className="h-5 w-5 text-white" />
-                  </div>
-                  <h3 className="font-bold text-sm">Concept Explainer</h3>
-                  <p className="text-[10px] text-center mt-1 text-muted-foreground">Clear explanations</p>
-                </div>
-              </CardContent>
-            </Card>
-            
-            {/* Visual Model */}
-            <Card className="overflow-hidden shadow-xl border-2 border-sky-200 dark:border-sky-900 hover:shadow-sky-200/20 dark:hover:shadow-sky-900/20 transition-all duration-300 hover:scale-[1.02]">
-              <CardContent className="p-3">
-                <div className="flex flex-col items-center">
-                  <div className="bg-gradient-to-br from-sky-500 to-blue-600 rounded-full p-2 mb-1">
-                    <LayoutGrid className="h-5 w-5 text-white" />
-                  </div>
-                  <h3 className="font-bold text-sm">Visual Solver</h3>
-                  <p className="text-[10px] text-center mt-1 text-muted-foreground">Diagrams & charts</p>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          
-          {/* Fine-tuning */}
-          <Card className="overflow-hidden shadow-xl border-2 border-violet-200 dark:border-violet-900 hover:shadow-violet-200/20 dark:hover:shadow-violet-900/20 transition-all duration-300 hover:scale-[1.02]">
-            <CardContent className="p-3 flex items-center justify-between">
-              <div className="flex flex-col">
-                <h3 className="font-bold">Continuous Fine-tuning</h3>
-                <div className="text-xs mt-1">Based on student interactions</div>
-              </div>
-              <div className="bg-gradient-to-br from-violet-500 to-purple-600 rounded-full h-12 w-12 flex items-center justify-center">
-                <AirVent className="h-6 w-6 text-white" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-        
-        {/* Right Column - Infrastructure */}
-        <div className="flex flex-col gap-3">
-          {/* Infrastructure Title */}
-          <div className="bg-gradient-to-r from-cyan-500 to-teal-600 rounded-xl p-3 text-white font-bold text-center shadow-lg border-2 border-cyan-400">
-            <div className="flex items-center justify-center gap-2">
-              <Server className="h-5 w-5" />
-              <span>Infrastructure</span>
-            </div>
-          </div>
-          
-          {/* Kubernetes */}
-          <Card className="overflow-hidden shadow-xl border-2 border-blue-200 dark:border-blue-900 hover:shadow-blue-200/20 dark:hover:shadow-blue-900/20 transition-all duration-300 hover:scale-[1.02]">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold">Kubernetes Cluster</h3>
-                <div className="bg-gradient-to-br from-blue-500 to-cyan-600 rounded-full p-2">
-                  <Container className="h-5 w-5 text-white" />
-                </div>
-              </div>
-              
-              {/* Mini Pod Grid */}
-              <div className="grid grid-cols-3 gap-1 mt-2">
-                {[
-                  { name: "LLM Inference", icon: <Brain className="h-3 w-3" />, count: 12 },
-                  { name: "API Gateway", icon: <Webhook className="h-3 w-3" />, count: 4 },
-                  { name: "Data Processing", icon: <Cpu className="h-3 w-3" />, count: 8 },
-                  { name: "Content Cache", icon: <HardDrive className="h-3 w-3" />, count: 6 },
-                  { name: "Monitoring", icon: <Monitor className="h-3 w-3" />, count: 3 },
-                  { name: "Autoscaler", icon: <ArrowRight className="h-3 w-3" />, count: "∞" }
-                ].map((pod, i) => (
-                  <div key={i} className="bg-gradient-to-br from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 border border-blue-100 dark:border-blue-800 rounded-md p-1 flex flex-col items-center">
-                    <div className="text-cyan-600">{pod.icon}</div>
-                    <div className="text-[8px] font-medium text-center">{pod.name}</div>
-                    <Badge variant="outline" className="text-[7px] mt-0.5 h-3 px-1 bg-cyan-100/50 text-cyan-700 dark:bg-cyan-900/30 dark:text-cyan-300">{pod.count}</Badge>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-          
-          {/* Applications */}
-          <Card className="overflow-hidden shadow-xl border-2 border-emerald-200 dark:border-emerald-900 hover:shadow-emerald-200/20 dark:hover:shadow-emerald-900/20 transition-all duration-300 hover:scale-[1.02]">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold">User Applications</h3>
-                <div className="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full p-2">
-                  <AppWindow className="h-5 w-5 text-white" />
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-1 mt-2">
-                {[
-                  "Web Dashboard", "Mobile App", "Browser Extension", "LMS Integration"
-                ].map((app, i) => (
-                  <div key={i} className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border border-emerald-100 dark:border-emerald-800 rounded-md p-1.5 text-center">
-                    <div className="text-[9px] font-medium">{app}</div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-          
-          {/* Data Stores */}
-          <Card className="overflow-hidden shadow-xl border-2 border-indigo-200 dark:border-indigo-900 hover:shadow-indigo-200/20 dark:hover:shadow-indigo-900/20 transition-all duration-300 hover:scale-[1.02]">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between">
-                <h3 className="font-bold">Data Stores</h3>
-                <div className="bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full p-2">
-                  <Database className="h-5 w-5 text-white" />
-                </div>
-              </div>
-              
-              <div className="flex gap-1 justify-between mt-2">
-                {[
-                  { name: "Vector DB", size: "12TB" },
-                  { name: "Knowledge Base", size: "8TB" },
-                  { name: "User Data", size: "3TB" }
-                ].map((store, i) => (
-                  <div key={i} className="bg-gradient-to-br from-indigo-50 to-blue-50 dark:from-indigo-900/20 dark:to-blue-900/20 border border-indigo-100 dark:border-indigo-800 rounded-md flex-1 p-1.5 text-center">
-                    <div className="text-[9px] font-medium">{store.name}</div>
-                    <div className="text-[8px] text-indigo-600 dark:text-indigo-400">{store.size}</div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-          
-          {/* Performance Metrics */}
-          <div className="grid grid-cols-3 gap-2">
-            <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow border-0">
-              <div className="h-full bg-gradient-to-br from-blue-500 to-blue-700">
-                <CardContent className="p-2 text-center text-white">
-                  <h3 className="text-xl font-extrabold">42%</h3>
-                  <p className="text-[8px] font-medium">Higher Scores</p>
-                </CardContent>
-              </div>
-            </Card>
-            
-            <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow border-0">
-              <div className="h-full bg-gradient-to-br from-purple-500 to-purple-700">
-                <CardContent className="p-2 text-center text-white">
-                  <h3 className="text-xl font-extrabold">3.5x</h3>
-                  <p className="text-[8px] font-medium">Engagement</p>
-                </CardContent>
-              </div>
-            </Card>
-            
-            <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow border-0">
-              <div className="h-full bg-gradient-to-br from-teal-500 to-teal-700">
-                <CardContent className="p-2 text-center text-white">
-                  <h3 className="text-xl font-extrabold">68%</h3>
-                  <p className="text-[8px] font-medium">Less Study Time</p>
-                </CardContent>
-              </div>
-            </Card>
-          </div>
+        {/* Connection Lines - Rendered with absolute positioning */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* This would be better with SVG, but for simplicity using div borders */}
+          <div className="absolute top-1/2 left-[20%] w-[60%] h-0.5 bg-blue-500"></div>
         </div>
       </div>
     </div>
