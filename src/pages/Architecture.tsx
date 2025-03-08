@@ -2,7 +2,9 @@
 import React from 'react';
 import { 
   BookOpen, Database, Brain, Cpu, Layers, Code, Users, BarChart3,
-  ChevronRight, Zap, ArrowRight, GraduationCap, CheckCircle
+  ChevronRight, Zap, ArrowRight, GraduationCap, CheckCircle,
+  Server, Cloud, Network, HardDrive, Terminal, Globe, Settings,
+  Package, Router
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -14,12 +16,12 @@ const Architecture = () => {
           AI+ Education LLM Architecture
         </h1>
         <p className="text-sm text-muted-foreground max-w-2xl mx-auto">
-          Our specialized approach to training Large Language Models on A-level educational content
+          Our specialized approach to training and deploying Large Language Models on educational content
         </p>
       </div>
 
-      {/* Main Flowchart - Single flowing architectural diagram */}
-      <div className="relative bg-white dark:bg-card rounded-xl p-4 border shadow-sm overflow-hidden">
+      {/* Main Flowchart - Training Pipeline */}
+      <div className="relative bg-white dark:bg-card rounded-xl p-4 sm:p-6 border shadow-sm overflow-hidden mb-8">
         <h2 className="text-lg font-bold mb-4 text-center">LLM Training Pipeline</h2>
         
         {/* Pipeline Stages in horizontal flow */}
@@ -152,6 +154,155 @@ const Architecture = () => {
                 <span>Monthly updates</span>
               </li>
             </ul>
+          </div>
+        </div>
+      </div>
+      
+      {/* Distributed Backend Infrastructure Diagram */}
+      <div className="bg-white dark:bg-card rounded-xl p-4 sm:p-6 border shadow-sm overflow-hidden mb-8">
+        <h2 className="text-lg font-bold mb-6 text-center">Distributed Backend Infrastructure</h2>
+        
+        {/* Cloud Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          {/* Kubernetes Cluster */}
+          <div className="col-span-1 lg:col-span-2">
+            <div className="border border-blue-200 dark:border-blue-900/30 rounded-xl p-4 bg-gradient-to-br from-blue-50/50 to-teal-50/50 dark:from-blue-950/20 dark:to-teal-950/20 relative">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="h-10 w-10 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center">
+                  <Package className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <h3 className="text-base font-semibold text-blue-700 dark:text-blue-400">Kubernetes Orchestration</h3>
+              </div>
+              
+              {/* Pod Grid */}
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4">
+                {/* LLM Inference Pods */}
+                <div className="border border-teal-200 dark:border-teal-900/30 bg-white dark:bg-slate-900/60 p-3 rounded-lg shadow-sm flex flex-col items-center">
+                  <Brain className="h-6 w-6 text-teal-500 mb-2" />
+                  <span className="text-xs font-medium text-center">LLM Inference</span>
+                  <span className="text-[10px] text-muted-foreground">12 pods</span>
+                </div>
+                
+                {/* API Gateway Pods */}
+                <div className="border border-teal-200 dark:border-teal-900/30 bg-white dark:bg-slate-900/60 p-3 rounded-lg shadow-sm flex flex-col items-center">
+                  <Router className="h-6 w-6 text-teal-500 mb-2" />
+                  <span className="text-xs font-medium text-center">API Gateway</span>
+                  <span className="text-[10px] text-muted-foreground">4 pods</span>
+                </div>
+                
+                {/* Data Processing Pods */}
+                <div className="border border-teal-200 dark:border-teal-900/30 bg-white dark:bg-slate-900/60 p-3 rounded-lg shadow-sm flex flex-col items-center">
+                  <Cpu className="h-6 w-6 text-teal-500 mb-2" />
+                  <span className="text-xs font-medium text-center">Data Processing</span>
+                  <span className="text-[10px] text-muted-foreground">8 pods</span>
+                </div>
+                
+                {/* Content Cache Pods */}
+                <div className="border border-teal-200 dark:border-teal-900/30 bg-white dark:bg-slate-900/60 p-3 rounded-lg shadow-sm flex flex-col items-center">
+                  <HardDrive className="h-6 w-6 text-teal-500 mb-2" />
+                  <span className="text-xs font-medium text-center">Content Cache</span>
+                  <span className="text-[10px] text-muted-foreground">6 pods</span>
+                </div>
+                
+                {/* Monitoring Pods */}
+                <div className="border border-teal-200 dark:border-teal-900/30 bg-white dark:bg-slate-900/60 p-3 rounded-lg shadow-sm flex flex-col items-center">
+                  <BarChart3 className="h-6 w-6 text-teal-500 mb-2" />
+                  <span className="text-xs font-medium text-center">Monitoring</span>
+                  <span className="text-[10px] text-muted-foreground">3 pods</span>
+                </div>
+                
+                {/* Autoscaler */}
+                <div className="border border-teal-200 dark:border-teal-900/30 bg-white dark:bg-slate-900/60 p-3 rounded-lg shadow-sm flex flex-col items-center">
+                  <Settings className="h-6 w-6 text-teal-500 mb-2 animate-pulse-soft" />
+                  <span className="text-xs font-medium text-center">Autoscaler</span>
+                  <span className="text-[10px] text-muted-foreground">Dynamic</span>
+                </div>
+              </div>
+              
+              {/* Cloud Provider Label */}
+              <div className="absolute top-3 right-3 flex items-center gap-1.5 text-xs text-muted-foreground">
+                <Cloud className="h-3.5 w-3.5" />
+                <span>Multi-cloud deployment</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Stats & Features */}
+          <div className="col-span-1">
+            <div className="border border-blue-200 dark:border-blue-900/30 rounded-xl p-4 h-full flex flex-col">
+              <h3 className="text-base font-semibold mb-4">Infrastructure Metrics</h3>
+              
+              <ul className="space-y-3 text-sm">
+                <li className="flex items-center gap-2">
+                  <Server className="h-4 w-4 text-blue-500" />
+                  <span>99.99% uptime SLA</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Globe className="h-4 w-4 text-blue-500" />
+                  <span>Global CDN distribution</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Terminal className="h-4 w-4 text-blue-500" />
+                  <span>CI/CD automated deployment</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Network className="h-4 w-4 text-blue-500" />
+                  <span>Auto-scaling based on traffic</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Database className="h-4 w-4 text-blue-500" />
+                  <span>Distributed data storage</span>
+                </li>
+              </ul>
+              
+              <div className="mt-auto pt-4">
+                <div className="bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg p-3 text-center text-xs font-medium">
+                  <p>Designed to handle</p>
+                  <p className="text-lg font-bold">1M+ concurrent users</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* Data Flow Diagram */}
+        <div className="border border-blue-200 dark:border-blue-900/30 rounded-xl p-4 bg-gradient-to-br from-blue-50/30 to-teal-50/30 dark:from-blue-950/10 dark:to-teal-950/10">
+          <h3 className="text-base font-semibold mb-4 text-center">Data Flow Architecture</h3>
+          
+          <div className="flex flex-col md:flex-row justify-between items-center md:items-start gap-4">
+            <div className="flex flex-col items-center">
+              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/60 dark:to-blue-800/60 flex items-center justify-center mb-2">
+                <Users className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              </div>
+              <span className="text-xs font-medium">Users</span>
+            </div>
+            
+            <ArrowRight className="h-6 w-6 text-gray-400 transform md:rotate-0 rotate-90" />
+            
+            <div className="flex flex-col items-center">
+              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900/60 dark:to-purple-800/60 flex items-center justify-center mb-2">
+                <Router className="h-8 w-8 text-purple-600 dark:text-purple-400" />
+              </div>
+              <span className="text-xs font-medium">API Gateway</span>
+            </div>
+            
+            <ArrowRight className="h-6 w-6 text-gray-400 transform md:rotate-0 rotate-90" />
+            
+            <div className="flex flex-col items-center">
+              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-teal-100 to-teal-200 dark:from-teal-900/60 dark:to-teal-800/60 flex items-center justify-center mb-2">
+                <Brain className="h-8 w-8 text-teal-600 dark:text-teal-400" />
+              </div>
+              <span className="text-xs font-medium">LLM Inference</span>
+            </div>
+            
+            <ArrowRight className="h-6 w-6 text-gray-400 transform md:rotate-0 rotate-90" />
+            
+            <div className="flex flex-col items-center">
+              <div className="h-16 w-16 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/60 dark:to-blue-800/60 flex items-center justify-center mb-2">
+                <Database className="h-8 w-8 text-blue-600 dark:text-blue-400" />
+              </div>
+              <span className="text-xs font-medium">Knowledge Base</span>
+            </div>
           </div>
         </div>
       </div>
