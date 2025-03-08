@@ -15,6 +15,7 @@ import ExplainToMe from "./pages/ExplainToMe";
 import EssayAnalysis from "./pages/EssayAnalysis";
 import AITutor from "./pages/AITutor";
 import Analytics from "./pages/Analytics";
+import Architecture from "./pages/Architecture";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/essay-analysis" element={<EssayAnalysis />} />
             <Route path="/ai-tutor" element={<AITutor />} />
             <Route path="/analytics" element={<Analytics />} />
+            <Route path="/architecture" element={<Architecture />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>
