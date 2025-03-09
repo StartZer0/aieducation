@@ -73,7 +73,7 @@ export default function GenericGPT() {
   const [showAnnotations, setShowAnnotations] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const botMessageRef = useRef<HTMLDivElement>(null);
-  const highlightPositionsRef = useRef<Map<string, DOMRect>>(new Map());
+  const highlightPositionsRef = useRef<Map<string, {top: number, left: number}>>(new Map());
   
   useEffect(() => {
     // Set document title
@@ -93,7 +93,7 @@ export default function GenericGPT() {
     }]);
     
     let currentText = "";
-    const typingSpeed = 8; // Even faster typing speed (milliseconds per character)
+    const typingSpeed = 4; // Even faster typing speed (milliseconds per character)
     
     for (let i = 0; i < text.length; i++) {
       currentText += text[i];
@@ -131,8 +131,8 @@ export default function GenericGPT() {
     
     // Make the typing look more natural but faster
     const totalChars = text.length;
-    const minTypingSpeed = 2; // milliseconds per character (faster)
-    const maxTypingSpeed = 12; // milliseconds per character (faster but still variable)
+    const minTypingSpeed = 1; // milliseconds per character (faster)
+    const maxTypingSpeed = 3; // milliseconds per character (faster but still variable)
     
     let currentText = "";
     let lastPausePosition = 0;
@@ -164,10 +164,10 @@ export default function GenericGPT() {
       let pauseTime = charSpeed;
       if (shouldPause) {
         lastPausePosition = i;
-        if (text[i] === '.') pauseTime += 80; // Shorter pause
-        else if (text[i] === ',') pauseTime += 40; // Shorter pause
-        else if (text[i] === '\n') pauseTime += 100; // Shorter pause
-        else pauseTime += 25; // Shorter random pause
+        if (text[i] === '.') pauseTime += 30; // Shorter pause
+        else if (text[i] === ',') pauseTime += 15; // Shorter pause
+        else if (text[i] === '\n') pauseTime += 40; // Shorter pause
+        else pauseTime += 10; // Shorter random pause
       }
       
       await new Promise(resolve => setTimeout(resolve, pauseTime));
@@ -209,67 +209,107 @@ export default function GenericGPT() {
     setInputValue("");
   };
 
-  // Analyze text to find highlight positions
-  const calculateHighlightPositions = () => {
+  // Improved method to find text positions
+  const findTextPositionsInDOM = () => {
     if (!botMessageRef.current || !showAnnotations) return;
     
-    const element = botMessageRef.current;
-    const textContent = element.textContent || '';
+    const container = botMessageRef.current;
     
-    // Find text nodes in the rendered content
-    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
-    const textNodes: { node: Text; start: number; end: number }[] = [];
-    let position = 0;
+    // Clear previous positions
+    highlightPositionsRef.current = new Map();
     
-    while (walker.nextNode()) {
-      const node = walker.currentNode as Text;
-      const length = node.textContent?.length || 0;
-      textNodes.push({
-        node,
-        start: position,
-        end: position + length
-      });
-      position += length;
-    }
-    
-    // Calculate positions for each highlight
     highlightSections.forEach(section => {
-      // Find section in text
-      const sectionIndex = textContent.indexOf(section.text);
-      if (sectionIndex === -1) return;
+      // Find ALL occurrences of the text using a case-insensitive search
+      const searchText = section.text.toLowerCase();
+      const fullText = container.textContent?.toLowerCase() || '';
+      const textPosition = fullText.indexOf(searchText);
       
-      // Find which text node contains this section
-      for (const textNode of textNodes) {
-        if (
-          (sectionIndex >= textNode.start && sectionIndex < textNode.end) ||
-          (sectionIndex < textNode.start && sectionIndex + section.text.length > textNode.start)
-        ) {
-          // Use the node's parent element's position
-          const nodeElement = textNode.node.parentElement;
-          if (nodeElement) {
-            const rect = nodeElement.getBoundingClientRect();
-            const elementRect = element.getBoundingClientRect();
+      if (textPosition === -1) return;
+      
+      // Use Range to precisely locate the text
+      const range = document.createRange();
+      const textNodes = [];
+      const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
+      
+      let node;
+      let charCount = 0;
+      
+      // Collect all text nodes and their character counts
+      while ((node = walker.nextNode())) {
+        const nodeText = node.textContent || '';
+        textNodes.push({
+          node,
+          start: charCount,
+          end: charCount + nodeText.length
+        });
+        charCount += nodeText.length;
+      }
+      
+      // Find which node(s) contain our search text
+      for (const textNodeInfo of textNodes) {
+        if (textPosition >= textNodeInfo.start && textPosition < textNodeInfo.end) {
+          // Found the node that contains the start of our text
+          const nodeText = textNodeInfo.node.textContent || '';
+          const startOffset = textPosition - textNodeInfo.start;
+          
+          try {
+            // Set the range to the specific text
+            range.setStart(textNodeInfo.node, startOffset);
             
-            // Store relative position
-            highlightPositionsRef.current.set(section.id, new DOMRect(
-              rect.left - elementRect.left,
-              rect.top - elementRect.top + (sectionIndex - textNode.start) * 1.2, // Approximate line height adjustment
-              rect.width,
-              rect.height
-            ));
+            // For the end point, we need to check if the text spans multiple nodes
+            const endPosition = textPosition + searchText.length;
+            
+            // If the text is contained within this node
+            if (endPosition <= textNodeInfo.end) {
+              range.setEnd(textNodeInfo.node, startOffset + searchText.length);
+            } else {
+              // Text spans multiple nodes, find the ending node
+              let remainingLength = searchText.length;
+              let currentLength = nodeText.length - startOffset;
+              remainingLength -= currentLength;
+              
+              // Find the node that contains the end of our text
+              for (let i = textNodes.indexOf(textNodeInfo) + 1; i < textNodes.length; i++) {
+                const nextNode = textNodes[i];
+                const nextNodeText = nextNode.node.textContent || '';
+                
+                if (remainingLength <= nextNodeText.length) {
+                  range.setEnd(nextNode.node, remainingLength);
+                  break;
+                }
+                
+                remainingLength -= nextNodeText.length;
+              }
+            }
+            
+            // Get the rectangle info for the range
+            const rect = range.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            
+            // Store the position relative to the container
+            highlightPositionsRef.current.set(section.id, {
+              top: rect.top - containerRect.top,
+              left: rect.left - containerRect.left
+            });
             
             break;
+          } catch (e) {
+            console.error("Error setting range:", e);
           }
         }
       }
     });
   };
   
-  // Use effect to calculate positions when content changes
+  // Use effect to calculate positions when content changes or renders
   useEffect(() => {
     if (showAnnotations) {
-      // Use a small delay to ensure the DOM is fully rendered
-      setTimeout(calculateHighlightPositions, 100);
+      // Use a short delay to ensure the DOM is fully rendered
+      setTimeout(findTextPositionsInDOM, 50);
+      
+      // Also recalculate on window resize
+      window.addEventListener('resize', findTextPositionsInDOM);
+      return () => window.removeEventListener('resize', findTextPositionsInDOM);
     }
   }, [showAnnotations]);
 
@@ -299,63 +339,75 @@ export default function GenericGPT() {
         {/* Left side annotation bubbles with direct pointers */}
         <div className="absolute left-0 transform -translate-x-[105%] w-72">
           {/* AI Hallucination Bubble */}
-          <div 
-            className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800 shadow-lg animate-fade-in absolute"
-            style={{ 
-              top: `${highlightPositionsRef.current.get('hallucination-1')?.top || 380}px`,
-              left: 0,
-            }}
-          >
-            <div className="flex items-center gap-1.5 mb-2 text-amber-600 dark:text-amber-300 font-medium">
-              <AlertTriangle className="w-5 h-5" />
-              <h3 className="text-sm">AI Hallucination</h3>
+          {highlightPositionsRef.current.has('hallucination-1') && (
+            <div 
+              className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800 shadow-lg animate-fade-in absolute"
+              style={{ 
+                top: `${highlightPositionsRef.current.get('hallucination-1')?.top || 0}px`,
+                left: 0,
+                maxWidth: '280px',
+                zIndex: 10
+              }}
+            >
+              <div className="flex items-center gap-1.5 mb-2 text-amber-600 dark:text-amber-300 font-medium">
+                <AlertTriangle className="w-5 h-5" />
+                <h3 className="text-sm">AI Hallucination</h3>
+              </div>
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                {highlightSections[0].text}
+              </p>
+              {/* Triangle pointer to content - right side of bubble */}
+              <div className="absolute right-0 top-4 transform translate-x-[50%] rotate-45 w-3 h-3 bg-amber-100 dark:bg-amber-900/30 border-r border-t border-amber-200 dark:border-amber-800"></div>
             </div>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              {highlightSections[0].text}
-            </p>
-            {/* Triangle pointer to content - right side of bubble */}
-            <div className="absolute right-0 top-4 transform translate-x-[50%] rotate-45 w-3 h-3 bg-amber-100 dark:bg-amber-900/30 border-r border-t border-amber-200 dark:border-amber-800"></div>
-          </div>
+          )}
 
           {/* Irrelevant Information Bubble */}
-          <div 
-            className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg animate-fade-in absolute" 
-            style={{ 
-              top: `${highlightPositionsRef.current.get('irrelevant-1')?.top || 180}px`,
-              left: 0,
-              animationDelay: '150ms'
-            }}
-          >
-            <div className="flex items-center gap-1.5 mb-2 text-blue-600 dark:text-blue-300 font-medium">
-              <Info className="w-5 h-5" />
-              <h3 className="text-sm">Irrelevant Information</h3>
+          {highlightPositionsRef.current.has('irrelevant-1') && (
+            <div 
+              className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg animate-fade-in absolute" 
+              style={{ 
+                top: `${highlightPositionsRef.current.get('irrelevant-1')?.top || 0}px`,
+                left: 0,
+                maxWidth: '280px',
+                zIndex: 20,
+                animationDelay: '150ms'
+              }}
+            >
+              <div className="flex items-center gap-1.5 mb-2 text-blue-600 dark:text-blue-300 font-medium">
+                <Info className="w-5 h-5" />
+                <h3 className="text-sm">Irrelevant Information</h3>
+              </div>
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                {highlightSections[1].text}
+              </p>
+              {/* Triangle pointer to content - right side of bubble */}
+              <div className="absolute right-0 top-4 transform translate-x-[50%] rotate-45 w-3 h-3 bg-blue-100 dark:bg-blue-900/30 border-r border-t border-blue-200 dark:border-blue-800"></div>
             </div>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              {highlightSections[1].text}
-            </p>
-            {/* Triangle pointer to content - right side of bubble */}
-            <div className="absolute right-0 top-4 transform translate-x-[50%] rotate-45 w-3 h-3 bg-blue-100 dark:bg-blue-900/30 border-r border-t border-blue-200 dark:border-blue-800"></div>
-          </div>
+          )}
 
           {/* Mismatch of Student's Skill Level Bubble */}
-          <div 
-            className="bg-purple-100 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 shadow-lg animate-fade-in absolute" 
-            style={{ 
-              top: `${highlightPositionsRef.current.get('mismatch-1')?.top || 650}px`,
-              left: 0,
-              animationDelay: '300ms'
-            }}
-          >
-            <div className="flex items-center gap-1.5 mb-2 text-purple-600 dark:text-purple-300 font-medium">
-              <BrainCircuit className="w-5 h-5" />
-              <h3 className="text-sm">Mismatch of Student's Skill Level</h3>
+          {highlightPositionsRef.current.has('mismatch-1') && (
+            <div 
+              className="bg-purple-100 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 shadow-lg animate-fade-in absolute" 
+              style={{ 
+                top: `${highlightPositionsRef.current.get('mismatch-1')?.top || 0}px`,
+                left: 0,
+                maxWidth: '280px',
+                zIndex: 30,
+                animationDelay: '300ms'
+              }}
+            >
+              <div className="flex items-center gap-1.5 mb-2 text-purple-600 dark:text-purple-300 font-medium">
+                <BrainCircuit className="w-5 h-5" />
+                <h3 className="text-sm">Mismatch of Student's Skill Level</h3>
+              </div>
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                {highlightSections[2].text}
+              </p>
+              {/* Triangle pointer to content - right side of bubble */}
+              <div className="absolute right-0 top-4 transform translate-x-[50%] rotate-45 w-3 h-3 bg-purple-100 dark:bg-purple-900/30 border-r border-t border-purple-200 dark:border-purple-800"></div>
             </div>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              {highlightSections[2].text}
-            </p>
-            {/* Triangle pointer to content - right side of bubble */}
-            <div className="absolute right-0 top-4 transform translate-x-[50%] rotate-45 w-3 h-3 bg-purple-100 dark:bg-purple-900/30 border-r border-t border-purple-200 dark:border-purple-800"></div>
-          </div>
+          )}
         </div>
       </div>
     );
