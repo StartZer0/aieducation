@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
-import { User, BrainCircuit, AlertTriangle, Info } from 'lucide-react';
+import { User, AlertTriangle, Info, BrainCircuit } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -16,7 +16,6 @@ interface HighlightSection {
   type: 'hallucination' | 'irrelevant' | 'mismatch';
   label: string;
   icon: React.ReactNode;
-  position: number; // Position in the content for the annotation
 }
 
 const highlightSections: HighlightSection[] = [
@@ -25,24 +24,21 @@ const highlightSections: HighlightSection[] = [
     text: "Mathematically, vectors can be expressed in component form, such as (x, y) in two dimensions or (x, y, z) in three dimensions.",
     type: "hallucination",
     label: "AI Hallucination",
-    icon: <AlertTriangle className="w-4 h-4 text-amber-500" />,
-    position: 1 // Position in the paragraph for the annotation
+    icon: <AlertTriangle className="w-4 h-4 text-amber-500" />
   },
   {
     id: 'irrelevant-1',
     text: "Unlike scalars, which only have magnitude (such as temperature or mass), vectors provide additional information about direction, making them essential in various scientific and engineering applications.",
     type: "irrelevant",
     label: "Irrelevant Information",
-    icon: <Info className="w-4 h-4 text-blue-500" />,
-    position: 0 // Position in the paragraph for the annotation
+    icon: <Info className="w-4 h-4 text-blue-500" />
   },
   {
     id: 'mismatch-1',
     text: "physics (to describe forces, velocity, and acceleration), computer graphics (for transformations and rendering), and machine learning (as multi-dimensional feature representations)",
     type: "mismatch",
     label: "Mismatch of Student's Skill Level",
-    icon: <BrainCircuit className="w-4 h-4 text-purple-500" />,
-    position: 2 // Position in the paragraph for the annotation
+    icon: <BrainCircuit className="w-4 h-4 text-purple-500" />
   }
 ];
 
@@ -64,7 +60,6 @@ export default function GenericGPT() {
   const [isTyping, setIsTyping] = useState(false);
   const [showAnnotations, setShowAnnotations] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const messageRefs = useRef<{[key: string]: HTMLDivElement | null}>({});
   
   useEffect(() => {
     // Set document title
@@ -189,14 +184,13 @@ export default function GenericGPT() {
   };
 
   // Process the text with formatting and annotations
-  const renderBotMessage = (content: string, messageId: string) => {
+  const renderBotMessage = (content: string) => {
     // Bold headers
     let formattedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     
     // Create the base content with formatting
-    const contentWithFormatting = (
+    const contentElement = (
       <div 
-        ref={el => messageRefs.current[messageId] = el} 
         className="whitespace-pre-wrap" 
         dangerouslySetInnerHTML={{ __html: formattedContent }} 
       />
@@ -204,54 +198,49 @@ export default function GenericGPT() {
     
     // If annotations aren't showing yet, just return the formatted content
     if (!showAnnotations) {
-      return contentWithFormatting;
+      return contentElement;
     }
-    
-    // Prepare annotations that will appear outside the message bubble
-    const annotations = highlightSections.map((section) => {
-      // Style based on the type of highlight
-      const highlightStyles = {
-        hallucination: "bg-amber-100 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700 shadow-amber-100/50",
-        irrelevant: "bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 shadow-blue-100/50",
-        mismatch: "bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700 shadow-purple-100/50"
-      };
-
-      // Calculate position for annotation bubble
-      // We use different positions for different annotations
-      const offsetY = section.position * 40 - 20;
-      
-      return (
-        <div 
-          key={section.id}
-          className={`absolute right-0 transform translate-x-[105%] px-3 py-2 rounded-lg border ${highlightStyles[section.type]} min-w-48 max-w-60 z-10 shadow-lg animate-fade-in`}
-          style={{ top: `${offsetY}px` }}
-        >
-          <div className="absolute left-0 top-1/2 transform -translate-x-[90%] -translate-y-1/2">
-            <div className={`w-3 h-3 rotate-45 border-l border-b ${highlightStyles[section.type]}`} />
-          </div>
-          <div className="flex items-center gap-1.5 mb-1 font-semibold text-xs">
-            {section.icon}
-            <span>{section.label}</span>
-          </div>
-          <div className="text-xs opacity-90">{section.text}</div>
-        </div>
-      );
-    });
     
     return (
       <div className="relative">
-        {contentWithFormatting}
-        {annotations}
+        {contentElement}
+        {/* Annotation Bubble - displayed outside the message bubble */}
+        <div className="absolute right-0 top-0 transform translate-x-[105%] w-72 bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg animate-fade-in z-10">
+          {/* Irrelevant Information Label */}
+          <div className="flex items-center gap-1.5 mb-2 text-blue-600 dark:text-blue-300 font-medium">
+            <Info className="w-5 h-5" />
+            <h3 className="text-sm">Irrelevant Information</h3>
+          </div>
+          
+          {/* Irrelevant Information Content */}
+          <p className="text-sm mb-3 text-gray-700 dark:text-gray-300">
+            {highlightSections[1].text}
+          </p>
+          
+          {/* Mismatch of Student's Skill Level Label */}
+          <div className="flex items-center gap-1.5 mb-2 text-purple-600 dark:text-purple-300 font-medium">
+            <BrainCircuit className="w-5 h-5" />
+            <h3 className="text-sm">Mismatch of Student's Skill Level</h3>
+          </div>
+          
+          {/* Mismatch Content */}
+          <p className="text-sm text-gray-700 dark:text-gray-300">
+            {highlightSections[2].text}
+          </p>
+          
+          {/* Triangle pointer to content */}
+          <div className="absolute left-0 top-8 transform -translate-x-[50%] rotate-45 w-3 h-3 bg-blue-100 dark:bg-blue-900/30 border-l border-b border-blue-200 dark:border-blue-800"></div>
+        </div>
       </div>
     );
   };
-
+  
   return (
-    <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Header */}
-      <header className="border-b border-gray-200 dark:border-gray-700 py-4 px-6 flex items-center justify-center">
+    <div className="flex flex-col h-screen bg-white dark:bg-gray-900">
+      {/* Header - styled to look like ChatGPT */}
+      <header className="border-b border-gray-200 dark:border-gray-800 py-4 px-6 flex items-center justify-center bg-white dark:bg-gray-800">
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 rounded-md bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center">
             <BrainCircuit className="w-5 h-5 text-white" />
           </div>
           <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-200">GenericGPT</h1>
@@ -267,7 +256,7 @@ export default function GenericGPT() {
               className={`flex items-start gap-4 ${message.isUser ? 'justify-end' : 'justify-start'}`}
             >
               {!message.isUser && (
-                <div className="w-8 h-8 rounded-md bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center flex-shrink-0">
                   <BrainCircuit className="w-5 h-5 text-white" />
                 </div>
               )}
@@ -280,7 +269,7 @@ export default function GenericGPT() {
                 {message.isUser ? (
                   <p className="whitespace-pre-wrap">{message.content}</p>
                 ) : (
-                  renderBotMessage(message.content, message.id)
+                  renderBotMessage(message.content)
                 )}
               </div>
               
@@ -294,7 +283,7 @@ export default function GenericGPT() {
           
           {isTyping && !messages.some(message => !message.isComplete) && (
             <div className="flex items-start gap-4">
-              <div className="w-8 h-8 rounded-md bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center flex-shrink-0">
                 <BrainCircuit className="w-5 h-5 text-white" />
               </div>
               <div className="rounded-lg px-4 py-3 bg-gray-100 dark:bg-gray-800">
@@ -312,7 +301,7 @@ export default function GenericGPT() {
       </div>
       
       {/* Input Area */}
-      <div className="border-t border-gray-200 dark:border-gray-700 p-4 sm:px-6 md:px-8">
+      <div className="border-t border-gray-200 dark:border-gray-700 p-4 sm:px-6 md:px-8 bg-white dark:bg-gray-800">
         <form 
           onSubmit={handleSendMessage}
           className="max-w-3xl mx-auto flex items-center gap-2"
@@ -322,13 +311,13 @@ export default function GenericGPT() {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Type your message..."
-            className="flex-1 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 text-gray-900 dark:text-gray-100"
+            className="flex-1 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 dark:focus:ring-emerald-400 text-gray-900 dark:text-gray-100"
             disabled={isTyping}
           />
           <button
             type="submit"
             disabled={!inputValue.trim() || isTyping}
-            className="bg-blue-600 dark:bg-blue-500 text-white rounded-lg px-4 py-2 font-medium hover:bg-blue-700 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-emerald-600 dark:bg-emerald-600 text-white rounded-lg px-4 py-2 font-medium hover:bg-emerald-700 dark:hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Send
           </button>

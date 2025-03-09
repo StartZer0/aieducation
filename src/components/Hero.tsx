@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Brain, Sparkles, Lightbulb, Target, LogIn, UserPlus } from 'lucide-react';
+import { ArrowRight, Brain, Sparkles, Lightbulb, Target } from 'lucide-react';
 
 const Hero = () => {
   return (
@@ -41,14 +41,13 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-            <Link to="/login" className="group relative overflow-hidden px-8 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium text-lg transform transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl flex items-center">
-              <LogIn className="w-5 h-5 mr-2 relative z-10" />
-              <span className="relative z-10">Log In</span>
+            <Link to="/dashboard" className="group relative overflow-hidden px-8 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium text-lg transform transition-all duration-300 hover:scale-105 shadow-lg hover:shadow-xl flex items-center">
+              <span className="relative z-10">Get Started</span>
+              <ArrowRight className="w-5 h-5 ml-2 relative z-10" />
               <div className="absolute inset-0 bg-gradient-to-r from-pink-500 to-orange-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </Link>
-            <Link to="/signup" className="group relative overflow-hidden px-8 py-3 rounded-xl bg-white text-blue-600 border-2 border-blue-300 font-medium text-lg transform transition-all duration-300 hover:scale-105 hover:border-blue-500 shadow-md hover:shadow-lg flex items-center">
-              <UserPlus className="w-5 h-5 mr-2 relative z-10" />
-              <span className="relative z-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Sign Up</span>
+            <Link to="/about-me" className="group relative overflow-hidden px-8 py-3 rounded-xl bg-white text-blue-600 border-2 border-blue-300 font-medium text-lg transform transition-all duration-300 hover:scale-105 hover:border-blue-500 shadow-md hover:shadow-lg flex items-center">
+              <span className="relative z-10 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Learn More</span>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             </Link>
           </div>
