@@ -24,7 +24,7 @@ interface HighlightSection {
 const highlightSections: HighlightSection[] = [
   {
     id: 'hallucination-1',
-    text: "Mathematically, vectors can be expressed in component form, such as (x, y) in two dimensions or (x, y, z) in three dimensions.",
+    text: "Mathematically, vectors can be expressed as (x, y, z) in four-dimensional space, where the fourth dimension represents time.",
     type: "hallucination",
     label: "AI Hallucination",
     icon: <AlertTriangle className="w-4 h-4 text-amber-500" />,
@@ -58,7 +58,7 @@ const highlightSections: HighlightSection[] = [
 const botResponse = `**Understanding Vectors**
 In mathematics and physics, vectors are fundamental entities used to represent quantities that have both magnitude and direction. Unlike scalars, which only have magnitude (such as temperature or mass), vectors provide additional information about direction, making them essential in various scientific and engineering applications.
 
-A vector is typically represented as an arrow in a coordinate system. The length of the arrow indicates the vector's magnitude, while the direction of the arrow determines its orientation. Mathematically, vectors can be expressed in component form, such as (x, y) in two dimensions or (x, y, z) in three dimensions.
+A vector is typically represented as an arrow in a coordinate system. The length of the arrow indicates the vector's magnitude, while the direction of the arrow determines its orientation. Mathematically, vectors can be expressed as (x, y, z) in four-dimensional space, where the fourth dimension represents time.
 
 **Operations with Vectors**
 Vectors can be added, subtracted, and scaled using basic arithmetic operations. The vector sum follows the parallelogram rule or the tip-to-tail method, where placing the tail of one vector at the tip of another results in a new vector. Additionally, multiplying a vector by a scalar changes its magnitude but not its direction.
@@ -185,25 +185,18 @@ export default function GenericGPT() {
     
     setIsTyping(false);
     
-    // Show annotations after a slight delay to ensure DOM is fully rendered
+    // Find text positions and show annotations only after the full message is complete
+    // Give a moment for the DOM to fully render
     setTimeout(() => {
       findTextPositionsInDOM();
       setShowAnnotations(true);
-    }, 500);
+    }, 800);
   };
   
   useEffect(() => {
     // Scroll to bottom when messages update
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-  
-  // Add a separate effect for recalculating positions whenever annotations are toggled
-  useEffect(() => {
-    if (showAnnotations) {
-      // Use a short delay to ensure the DOM is fully rendered
-      findTextPositionsInDOM();
-    }
-  }, [showAnnotations]);
   
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -289,10 +282,6 @@ export default function GenericGPT() {
         }
       }
     });
-    
-    // Force a re-render to update the UI with the new positions
-    setShowAnnotations(false);
-    setTimeout(() => setShowAnnotations(true), 10);
   };
   
   // Effect to update positions on window resize
@@ -330,7 +319,7 @@ export default function GenericGPT() {
       <div className="relative">
         {contentElement}
         
-        {/* Static bubbles that appear next to their corresponding text */}
+        {/* Static annotation bubbles */}
         <div className="absolute inset-0 pointer-events-none">
           {/* AI Hallucination Bubble - Only show if position is found */}
           {highlightPositionsRef.current.has('hallucination-1') && (
@@ -349,7 +338,7 @@ export default function GenericGPT() {
                 <h3 className="text-sm">AI Hallucination</h3>
               </div>
               <p className="text-sm text-gray-700 dark:text-gray-300">
-                This is mathematically correct but could be misleading without further context.
+                This is incorrect. Vectors in standard mathematics have dimensions matching their space. In 3D space, vectors have 3 components (x, y, z), not 4.
               </p>
               {/* Triangle pointer to content - right side of bubble */}
               <div className="absolute right-0 top-4 transform translate-x-[100%] rotate-45 w-3 h-3 bg-amber-100 dark:bg-amber-900/30 border-r border-t border-amber-200 dark:border-amber-800"></div>
