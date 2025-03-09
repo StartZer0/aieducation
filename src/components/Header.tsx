@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
@@ -37,16 +36,15 @@ const Header = () => {
 
   const navLinks = [
     { path: '/', label: 'Home', icon: <Book className="w-5 h-5 mr-2" />, show: true },
+    { path: '/about-me', label: 'About Me', icon: <User className="w-5 h-5 mr-2" />, show: true },
     { path: '/dashboard', label: 'My Subjects', icon: <GraduationCap className="w-5 h-5 mr-2" />, show: true },
     { path: '/analytics', label: 'Learning Analytics', icon: <BarChart className="w-5 h-5 mr-2" />, show: true },
     { path: '/schedule', label: 'Study Schedule', icon: <Calendar className="w-5 h-5 mr-2" />, show: true },
     { path: '/ai-tutor', label: 'AI Tutor', icon: <MessageCircle className="w-5 h-5 mr-2" />, show: true },
     { path: '/explain-to-me', label: 'Exam Paper Solver', icon: <School className="w-5 h-5 mr-2" />, show: true },
     { path: '/essay-analysis', label: 'Essay Feedback', icon: <FileText className="w-5 h-5 mr-2" />, show: true },
-    { path: '/about-me', label: 'About Me', icon: <User className="w-5 h-5 mr-2" />, show: true },
     { path: '/test-chats', label: 'Learning Examples', icon: <Book className="w-5 h-5 mr-2" />, show: false },
     { path: '/test-chats2', label: 'Advanced Examples', icon: <Book className="w-5 h-5 mr-2" />, show: false },
-    { path: '/genericgpt', label: 'GenericGPT', icon: <MessageCircle className="w-5 h-5 mr-2" />, show: true },
   ];
 
   const mainActions = [

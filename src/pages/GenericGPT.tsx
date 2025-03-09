@@ -16,6 +16,7 @@ interface HighlightSection {
   type: 'hallucination' | 'irrelevant' | 'mismatch';
   label: string;
   icon: React.ReactNode;
+  position: number; // Position in text to help with annotation targeting
 }
 
 const highlightSections: HighlightSection[] = [
@@ -24,21 +25,24 @@ const highlightSections: HighlightSection[] = [
     text: "Mathematically, vectors can be expressed in component form, such as (x, y) in two dimensions or (x, y, z) in three dimensions.",
     type: "hallucination",
     label: "AI Hallucination",
-    icon: <AlertTriangle className="w-4 h-4 text-amber-500" />
+    icon: <AlertTriangle className="w-4 h-4 text-amber-500" />,
+    position: 380 // Approximate position in the text
   },
   {
     id: 'irrelevant-1',
     text: "Unlike scalars, which only have magnitude (such as temperature or mass), vectors provide additional information about direction, making them essential in various scientific and engineering applications.",
     type: "irrelevant",
     label: "Irrelevant Information",
-    icon: <Info className="w-4 h-4 text-blue-500" />
+    icon: <Info className="w-4 h-4 text-blue-500" />,
+    position: 180 // Approximate position in the text
   },
   {
     id: 'mismatch-1',
     text: "physics (to describe forces, velocity, and acceleration), computer graphics (for transformations and rendering), and machine learning (as multi-dimensional feature representations)",
     type: "mismatch",
     label: "Mismatch of Student's Skill Level",
-    icon: <BrainCircuit className="w-4 h-4 text-purple-500" />
+    icon: <BrainCircuit className="w-4 h-4 text-purple-500" />,
+    position: 650 // Approximate position in the text
   }
 ];
 
@@ -60,6 +64,7 @@ export default function GenericGPT() {
   const [isTyping, setIsTyping] = useState(false);
   const [showAnnotations, setShowAnnotations] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const botMessageRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     // Set document title
@@ -79,7 +84,7 @@ export default function GenericGPT() {
     }]);
     
     let currentText = "";
-    const typingSpeed = 25; // faster typing speed (milliseconds per character)
+    const typingSpeed = 15; // Even faster typing speed (milliseconds per character)
     
     for (let i = 0; i < text.length; i++) {
       currentText += text[i];
@@ -115,10 +120,10 @@ export default function GenericGPT() {
       isComplete: false
     }]);
     
-    // Make the typing look more natural by using variable speeds
+    // Make the typing look more natural but faster
     const totalChars = text.length;
-    const minTypingSpeed = 10; // milliseconds per character (faster)
-    const maxTypingSpeed = 60; // milliseconds per character (slower)
+    const minTypingSpeed = 5; // milliseconds per character (faster)
+    const maxTypingSpeed = 25; // milliseconds per character (faster but still variable)
     
     let currentText = "";
     let lastPausePosition = 0;
@@ -129,7 +134,7 @@ export default function GenericGPT() {
         text[i] === '.' || 
         text[i] === ',' || 
         text[i] === '\n' || 
-        (i - lastPausePosition > 40 && Math.random() > 0.7); // Random pauses during longer stretches
+        (i - lastPausePosition > 40 && Math.random() > 0.8); // Fewer random pauses
       
       currentText += text[i];
       
@@ -143,17 +148,17 @@ export default function GenericGPT() {
         }
       ]);
       
-      // Variable typing speed
+      // Variable typing speed but faster overall
       const charSpeed = Math.floor(Math.random() * (maxTypingSpeed - minTypingSpeed) + minTypingSpeed);
       
-      // Additional pause at punctuation or paragraph breaks
+      // Shorter additional pause at punctuation or paragraph breaks
       let pauseTime = charSpeed;
       if (shouldPause) {
         lastPausePosition = i;
-        if (text[i] === '.') pauseTime += 300; 
-        else if (text[i] === ',') pauseTime += 150;
-        else if (text[i] === '\n') pauseTime += 500;
-        else pauseTime += 100; // Random pause
+        if (text[i] === '.') pauseTime += 150; // Shorter pause
+        else if (text[i] === ',') pauseTime += 80; // Shorter pause
+        else if (text[i] === '\n') pauseTime += 200; // Shorter pause
+        else pauseTime += 50; // Shorter random pause
       }
       
       await new Promise(resolve => setTimeout(resolve, pauseTime));
@@ -171,10 +176,8 @@ export default function GenericGPT() {
     
     setIsTyping(false);
     
-    // Show annotations after typing is complete with a small delay
-    setTimeout(() => {
-      setShowAnnotations(true);
-    }, 500);
+    // Show annotations immediately after typing is complete
+    setShowAnnotations(true);
   };
   
   useEffect(() => {
@@ -205,7 +208,8 @@ export default function GenericGPT() {
     // Create the base content with formatting
     const contentElement = (
       <div 
-        className="whitespace-pre-wrap" 
+        ref={botMessageRef}
+        className="whitespace-pre-wrap relative" 
         dangerouslySetInnerHTML={{ __html: formattedContent }} 
       />
     );
@@ -219,10 +223,13 @@ export default function GenericGPT() {
       <div className="relative">
         {contentElement}
         
-        {/* Left side annotation bubbles */}
-        <div className="absolute left-0 top-0 transform -translate-x-[105%] flex flex-col gap-4 w-72">
+        {/* Left side annotation bubbles with direct pointers */}
+        <div className="absolute left-0 transform -translate-x-[105%] w-72">
           {/* AI Hallucination Bubble */}
-          <div className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800 shadow-lg animate-fade-in">
+          <div 
+            className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800 shadow-lg animate-fade-in relative"
+            style={{ top: `${highlightSections[0].position/15}px` }}
+          >
             <div className="flex items-center gap-1.5 mb-2 text-amber-600 dark:text-amber-300 font-medium">
               <AlertTriangle className="w-5 h-5" />
               <h3 className="text-sm">AI Hallucination</h3>
@@ -235,7 +242,10 @@ export default function GenericGPT() {
           </div>
 
           {/* Irrelevant Information Bubble */}
-          <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg animate-fade-in" style={{ animationDelay: '150ms' }}>
+          <div 
+            className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg animate-fade-in relative" 
+            style={{ top: `${highlightSections[1].position/15}px`, animationDelay: '150ms' }}
+          >
             <div className="flex items-center gap-1.5 mb-2 text-blue-600 dark:text-blue-300 font-medium">
               <Info className="w-5 h-5" />
               <h3 className="text-sm">Irrelevant Information</h3>
@@ -248,7 +258,10 @@ export default function GenericGPT() {
           </div>
 
           {/* Mismatch of Student's Skill Level Bubble */}
-          <div className="bg-purple-100 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 shadow-lg animate-fade-in" style={{ animationDelay: '300ms' }}>
+          <div 
+            className="bg-purple-100 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 shadow-lg animate-fade-in relative" 
+            style={{ top: `${highlightSections[2].position/15}px`, animationDelay: '300ms' }}
+          >
             <div className="flex items-center gap-1.5 mb-2 text-purple-600 dark:text-purple-300 font-medium">
               <BrainCircuit className="w-5 h-5" />
               <h3 className="text-sm">Mismatch of Student's Skill Level</h3>
@@ -266,10 +279,10 @@ export default function GenericGPT() {
   
   return (
     <div className="flex flex-col h-screen bg-white dark:bg-gray-900">
-      {/* Header - styled to look like ChatGPT */}
-      <header className="border-b border-gray-200 dark:border-gray-800 py-4 px-6 flex items-center justify-center bg-white dark:bg-gray-800">
+      {/* Header - styled to look more like ChatGPT */}
+      <header className="border-b border-gray-200 dark:border-gray-800 py-3 px-6 flex items-center justify-center bg-white dark:bg-gray-800">
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-sm bg-green-600 flex items-center justify-center">
             <BrainCircuit className="w-5 h-5 text-white" />
           </div>
           <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-200">GenericGPT</h1>
@@ -285,7 +298,7 @@ export default function GenericGPT() {
               className={`flex items-start gap-4 ${message.isUser ? 'justify-end' : 'justify-start'}`}
             >
               {!message.isUser && (
-                <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center flex-shrink-0">
+                <div className="w-8 h-8 rounded-sm bg-green-600 flex items-center justify-center flex-shrink-0">
                   <BrainCircuit className="w-5 h-5 text-white" />
                 </div>
               )}
@@ -312,7 +325,7 @@ export default function GenericGPT() {
           
           {isTyping && !messages.some(message => !message.isComplete) && (
             <div className="flex items-start gap-4">
-              <div className="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center flex-shrink-0">
+              <div className="w-8 h-8 rounded-sm bg-green-600 flex items-center justify-center flex-shrink-0">
                 <BrainCircuit className="w-5 h-5 text-white" />
               </div>
               <div className="rounded-lg px-4 py-3 bg-gray-100 dark:bg-gray-800">
@@ -346,7 +359,7 @@ export default function GenericGPT() {
           <button
             type="submit"
             disabled={!inputValue.trim() || isTyping}
-            className="bg-emerald-600 dark:bg-emerald-600 text-white rounded-lg px-4 py-2 font-medium hover:bg-emerald-700 dark:hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-green-600 dark:bg-green-600 text-white rounded-lg px-4 py-2 font-medium hover:bg-green-700 dark:hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Send
           </button>
