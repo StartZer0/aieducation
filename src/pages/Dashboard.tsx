@@ -3,6 +3,8 @@ import React from 'react';
 import SubjectGrid from '../components/SubjectGrid';
 import AIAssistant from '../components/AIAssistant';
 import { BookOpen, Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 interface RecentlyViewedItem {
   id: string;
@@ -43,6 +45,22 @@ const Dashboard = () => {
         <div className="mb-10 text-center">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">Welcome, Student</h1>
           <p className="text-foreground/70 text-lg max-w-2xl mx-auto">Continue your learning journey</p>
+          
+          {/* Quick actions for mobile */}
+          <div className="flex flex-col sm:flex-row gap-3 justify-center mt-6 md:hidden">
+            <Button asChild className="w-full sm:w-auto">
+              <Link to="/dashboard" className="flex items-center gap-2">
+                <BookOpen className="w-5 h-5" />
+                Continue Learning
+              </Link>
+            </Button>
+            <Button variant="outline" asChild className="w-full sm:w-auto">
+              <Link to="/explain-to-me" className="flex items-center gap-2">
+                <Clock className="w-5 h-5" />
+                Start Quiz
+              </Link>
+            </Button>
+          </div>
         </div>
         
         {/* Recently viewed section */}

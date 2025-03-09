@@ -66,6 +66,25 @@
   transform: translateY(-5px);
 }
 
+/* Right navigation slide-in */
+.nav-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 39;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.nav-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 /* Animations */
 @media (prefers-reduced-motion: no-preference) {
   .logo-spin {
@@ -80,4 +99,18 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+/* Slide in from right animation */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.slide-in-right {
+  animation: slideInRight 0.3s forwards;
 }
