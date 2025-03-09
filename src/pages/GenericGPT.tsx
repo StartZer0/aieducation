@@ -74,6 +74,7 @@ export default function GenericGPT() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const botMessageRef = useRef<HTMLDivElement>(null);
   const highlightPositionsRef = useRef<Map<string, {top: number, left: number}>>(new Map());
+  const [visibleBubbles, setVisibleBubbles] = useState<string[]>([]);
   
   useEffect(() => {
     // Set document title
@@ -121,6 +122,7 @@ export default function GenericGPT() {
   const simulateBotTyping = async (text: string, messageId: string) => {
     setIsTyping(true);
     setShowAnnotations(false);
+    setVisibleBubbles([]);
     
     setMessages(prev => [...prev, {
       id: messageId,
@@ -190,6 +192,17 @@ export default function GenericGPT() {
     setTimeout(() => {
       findTextPositionsInDOM();
       setShowAnnotations(true);
+      
+      // Stagger the appearance of the bubbles
+      setTimeout(() => {
+        setVisibleBubbles(['hallucination-1']);
+        setTimeout(() => {
+          setVisibleBubbles(prev => [...prev, 'irrelevant-1']);
+          setTimeout(() => {
+            setVisibleBubbles(prev => [...prev, 'mismatch-1']);
+          }, 400);
+        }, 400);
+      }, 400);
     }, 800);
   };
   
@@ -276,6 +289,25 @@ export default function GenericGPT() {
               top: rect.top - containerRect.top,
               left: rect.left - containerRect.left
             });
+            
+            // Create a span to highlight the text
+            const span = document.createElement('span');
+            span.setAttribute('data-highlight-id', section.id);
+            
+            // Assign highlight color based on type
+            if (section.type === 'hallucination') {
+              span.classList.add('bg-amber-100', 'dark:bg-amber-900/30');
+            } else if (section.type === 'irrelevant') {
+              span.classList.add('bg-blue-100', 'dark:bg-blue-900/30');
+            } else if (section.type === 'mismatch') {
+              span.classList.add('bg-purple-100', 'dark:bg-purple-900/30');
+            }
+            
+            try {
+              range.surroundContents(span);
+            } catch (e) {
+              console.error("Error highlighting:", e);
+            }
           } catch (e) {
             console.error("Error setting range:", e);
           }
@@ -319,12 +351,12 @@ export default function GenericGPT() {
       <div className="relative">
         {contentElement}
         
-        {/* Static annotation bubbles */}
+        {/* Static annotation bubbles with transitions */}
         <div className="absolute inset-0 pointer-events-none">
           {/* AI Hallucination Bubble - Only show if position is found */}
-          {highlightPositionsRef.current.has('hallucination-1') && (
+          {highlightPositionsRef.current.has('hallucination-1') && visibleBubbles.includes('hallucination-1') && (
             <div 
-              className="absolute bg-amber-100 dark:bg-amber-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800 shadow-lg pointer-events-auto"
+              className="absolute bg-amber-100 dark:bg-amber-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800 shadow-lg pointer-events-auto transition-all duration-500 ease-in-out opacity-100 transform translate-x-0"
               style={{ 
                 top: `${highlightPositionsRef.current.get('hallucination-1')?.top || 0}px`,
                 right: '100%',
@@ -338,7 +370,7 @@ export default function GenericGPT() {
                 <h3 className="text-sm">AI Hallucination</h3>
               </div>
               <p className="text-sm text-gray-700 dark:text-gray-300">
-                This is incorrect. Vectors in standard mathematics have dimensions matching their space. In 3D space, vectors have 3 components (x, y, z), not 4.
+                This is incorrect. Vectors in standard mathematics have dimensions matching their space. In 3D space, vectors have 3 components (x, y, z).
               </p>
               {/* Triangle pointer to content - right side of bubble */}
               <div className="absolute right-0 top-4 transform translate-x-[100%] rotate-45 w-3 h-3 bg-amber-100 dark:bg-amber-900/30 border-r border-t border-amber-200 dark:border-amber-800"></div>
@@ -346,9 +378,9 @@ export default function GenericGPT() {
           )}
 
           {/* Irrelevant Information Bubble - Only show if position is found */}
-          {highlightPositionsRef.current.has('irrelevant-1') && (
+          {highlightPositionsRef.current.has('irrelevant-1') && visibleBubbles.includes('irrelevant-1') && (
             <div 
-              className="absolute bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg pointer-events-auto" 
+              className="absolute bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg pointer-events-auto transition-all duration-500 ease-in-out opacity-100 transform translate-x-0" 
               style={{ 
                 top: `${highlightPositionsRef.current.get('irrelevant-1')?.top || 0}px`,
                 right: '100%',
@@ -370,9 +402,9 @@ export default function GenericGPT() {
           )}
 
           {/* Mismatch of Student's Skill Level Bubble - Only show if position is found */}
-          {highlightPositionsRef.current.has('mismatch-1') && (
+          {highlightPositionsRef.current.has('mismatch-1') && visibleBubbles.includes('mismatch-1') && (
             <div 
-              className="absolute bg-purple-100 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 shadow-lg pointer-events-auto" 
+              className="absolute bg-purple-100 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 shadow-lg pointer-events-auto transition-all duration-500 ease-in-out opacity-100 transform translate-x-0" 
               style={{ 
                 top: `${highlightPositionsRef.current.get('mismatch-1')?.top || 0}px`,
                 right: '100%',
