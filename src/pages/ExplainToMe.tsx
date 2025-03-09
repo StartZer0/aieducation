@@ -38,11 +38,12 @@ const ExplainToMe: React.FC = () => {
   };
   
   return (
-    <div className="container mx-auto py-24 px-4">
+    <div className="container mx-auto py-12 px-4">
       <h1 className="text-3xl font-bold text-center mb-8">Explain To Me</h1>
       
-      <div className="grid grid-cols-1 gap-6">
-        <Card className="min-h-[70vh] flex flex-col">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left side - Chat and input */}
+        <Card className="min-h-[60vh] flex flex-col">
           <div className="flex-grow overflow-auto p-4">
             {isUploaded && (
               <div className="mb-4 flex gap-4">
@@ -78,19 +79,48 @@ const ExplainToMe: React.FC = () => {
                 </div>
               </div>
             )}
-            
+          </div>
+          
+          <div className="border-t p-4 flex gap-2">
+            <input
+              type="file"
+              className="hidden"
+              ref={fileInputRef}
+              accept="image/*"
+              onChange={handleFileUpload}
+            />
+            <Button 
+              type="button" 
+              variant="outline"
+              onClick={handleFileButtonClick}
+              className="rounded-full p-2 h-auto"
+            >
+              {isUploaded ? <Image size={18} /> : <Paperclip size={18} />}
+            </Button>
+            <Textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Type your question here or attach an image..."
+              className="flex-grow resize-none min-h-[40px] max-h-[120px]"
+              disabled={isProcessing || isCompleted}
+            />
+            <Button
+              onClick={handleSendMessage}
+              disabled={!isUploaded || isProcessing || isCompleted}
+              className="rounded-full p-2 h-auto"
+            >
+              <Send size={18} />
+            </Button>
+          </div>
+        </Card>
+        
+        {/* Right side - AI response visualization */}
+        <Card className="min-h-[80vh] flex flex-col">
+          <div className="flex-grow overflow-auto p-4">
             {isCompleted && (
-              <div className="mb-4 flex gap-4">
-                <div className="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center shrink-0">
-                  AI
-                </div>
-                <div className="bg-white border rounded-lg p-3 max-w-full w-[65%]">
-                  <div className="flex gap-2 items-center mb-2">
-                    <span className="text-sm font-semibold">Chemistry Assistant</span>
-                  </div>
-                  <div className="w-full h-[600px] overflow-auto">
-                    <iframe
-                      srcDoc={`
+              <div className="h-full w-full">
+                <iframe
+                  srcDoc={`
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -800,45 +830,11 @@ const ExplainToMe: React.FC = () => {
     </script>
 </body>
 </html>
-                      `}
-                      className="w-full h-full border-0"
-                    />
-                  </div>
-                </div>
+                  `}
+                  className="w-full h-full border-0"
+                />
               </div>
             )}
-          </div>
-          
-          <div className="border-t p-4 flex gap-2">
-            <input
-              type="file"
-              className="hidden"
-              ref={fileInputRef}
-              accept="image/*"
-              onChange={handleFileUpload}
-            />
-            <Button 
-              type="button" 
-              variant="outline"
-              onClick={handleFileButtonClick}
-              className="rounded-full p-2 h-auto"
-            >
-              {isUploaded ? <Image size={18} /> : <Paperclip size={18} />}
-            </Button>
-            <Textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Type your question here or attach an image..."
-              className="flex-grow resize-none min-h-[40px] max-h-[120px]"
-              disabled={isProcessing || isCompleted}
-            />
-            <Button
-              onClick={handleSendMessage}
-              disabled={!isUploaded || isProcessing || isCompleted}
-              className="rounded-full p-2 h-auto"
-            >
-              <Send size={18} />
-            </Button>
           </div>
         </Card>
       </div>
