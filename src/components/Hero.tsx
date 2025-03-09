@@ -31,8 +31,8 @@ const Hero = () => {
             Reimagine education with AI
           </div>
           
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight tracking-tight animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            Learn <span className="text-gradient">smarter</span>, not harder
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight tracking-normal animate-fade-in" style={{ animationDelay: '0.2s' }}>
+            Learn <span className="text-gradient mr-1">smarter</span>, not harder
           </h1>
           
           <p className="text-xl md:text-2xl text-foreground/80 mb-8 max-w-2xl mx-auto animate-fade-in" style={{ animationDelay: '0.4s' }}>
