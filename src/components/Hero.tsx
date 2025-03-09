@@ -18,7 +18,8 @@ const Hero = () => {
           <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue rounded-full"></div>
         </div>
       </div>
-      <div className="absolute bottom-40 left-[15%] hidden md:block">
+      {/* Repositioned Sparkles icon to avoid overlap with content */}
+      <div className="absolute bottom-40 left-[5%] hidden md:block">
         <div className="relative w-14 h-14 bg-white dark:bg-card rounded-2xl shadow-xl flex items-center justify-center animate-float" style={{ animationDelay: '3s' }}>
           <Sparkles className="w-7 h-7 text-teal" />
         </div>
