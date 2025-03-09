@@ -43,8 +43,8 @@ const Header = () => {
         isScrolled ? 'bg-white/80 dark:bg-card/80 backdrop-blur-md shadow-md py-3' : 'bg-transparent py-5'
       }`}
     >
-      <div className="container mx-auto px-4 flex items-center justify-between">
-        <Link to="/" className="flex items-center space-x-2">
+      <div className="container mx-auto px-4 flex items-center">
+        <Link to="/" className="flex items-center space-x-2 mr-6">
           <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-blue to-teal flex items-center justify-center shadow-lg">
             <span className="text-white font-bold text-xl">A+</span>
             <div className="absolute -top-1 -right-1 w-4 h-4 bg-white dark:bg-background rounded-full border-2 border-blue animate-pulse-soft"></div>
@@ -52,31 +52,33 @@ const Header = () => {
           <span className="text-xl font-bold text-gradient">AI+ Education</span>
         </Link>
         
-        <nav className="hidden md:flex items-center space-x-1">
+        <nav className="hidden md:flex items-center space-x-1 mr-auto">
           {navLinks.filter(link => link.show).map((link) => (
             <Link
               key={link.path}
               to={link.path}
-              className={`px-3 py-2 rounded-lg transition-colors duration-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 ${
+              className={`px-4 py-2 rounded-lg transition-colors duration-300 hover:bg-blue-50 dark:hover:bg-blue-900/20 flex items-center ${
                 isActive(link.path) 
                   ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-300 font-medium' 
                   : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-300'
               }`}
             >
+              {link.icon}
               {link.label}
             </Link>
           ))}
-          <Link 
-            to="/profile" 
-            className="ml-4 p-2 rounded-full hover:bg-muted transition-colors duration-300"
-            aria-label="User Profile"
-          >
-            <User className="w-5 h-5" />
-          </Link>
         </nav>
         
+        <Link 
+          to="/profile" 
+          className="hidden md:flex ml-auto p-2 rounded-full hover:bg-muted transition-colors duration-300"
+          aria-label="User Profile"
+        >
+          <User className="w-5 h-5" />
+        </Link>
+        
         <button 
-          className="md:hidden p-2 focus:outline-none"
+          className="md:hidden ml-auto p-2 focus:outline-none"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label={isMobileMenuOpen ? 'Close Menu' : 'Open Menu'}
         >

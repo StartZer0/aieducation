@@ -67,6 +67,18 @@
   @apply py-0.5 px-1.5 rounded inline-flex items-center transition-colors cursor-pointer;
 }
 
+/* Glass card styling for e-learning components */
+.glass-card {
+  @apply bg-white/50 dark:bg-black/20 backdrop-blur-sm 
+         border border-gray-200 dark:border-gray-800 
+         rounded-xl shadow-sm hover:shadow-md
+         transition-all duration-300;
+}
+
+.content-container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 md:px-8;
+}
+
 /* Animation utilities */
 .animate-fade-in {
   animation: fadeIn 0.3s ease-in-out;
@@ -87,7 +99,27 @@
   to { transform: translateY(0); opacity: 1; }
 }
 
+/* Text gradient effect */
+.text-gradient {
+  @apply bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent;
+}
+
 /* Nested navigation styling */
 .topic-link {
   @apply py-1.5 px-2 rounded-md transition-colors flex items-center;
+}
+
+/* Card hover effects */
+.hover-lift {
+  @apply transition-all duration-300 hover:translate-y-[-3px];
+}
+
+/* Pulse animation */
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 3s ease-in-out infinite;
 }
