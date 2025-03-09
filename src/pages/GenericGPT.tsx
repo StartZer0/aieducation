@@ -93,7 +93,7 @@ export default function GenericGPT() {
     }]);
     
     let currentText = "";
-    const typingSpeed = 4; // Even faster typing speed (milliseconds per character)
+    const typingSpeed = 1; // Even faster typing speed (milliseconds per character)
     
     for (let i = 0; i < text.length; i++) {
       currentText += text[i];
@@ -129,21 +129,21 @@ export default function GenericGPT() {
       isComplete: false
     }]);
     
-    // Make the typing look more natural but faster
+    // Even faster typing with minimal pauses
     const totalChars = text.length;
-    const minTypingSpeed = 1; // milliseconds per character (faster)
-    const maxTypingSpeed = 3; // milliseconds per character (faster but still variable)
+    const minTypingSpeed = 0.5; // milliseconds per character (much faster)
+    const maxTypingSpeed = 1.5; // milliseconds per character (still variable but faster)
     
     let currentText = "";
     let lastPausePosition = 0;
     
     for (let i = 0; i < totalChars; i++) {
-      // Add random pauses at periods, commas and line breaks to make it look more natural
+      // Add minimal pauses at periods, commas and line breaks
       const shouldPause = 
         text[i] === '.' || 
         text[i] === ',' || 
         text[i] === '\n' || 
-        (i - lastPausePosition > 60 && Math.random() > 0.9); // Fewer random pauses
+        (i - lastPausePosition > 80 && Math.random() > 0.95); // Even fewer random pauses
       
       currentText += text[i];
       
@@ -160,14 +160,14 @@ export default function GenericGPT() {
       // Variable typing speed but faster overall
       const charSpeed = Math.floor(Math.random() * (maxTypingSpeed - minTypingSpeed) + minTypingSpeed);
       
-      // Shorter additional pause at punctuation or paragraph breaks
+      // Much shorter additional pause at punctuation or paragraph breaks
       let pauseTime = charSpeed;
       if (shouldPause) {
         lastPausePosition = i;
-        if (text[i] === '.') pauseTime += 30; // Shorter pause
-        else if (text[i] === ',') pauseTime += 15; // Shorter pause
-        else if (text[i] === '\n') pauseTime += 40; // Shorter pause
-        else pauseTime += 10; // Shorter random pause
+        if (text[i] === '.') pauseTime += 15; // Much shorter pause
+        else if (text[i] === ',') pauseTime += 8; // Much shorter pause
+        else if (text[i] === '\n') pauseTime += 20; // Much shorter pause
+        else pauseTime += 5; // Much shorter random pause
       }
       
       await new Promise(resolve => setTimeout(resolve, pauseTime));
@@ -187,12 +187,24 @@ export default function GenericGPT() {
     
     // Show annotations immediately after typing is complete
     setShowAnnotations(true);
+    
+    // Force recalculation of text positions after a slight delay to ensure DOM is updated
+    setTimeout(findTextPositionsInDOM, 100);
   };
   
   useEffect(() => {
     // Scroll to bottom when messages update
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, showAnnotations]);
+  }, [messages]);
+  
+  // Add a separate effect for recalculating positions whenever annotations are toggled
+  useEffect(() => {
+    if (showAnnotations) {
+      // Use a short delay to ensure the DOM is fully rendered
+      const timer = setTimeout(findTextPositionsInDOM, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [showAnnotations]);
   
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -209,7 +221,7 @@ export default function GenericGPT() {
     setInputValue("");
   };
 
-  // Improved method to find text positions
+  // Improved method to find text positions with more reliable positioning
   const findTextPositionsInDOM = () => {
     if (!botMessageRef.current || !showAnnotations) return;
     
@@ -219,98 +231,66 @@ export default function GenericGPT() {
     highlightPositionsRef.current = new Map();
     
     highlightSections.forEach(section => {
-      // Find ALL occurrences of the text using a case-insensitive search
-      const searchText = section.text.toLowerCase();
-      const fullText = container.textContent?.toLowerCase() || '';
-      const textPosition = fullText.indexOf(searchText);
+      // Find text in the DOM using Range and window.find to get better precision
+      const fullText = container.innerText || '';
+      const exactText = section.text;
       
-      if (textPosition === -1) return;
-      
-      // Use Range to precisely locate the text
-      const range = document.createRange();
-      const textNodes = [];
-      const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT);
-      
-      let node;
-      let charCount = 0;
-      
-      // Collect all text nodes and their character counts
-      while ((node = walker.nextNode())) {
-        const nodeText = node.textContent || '';
-        textNodes.push({
-          node,
-          start: charCount,
-          end: charCount + nodeText.length
-        });
-        charCount += nodeText.length;
-      }
-      
-      // Find which node(s) contain our search text
-      for (const textNodeInfo of textNodes) {
-        if (textPosition >= textNodeInfo.start && textPosition < textNodeInfo.end) {
-          // Found the node that contains the start of our text
-          const nodeText = textNodeInfo.node.textContent || '';
-          const startOffset = textPosition - textNodeInfo.start;
+      // Check if the text exists in the content
+      if (fullText.includes(exactText)) {
+        // Create a range to search for the text
+        const range = document.createRange();
+        const treeWalker = document.createTreeWalker(
+          container,
+          NodeFilter.SHOW_TEXT,
+          null
+        );
+        
+        let node;
+        let foundRange = null;
+        
+        // Iterate through all text nodes to find our text
+        while (node = treeWalker.nextNode()) {
+          const nodeText = node.textContent || '';
+          const index = nodeText.indexOf(exactText);
           
-          try {
-            // Set the range to the specific text
-            range.setStart(textNodeInfo.node, startOffset);
-            
-            // For the end point, we need to check if the text spans multiple nodes
-            const endPosition = textPosition + searchText.length;
-            
-            // If the text is contained within this node
-            if (endPosition <= textNodeInfo.end) {
-              range.setEnd(textNodeInfo.node, startOffset + searchText.length);
-            } else {
-              // Text spans multiple nodes, find the ending node
-              let remainingLength = searchText.length;
-              let currentLength = nodeText.length - startOffset;
-              remainingLength -= currentLength;
-              
-              // Find the node that contains the end of our text
-              for (let i = textNodes.indexOf(textNodeInfo) + 1; i < textNodes.length; i++) {
-                const nextNode = textNodes[i];
-                const nextNodeText = nextNode.node.textContent || '';
-                
-                if (remainingLength <= nextNodeText.length) {
-                  range.setEnd(nextNode.node, remainingLength);
-                  break;
-                }
-                
-                remainingLength -= nextNodeText.length;
-              }
-            }
-            
-            // Get the rectangle info for the range
-            const rect = range.getBoundingClientRect();
-            const containerRect = container.getBoundingClientRect();
-            
-            // Store the position relative to the container
-            highlightPositionsRef.current.set(section.id, {
-              top: rect.top - containerRect.top,
-              left: rect.left - containerRect.left
-            });
-            
+          if (index > -1) {
+            // Found the text in this node
+            range.setStart(node, index);
+            range.setEnd(node, index + exactText.length);
+            foundRange = range;
             break;
-          } catch (e) {
-            console.error("Error setting range:", e);
           }
+        }
+        
+        // If we found the text, get its position
+        if (foundRange) {
+          const rect = foundRange.getBoundingClientRect();
+          const containerRect = container.getBoundingClientRect();
+          
+          // Store the position relative to the container
+          highlightPositionsRef.current.set(section.id, {
+            top: rect.top - containerRect.top,
+            left: rect.left - containerRect.left
+          });
         }
       }
     });
+    
+    // Force a re-render to update the UI with the new positions
+    setShowAnnotations(false);
+    setTimeout(() => setShowAnnotations(true), 0);
   };
   
-  // Use effect to calculate positions when content changes or renders
+  // Effect to update positions on window resize
   useEffect(() => {
-    if (showAnnotations) {
-      // Use a short delay to ensure the DOM is fully rendered
-      setTimeout(findTextPositionsInDOM, 50);
-      
-      // Also recalculate on window resize
-      window.addEventListener('resize', findTextPositionsInDOM);
-      return () => window.removeEventListener('resize', findTextPositionsInDOM);
-    }
+    const handleResize = () => {
+      if (showAnnotations) {
+        findTextPositionsInDOM();
+      }
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [showAnnotations]);
 
   // Process the text with formatting and annotations
@@ -337,15 +317,16 @@ export default function GenericGPT() {
         {contentElement}
         
         {/* Left side annotation bubbles with direct pointers */}
-        <div className="absolute left-0 transform -translate-x-[105%] w-72">
+        <div className="absolute inset-0 pointer-events-none">
           {/* AI Hallucination Bubble */}
           {highlightPositionsRef.current.has('hallucination-1') && (
             <div 
-              className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800 shadow-lg animate-fade-in absolute"
+              className="absolute bg-amber-100 dark:bg-amber-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800 shadow-lg animate-fade-in pointer-events-auto"
               style={{ 
                 top: `${highlightPositionsRef.current.get('hallucination-1')?.top || 0}px`,
-                left: 0,
-                maxWidth: '280px',
+                right: '100%',
+                marginRight: '10px',
+                width: '280px',
                 zIndex: 10
               }}
             >
@@ -354,21 +335,22 @@ export default function GenericGPT() {
                 <h3 className="text-sm">AI Hallucination</h3>
               </div>
               <p className="text-sm text-gray-700 dark:text-gray-300">
-                {highlightSections[0].text}
+                This is mathematically correct but could be misleading without further context.
               </p>
               {/* Triangle pointer to content - right side of bubble */}
-              <div className="absolute right-0 top-4 transform translate-x-[50%] rotate-45 w-3 h-3 bg-amber-100 dark:bg-amber-900/30 border-r border-t border-amber-200 dark:border-amber-800"></div>
+              <div className="absolute right-0 top-4 transform translate-x-[100%] rotate-45 w-3 h-3 bg-amber-100 dark:bg-amber-900/30 border-r border-t border-amber-200 dark:border-amber-800"></div>
             </div>
           )}
 
           {/* Irrelevant Information Bubble */}
           {highlightPositionsRef.current.has('irrelevant-1') && (
             <div 
-              className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg animate-fade-in absolute" 
+              className="absolute bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg animate-fade-in pointer-events-auto" 
               style={{ 
                 top: `${highlightPositionsRef.current.get('irrelevant-1')?.top || 0}px`,
-                left: 0,
-                maxWidth: '280px',
+                right: '100%',
+                marginRight: '10px',
+                width: '280px',
                 zIndex: 20,
                 animationDelay: '150ms'
               }}
@@ -378,21 +360,22 @@ export default function GenericGPT() {
                 <h3 className="text-sm">Irrelevant Information</h3>
               </div>
               <p className="text-sm text-gray-700 dark:text-gray-300">
-                {highlightSections[1].text}
+                This comparison to scalars, while accurate, doesn't address the student's specific question about Linear Algebra.
               </p>
               {/* Triangle pointer to content - right side of bubble */}
-              <div className="absolute right-0 top-4 transform translate-x-[50%] rotate-45 w-3 h-3 bg-blue-100 dark:bg-blue-900/30 border-r border-t border-blue-200 dark:border-blue-800"></div>
+              <div className="absolute right-0 top-4 transform translate-x-[100%] rotate-45 w-3 h-3 bg-blue-100 dark:bg-blue-900/30 border-r border-t border-blue-200 dark:border-blue-800"></div>
             </div>
           )}
 
           {/* Mismatch of Student's Skill Level Bubble */}
           {highlightPositionsRef.current.has('mismatch-1') && (
             <div 
-              className="bg-purple-100 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 shadow-lg animate-fade-in absolute" 
+              className="absolute bg-purple-100 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 shadow-lg animate-fade-in pointer-events-auto" 
               style={{ 
                 top: `${highlightPositionsRef.current.get('mismatch-1')?.top || 0}px`,
-                left: 0,
-                maxWidth: '280px',
+                right: '100%',
+                marginRight: '10px',
+                width: '280px',
                 zIndex: 30,
                 animationDelay: '300ms'
               }}
@@ -402,10 +385,10 @@ export default function GenericGPT() {
                 <h3 className="text-sm">Mismatch of Student's Skill Level</h3>
               </div>
               <p className="text-sm text-gray-700 dark:text-gray-300">
-                {highlightSections[2].text}
+                These examples are too advanced for someone just starting to learn Linear Algebra.
               </p>
               {/* Triangle pointer to content - right side of bubble */}
-              <div className="absolute right-0 top-4 transform translate-x-[50%] rotate-45 w-3 h-3 bg-purple-100 dark:bg-purple-900/30 border-r border-t border-purple-200 dark:border-purple-800"></div>
+              <div className="absolute right-0 top-4 transform translate-x-[100%] rotate-45 w-3 h-3 bg-purple-100 dark:bg-purple-900/30 border-r border-t border-purple-200 dark:border-purple-800"></div>
             </div>
           )}
         </div>
