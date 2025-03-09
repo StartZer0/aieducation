@@ -16,7 +16,9 @@ interface HighlightSection {
   type: 'hallucination' | 'irrelevant' | 'mismatch';
   label: string;
   icon: React.ReactNode;
-  position: number; // Position in text to help with annotation targeting
+  position: number;
+  textStart: number;
+  textEnd: number;
 }
 
 const highlightSections: HighlightSection[] = [
@@ -26,7 +28,9 @@ const highlightSections: HighlightSection[] = [
     type: "hallucination",
     label: "AI Hallucination",
     icon: <AlertTriangle className="w-4 h-4 text-amber-500" />,
-    position: 380 // Approximate position in the text
+    position: 380,
+    textStart: 380,
+    textEnd: 510
   },
   {
     id: 'irrelevant-1',
@@ -34,7 +38,9 @@ const highlightSections: HighlightSection[] = [
     type: "irrelevant",
     label: "Irrelevant Information",
     icon: <Info className="w-4 h-4 text-blue-500" />,
-    position: 180 // Approximate position in the text
+    position: 180,
+    textStart: 180,
+    textEnd: 380
   },
   {
     id: 'mismatch-1',
@@ -42,7 +48,9 @@ const highlightSections: HighlightSection[] = [
     type: "mismatch",
     label: "Mismatch of Student's Skill Level",
     icon: <BrainCircuit className="w-4 h-4 text-purple-500" />,
-    position: 650 // Approximate position in the text
+    position: 650,
+    textStart: 650,
+    textEnd: 850
   }
 ];
 
@@ -65,6 +73,7 @@ export default function GenericGPT() {
   const [showAnnotations, setShowAnnotations] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const botMessageRef = useRef<HTMLDivElement>(null);
+  const highlightPositionsRef = useRef<Map<string, DOMRect>>(new Map());
   
   useEffect(() => {
     // Set document title
@@ -84,7 +93,7 @@ export default function GenericGPT() {
     }]);
     
     let currentText = "";
-    const typingSpeed = 15; // Even faster typing speed (milliseconds per character)
+    const typingSpeed = 8; // Even faster typing speed (milliseconds per character)
     
     for (let i = 0; i < text.length; i++) {
       currentText += text[i];
@@ -122,8 +131,8 @@ export default function GenericGPT() {
     
     // Make the typing look more natural but faster
     const totalChars = text.length;
-    const minTypingSpeed = 5; // milliseconds per character (faster)
-    const maxTypingSpeed = 25; // milliseconds per character (faster but still variable)
+    const minTypingSpeed = 2; // milliseconds per character (faster)
+    const maxTypingSpeed = 12; // milliseconds per character (faster but still variable)
     
     let currentText = "";
     let lastPausePosition = 0;
@@ -134,7 +143,7 @@ export default function GenericGPT() {
         text[i] === '.' || 
         text[i] === ',' || 
         text[i] === '\n' || 
-        (i - lastPausePosition > 40 && Math.random() > 0.8); // Fewer random pauses
+        (i - lastPausePosition > 60 && Math.random() > 0.9); // Fewer random pauses
       
       currentText += text[i];
       
@@ -155,10 +164,10 @@ export default function GenericGPT() {
       let pauseTime = charSpeed;
       if (shouldPause) {
         lastPausePosition = i;
-        if (text[i] === '.') pauseTime += 150; // Shorter pause
-        else if (text[i] === ',') pauseTime += 80; // Shorter pause
-        else if (text[i] === '\n') pauseTime += 200; // Shorter pause
-        else pauseTime += 50; // Shorter random pause
+        if (text[i] === '.') pauseTime += 80; // Shorter pause
+        else if (text[i] === ',') pauseTime += 40; // Shorter pause
+        else if (text[i] === '\n') pauseTime += 100; // Shorter pause
+        else pauseTime += 25; // Shorter random pause
       }
       
       await new Promise(resolve => setTimeout(resolve, pauseTime));
@@ -200,6 +209,70 @@ export default function GenericGPT() {
     setInputValue("");
   };
 
+  // Analyze text to find highlight positions
+  const calculateHighlightPositions = () => {
+    if (!botMessageRef.current || !showAnnotations) return;
+    
+    const element = botMessageRef.current;
+    const textContent = element.textContent || '';
+    
+    // Find text nodes in the rendered content
+    const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT);
+    const textNodes: { node: Text; start: number; end: number }[] = [];
+    let position = 0;
+    
+    while (walker.nextNode()) {
+      const node = walker.currentNode as Text;
+      const length = node.textContent?.length || 0;
+      textNodes.push({
+        node,
+        start: position,
+        end: position + length
+      });
+      position += length;
+    }
+    
+    // Calculate positions for each highlight
+    highlightSections.forEach(section => {
+      // Find section in text
+      const sectionIndex = textContent.indexOf(section.text);
+      if (sectionIndex === -1) return;
+      
+      // Find which text node contains this section
+      for (const textNode of textNodes) {
+        if (
+          (sectionIndex >= textNode.start && sectionIndex < textNode.end) ||
+          (sectionIndex < textNode.start && sectionIndex + section.text.length > textNode.start)
+        ) {
+          // Use the node's parent element's position
+          const nodeElement = textNode.node.parentElement;
+          if (nodeElement) {
+            const rect = nodeElement.getBoundingClientRect();
+            const elementRect = element.getBoundingClientRect();
+            
+            // Store relative position
+            highlightPositionsRef.current.set(section.id, new DOMRect(
+              rect.left - elementRect.left,
+              rect.top - elementRect.top + (sectionIndex - textNode.start) * 1.2, // Approximate line height adjustment
+              rect.width,
+              rect.height
+            ));
+            
+            break;
+          }
+        }
+      }
+    });
+  };
+  
+  // Use effect to calculate positions when content changes
+  useEffect(() => {
+    if (showAnnotations) {
+      // Use a small delay to ensure the DOM is fully rendered
+      setTimeout(calculateHighlightPositions, 100);
+    }
+  }, [showAnnotations]);
+
   // Process the text with formatting and annotations
   const renderBotMessage = (content: string) => {
     // Bold headers
@@ -227,8 +300,11 @@ export default function GenericGPT() {
         <div className="absolute left-0 transform -translate-x-[105%] w-72">
           {/* AI Hallucination Bubble */}
           <div 
-            className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800 shadow-lg animate-fade-in relative"
-            style={{ top: `${highlightSections[0].position/15}px` }}
+            className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800 shadow-lg animate-fade-in absolute"
+            style={{ 
+              top: `${highlightPositionsRef.current.get('hallucination-1')?.top || 380}px`,
+              left: 0,
+            }}
           >
             <div className="flex items-center gap-1.5 mb-2 text-amber-600 dark:text-amber-300 font-medium">
               <AlertTriangle className="w-5 h-5" />
@@ -243,8 +319,12 @@ export default function GenericGPT() {
 
           {/* Irrelevant Information Bubble */}
           <div 
-            className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg animate-fade-in relative" 
-            style={{ top: `${highlightSections[1].position/15}px`, animationDelay: '150ms' }}
+            className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg animate-fade-in absolute" 
+            style={{ 
+              top: `${highlightPositionsRef.current.get('irrelevant-1')?.top || 180}px`,
+              left: 0,
+              animationDelay: '150ms'
+            }}
           >
             <div className="flex items-center gap-1.5 mb-2 text-blue-600 dark:text-blue-300 font-medium">
               <Info className="w-5 h-5" />
@@ -259,8 +339,12 @@ export default function GenericGPT() {
 
           {/* Mismatch of Student's Skill Level Bubble */}
           <div 
-            className="bg-purple-100 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 shadow-lg animate-fade-in relative" 
-            style={{ top: `${highlightSections[2].position/15}px`, animationDelay: '300ms' }}
+            className="bg-purple-100 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 shadow-lg animate-fade-in absolute" 
+            style={{ 
+              top: `${highlightPositionsRef.current.get('mismatch-1')?.top || 650}px`,
+              left: 0,
+              animationDelay: '300ms'
+            }}
           >
             <div className="flex items-center gap-1.5 mb-2 text-purple-600 dark:text-purple-300 font-medium">
               <BrainCircuit className="w-5 h-5" />
