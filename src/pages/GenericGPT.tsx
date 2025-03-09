@@ -185,11 +185,12 @@ export default function GenericGPT() {
     
     setIsTyping(false);
     
-    // Show annotations immediately after typing is complete
-    setShowAnnotations(true);
-    
-    // Force recalculation of text positions after a slight delay to ensure DOM is updated
-    setTimeout(findTextPositionsInDOM, 100);
+    // Show annotations after a slight delay to ensure DOM is fully rendered
+    setTimeout(() => {
+      setShowAnnotations(true);
+      // Force recalculation of text positions after render
+      setTimeout(findTextPositionsInDOM, 100);
+    }, 200);
   };
   
   useEffect(() => {
@@ -201,7 +202,7 @@ export default function GenericGPT() {
   useEffect(() => {
     if (showAnnotations) {
       // Use a short delay to ensure the DOM is fully rendered
-      const timer = setTimeout(findTextPositionsInDOM, 100);
+      const timer = setTimeout(findTextPositionsInDOM, 200);
       return () => clearTimeout(timer);
     }
   }, [showAnnotations]);
@@ -228,57 +229,72 @@ export default function GenericGPT() {
     const container = botMessageRef.current;
     
     // Clear previous positions
-    highlightPositionsRef.current = new Map();
+    highlightPositionsRef.current.clear();
     
+    // Use a more reliable method to find text positions
     highlightSections.forEach(section => {
-      // Find text in the DOM using Range and window.find to get better precision
-      const fullText = container.innerText || '';
-      const exactText = section.text;
+      const textContent = container.textContent || '';
+      const index = textContent.indexOf(section.text);
       
-      // Check if the text exists in the content
-      if (fullText.includes(exactText)) {
-        // Create a range to search for the text
+      if (index !== -1) {
+        // Create a range for the text
         const range = document.createRange();
-        const treeWalker = document.createTreeWalker(
+        const textNodes = [];
+        
+        // Get all text nodes in the container
+        const walker = document.createTreeWalker(
           container,
           NodeFilter.SHOW_TEXT,
           null
         );
         
         let node;
-        let foundRange = null;
-        
-        // Iterate through all text nodes to find our text
-        while (node = treeWalker.nextNode()) {
-          const nodeText = node.textContent || '';
-          const index = nodeText.indexOf(exactText);
-          
-          if (index > -1) {
-            // Found the text in this node
-            range.setStart(node, index);
-            range.setEnd(node, index + exactText.length);
-            foundRange = range;
-            break;
-          }
+        while ((node = walker.nextNode())) {
+          textNodes.push(node);
         }
         
-        // If we found the text, get its position
-        if (foundRange) {
-          const rect = foundRange.getBoundingClientRect();
-          const containerRect = container.getBoundingClientRect();
+        // Find which text node contains our text
+        let currentIndex = 0;
+        let startNode = null;
+        let startOffset = 0;
+        
+        for (let i = 0; i < textNodes.length; i++) {
+          const nodeText = textNodes[i].textContent || '';
+          const nodeLength = nodeText.length;
           
-          // Store the position relative to the container
-          highlightPositionsRef.current.set(section.id, {
-            top: rect.top - containerRect.top,
-            left: rect.left - containerRect.left
-          });
+          if (index >= currentIndex && index < currentIndex + nodeLength) {
+            startNode = textNodes[i];
+            startOffset = index - currentIndex;
+            break;
+          }
+          
+          currentIndex += nodeLength;
+        }
+        
+        if (startNode) {
+          try {
+            // Set the range to the text we want to highlight
+            range.setStart(startNode, startOffset);
+            range.setEnd(startNode, startOffset + section.text.length);
+            
+            // Get the position of the text
+            const rect = range.getBoundingClientRect();
+            const containerRect = container.getBoundingClientRect();
+            
+            highlightPositionsRef.current.set(section.id, {
+              top: rect.top - containerRect.top,
+              left: rect.left - containerRect.left
+            });
+          } catch (e) {
+            console.error("Error setting range:", e);
+          }
         }
       }
     });
     
     // Force a re-render to update the UI with the new positions
     setShowAnnotations(false);
-    setTimeout(() => setShowAnnotations(true), 0);
+    setTimeout(() => setShowAnnotations(true), 50);
   };
   
   // Effect to update positions on window resize
@@ -316,12 +332,12 @@ export default function GenericGPT() {
       <div className="relative">
         {contentElement}
         
-        {/* Left side annotation bubbles with direct pointers */}
+        {/* Fixed bubbles that appear next to their corresponding text */}
         <div className="absolute inset-0 pointer-events-none">
-          {/* AI Hallucination Bubble */}
+          {/* AI Hallucination Bubble - Only show if position is found */}
           {highlightPositionsRef.current.has('hallucination-1') && (
             <div 
-              className="absolute bg-amber-100 dark:bg-amber-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800 shadow-lg animate-fade-in pointer-events-auto"
+              className="absolute bg-amber-100 dark:bg-amber-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800 shadow-lg pointer-events-auto"
               style={{ 
                 top: `${highlightPositionsRef.current.get('hallucination-1')?.top || 0}px`,
                 right: '100%',
@@ -342,17 +358,16 @@ export default function GenericGPT() {
             </div>
           )}
 
-          {/* Irrelevant Information Bubble */}
+          {/* Irrelevant Information Bubble - Only show if position is found */}
           {highlightPositionsRef.current.has('irrelevant-1') && (
             <div 
-              className="absolute bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg animate-fade-in pointer-events-auto" 
+              className="absolute bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg pointer-events-auto" 
               style={{ 
                 top: `${highlightPositionsRef.current.get('irrelevant-1')?.top || 0}px`,
                 right: '100%',
                 marginRight: '10px',
                 width: '280px',
-                zIndex: 20,
-                animationDelay: '150ms'
+                zIndex: 20
               }}
             >
               <div className="flex items-center gap-1.5 mb-2 text-blue-600 dark:text-blue-300 font-medium">
@@ -367,17 +382,16 @@ export default function GenericGPT() {
             </div>
           )}
 
-          {/* Mismatch of Student's Skill Level Bubble */}
+          {/* Mismatch of Student's Skill Level Bubble - Only show if position is found */}
           {highlightPositionsRef.current.has('mismatch-1') && (
             <div 
-              className="absolute bg-purple-100 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 shadow-lg animate-fade-in pointer-events-auto" 
+              className="absolute bg-purple-100 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 shadow-lg pointer-events-auto" 
               style={{ 
                 top: `${highlightPositionsRef.current.get('mismatch-1')?.top || 0}px`,
                 right: '100%',
                 marginRight: '10px',
                 width: '280px',
-                zIndex: 30,
-                animationDelay: '300ms'
+                zIndex: 30
               }}
             >
               <div className="flex items-center gap-1.5 mb-2 text-purple-600 dark:text-purple-300 font-medium">
