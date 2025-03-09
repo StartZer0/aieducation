@@ -27,7 +27,7 @@ const textHighlights: TextHighlight[] = [
   {
     text: "Unlike scalars, which only have magnitude (such as temperature or mass), vectors provide additional information about direction, making them essential in various scientific and engineering applications.",
     type: "irrelevant",
-    label: "Irrelevant Information",
+    label: "Irrelevent Information",
     icon: <Info className="w-4 h-4 text-blue-500" />
   },
   {
