@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
-import { Bot, User } from 'lucide-react';
+import { Bot, User, AlertTriangle, Info, BrainCircuit } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -8,6 +8,35 @@ interface Message {
   isUser: boolean;
   isComplete: boolean;
 }
+
+// Define special sections to highlight/label
+interface TextHighlight {
+  text: string;
+  type: 'hallucination' | 'irrelevant' | 'mismatch';
+  label: string;
+  icon: React.ReactNode;
+}
+
+const textHighlights: TextHighlight[] = [
+  {
+    text: "Mathematically, vectors can be expressed in component form, such as (x, y) in two dimensions or (x, y, z) in three dimensions.",
+    type: "hallucination",
+    label: "AI Hallucination",
+    icon: <AlertTriangle className="w-4 h-4 text-amber-500" />
+  },
+  {
+    text: "Unlike scalars, which only have magnitude (such as temperature or mass), vectors provide additional information about direction, making them essential in various scientific and engineering applications.",
+    type: "irrelevant",
+    label: "Irrelevent Information",
+    icon: <Info className="w-4 h-4 text-blue-500" />
+  },
+  {
+    text: "physics (to describe forces, velocity, and acceleration), computer graphics (for transformations and rendering), and machine learning (as multi-dimensional feature representations).",
+    type: "mismatch",
+    label: "Mismatch of Student's Skill Level",
+    icon: <BrainCircuit className="w-4 h-4 text-purple-500" />
+  }
+];
 
 const initialMessages: Message[] = [
   {
@@ -28,6 +57,7 @@ export default function GenericGPT() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [showAnnotations, setShowAnnotations] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
@@ -48,7 +78,7 @@ export default function GenericGPT() {
     }]);
     
     let currentText = "";
-    const typingSpeed = 50; // milliseconds per character
+    const typingSpeed = 25; // faster typing speed (milliseconds per character)
     
     for (let i = 0; i < text.length; i++) {
       currentText += text[i];
@@ -75,6 +105,7 @@ export default function GenericGPT() {
   
   const simulateBotTyping = async (text: string, messageId: string) => {
     setIsTyping(true);
+    setShowAnnotations(false);
     
     setMessages(prev => [...prev, {
       id: messageId,
@@ -83,11 +114,18 @@ export default function GenericGPT() {
       isComplete: false
     }]);
     
-    let currentText = "";
-    const typingSpeed = 20; // faster for bot response
+    const totalChars = text.length;
+    const maxTypingTime = 2000; // 2 seconds maximum for the entire text
+    const charsPerBatch = Math.ceil(totalChars / 10); // Divide text into batches
     
-    for (let i = 0; i < text.length; i++) {
-      currentText += text[i];
+    let currentText = "";
+    let startTime = Date.now();
+    
+    // Type the text in batches to complete within 2 seconds
+    for (let i = 0; i < totalChars; i += charsPerBatch) {
+      const endIdx = Math.min(i + charsPerBatch, totalChars);
+      currentText += text.substring(i, endIdx);
+      
       setMessages(prev => [
         ...prev.slice(0, -1),
         {
@@ -97,7 +135,13 @@ export default function GenericGPT() {
           isComplete: false
         }
       ]);
-      await new Promise(resolve => setTimeout(resolve, typingSpeed));
+      
+      const elapsedTime = Date.now() - startTime;
+      const remainingBatches = Math.ceil((totalChars - endIdx) / charsPerBatch);
+      if (remainingBatches > 0) {
+        const timePerBatch = (maxTypingTime - elapsedTime) / remainingBatches;
+        await new Promise(resolve => setTimeout(resolve, Math.max(50, timePerBatch)));
+      }
     }
     
     setMessages(prev => [
@@ -109,7 +153,13 @@ export default function GenericGPT() {
         isComplete: true
       }
     ]);
+    
     setIsTyping(false);
+    
+    // Show annotations after typing is complete
+    setTimeout(() => {
+      setShowAnnotations(true);
+    }, 500);
   };
   
   useEffect(() => {
@@ -130,6 +180,66 @@ export default function GenericGPT() {
     
     setMessages(prev => [...prev, newMessage]);
     setInputValue("");
+  };
+
+  // Function to highlight and annotate specific parts of the text
+  const renderAnnotatedText = (text: string) => {
+    if (!showAnnotations) {
+      return <p className="whitespace-pre-wrap">{text}</p>;
+    }
+
+    let remainingText = text;
+    const elements: JSX.Element[] = [];
+    let key = 0;
+
+    // Process each highlight
+    textHighlights.forEach((highlight) => {
+      const parts = remainingText.split(highlight.text);
+      
+      if (parts.length > 1) {
+        // Add text before the highlight
+        if (parts[0]) {
+          elements.push(<span key={key++}>{parts[0]}</span>);
+        }
+        
+        // Add the highlighted text with annotation
+        const bgColors = {
+          hallucination: "bg-amber-100 dark:bg-amber-900/40",
+          irrelevant: "bg-blue-100 dark:bg-blue-900/40",
+          mismatch: "bg-purple-100 dark:bg-purple-900/40"
+        };
+        
+        const borderColors = {
+          hallucination: "border-amber-300 dark:border-amber-700",
+          irrelevant: "border-blue-300 dark:border-blue-700",
+          mismatch: "border-purple-300 dark:border-purple-700"
+        };
+        
+        elements.push(
+          <div key={key++} className={`relative group my-1 ${bgColors[highlight.type]} p-1 rounded border ${borderColors[highlight.type]}`}>
+            <div className="flex items-start gap-1">
+              {highlight.icon}
+              <div>
+                <div className="text-xs font-semibold mb-1 flex items-center">
+                  {highlight.label}
+                </div>
+                <span>{highlight.text}</span>
+              </div>
+            </div>
+          </div>
+        );
+        
+        // Update remaining text to continue processing
+        remainingText = parts.slice(1).join(highlight.text);
+      }
+    });
+    
+    // Add any remaining text
+    if (remainingText) {
+      elements.push(<span key={key++}>{remainingText}</span>);
+    }
+    
+    return <div className="whitespace-pre-wrap space-y-1">{elements}</div>;
   };
   
   return (
@@ -158,7 +268,11 @@ export default function GenericGPT() {
                   ? 'bg-blue-600 text-white' 
                   : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100'
               }`}>
-                <p className="whitespace-pre-wrap">{message.content}</p>
+                {message.isUser ? (
+                  <p className="whitespace-pre-wrap">{message.content}</p>
+                ) : (
+                  renderAnnotatedText(message.content)
+                )}
               </div>
               
               {message.isUser && (
