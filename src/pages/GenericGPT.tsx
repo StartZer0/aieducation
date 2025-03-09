@@ -187,10 +187,9 @@ export default function GenericGPT() {
     
     // Show annotations after a slight delay to ensure DOM is fully rendered
     setTimeout(() => {
+      findTextPositionsInDOM();
       setShowAnnotations(true);
-      // Force recalculation of text positions after render
-      setTimeout(findTextPositionsInDOM, 100);
-    }, 200);
+    }, 500);
   };
   
   useEffect(() => {
@@ -202,8 +201,7 @@ export default function GenericGPT() {
   useEffect(() => {
     if (showAnnotations) {
       // Use a short delay to ensure the DOM is fully rendered
-      const timer = setTimeout(findTextPositionsInDOM, 200);
-      return () => clearTimeout(timer);
+      findTextPositionsInDOM();
     }
   }, [showAnnotations]);
   
@@ -224,7 +222,7 @@ export default function GenericGPT() {
 
   // Improved method to find text positions with more reliable positioning
   const findTextPositionsInDOM = () => {
-    if (!botMessageRef.current || !showAnnotations) return;
+    if (!botMessageRef.current) return;
     
     const container = botMessageRef.current;
     
@@ -294,7 +292,7 @@ export default function GenericGPT() {
     
     // Force a re-render to update the UI with the new positions
     setShowAnnotations(false);
-    setTimeout(() => setShowAnnotations(true), 50);
+    setTimeout(() => setShowAnnotations(true), 10);
   };
   
   // Effect to update positions on window resize
@@ -332,7 +330,7 @@ export default function GenericGPT() {
       <div className="relative">
         {contentElement}
         
-        {/* Fixed bubbles that appear next to their corresponding text */}
+        {/* Static bubbles that appear next to their corresponding text */}
         <div className="absolute inset-0 pointer-events-none">
           {/* AI Hallucination Bubble - Only show if position is found */}
           {highlightPositionsRef.current.has('hallucination-1') && (
