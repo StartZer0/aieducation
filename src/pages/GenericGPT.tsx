@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState, useRef } from 'react';
 import { Bot, User, AlertTriangle, Info, BrainCircuit } from 'lucide-react';
 
