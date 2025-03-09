@@ -15,6 +15,7 @@ const Header = () => {
   // For demo purposes - in a real app this would come from an auth provider
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
+  const isHomePage = location.pathname === '/';
   
   useEffect(() => {
     // Check if user is on dashboard or other protected routes and simulate login
@@ -95,8 +96,8 @@ const Header = () => {
               </Button>
             ))
           ) : (
-            // Show auth actions for visitors
-            authActions.map((action) => (
+            // Only show auth actions if NOT on homepage
+            !isHomePage && authActions.map((action) => (
               <Button
                 key={action.label}
                 variant={action.variant}
@@ -184,8 +185,8 @@ const Header = () => {
                   </Button>
                 ))
               ) : (
-                // Show auth actions for visitors (mobile)
-                authActions.map((action) => (
+                // Only show auth actions if NOT on homepage (mobile)
+                !isHomePage && authActions.map((action) => (
                   <Button
                     key={action.label}
                     variant={action.variant}
