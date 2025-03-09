@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   Menu, X, Book, GraduationCap, BarChart, Calendar, 
   MessageCircle, School, FileText, Play, BookOpen, FileQuestion,
-  LogIn, UserPlus
+  LogIn, UserPlus, User
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -12,13 +11,11 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isNavExpanded, setIsNavExpanded] = useState(false);
-  // For demo purposes - in a real app this would come from an auth provider
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   
   useEffect(() => {
-    // Check if user is on dashboard or other protected routes and simulate login
     setIsLoggedIn(['/dashboard', '/analytics', '/schedule', '/ai-tutor', 
                   '/explain-to-me', '/essay-analysis', '/study'].some(path => 
                     location.pathname.startsWith(path)));
@@ -45,9 +42,9 @@ const Header = () => {
     { path: '/ai-tutor', label: 'AI Tutor', icon: <MessageCircle className="w-5 h-5 mr-2" />, show: true },
     { path: '/explain-to-me', label: 'Exam Paper Solver', icon: <School className="w-5 h-5 mr-2" />, show: true },
     { path: '/essay-analysis', label: 'Essay Feedback', icon: <FileText className="w-5 h-5 mr-2" />, show: true },
+    { path: '/about-me', label: 'About Me', icon: <User className="w-5 h-5 mr-2" />, show: true },
     { path: '/test-chats', label: 'Learning Examples', icon: <Book className="w-5 h-5 mr-2" />, show: false },
     { path: '/test-chats2', label: 'Advanced Examples', icon: <Book className="w-5 h-5 mr-2" />, show: false },
-    { path: '/architecture', label: 'System Architecture', icon: <Book className="w-5 h-5 mr-2" />, show: false },
   ];
 
   const mainActions = [
@@ -78,10 +75,8 @@ const Header = () => {
           <span className="text-xl font-bold text-gradient">AI+ Education</span>
         </Link>
         
-        {/* Main Action Buttons - Desktop */}
         <div className="hidden md:flex items-center space-x-3 mx-auto">
           {isLoggedIn ? (
-            // Show learning actions for logged in users
             mainActions.map((action) => (
               <Button
                 key={action.label}
@@ -96,8 +91,7 @@ const Header = () => {
               </Button>
             ))
           ) : (
-            // Only show auth actions if NOT on homepage
-            !isHomePage && authActions.map((action) => (
+            isHomePage && authActions.map((action) => (
               <Button
                 key={action.label}
                 variant={action.variant}
@@ -113,7 +107,6 @@ const Header = () => {
           )}
         </div>
         
-        {/* Right side navigation trigger */}
         <div className="relative flex items-center">
           <Button 
             variant="ghost" 
@@ -125,7 +118,6 @@ const Header = () => {
             {isNavExpanded ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </Button>
           
-          {/* Slide-in Navigation - Desktop */}
           <div className={`fixed top-0 right-0 h-screen bg-card/95 dark:bg-card/95 shadow-xl w-72 transform transition-transform duration-300 ease-in-out pt-20 px-4 z-40 ${
             isNavExpanded ? 'translate-x-0' : 'translate-x-full'
           }`}>
@@ -149,7 +141,6 @@ const Header = () => {
           </div>
         </div>
         
-        {/* Mobile menu button */}
         <button 
           className="md:hidden p-2 focus:outline-none"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -163,13 +154,11 @@ const Header = () => {
         </button>
       </div>
       
-      {/* Mobile full-screen menu */}
       {isMobileMenuOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-background/95 dark:bg-background/95 backdrop-blur-md pt-20 px-4 animate-fade-in">
           <div className="flex flex-col space-y-6">
             <div className="flex flex-col space-y-3">
               {isLoggedIn ? (
-                // Show learning actions for logged in users (mobile)
                 mainActions.map((action) => (
                   <Button
                     key={action.label}
@@ -185,8 +174,7 @@ const Header = () => {
                   </Button>
                 ))
               ) : (
-                // Only show auth actions if NOT on homepage (mobile)
-                !isHomePage && authActions.map((action) => (
+                isHomePage && authActions.map((action) => (
                   <Button
                     key={action.label}
                     variant={action.variant}

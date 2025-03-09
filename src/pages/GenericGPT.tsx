@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useRef } from 'react';
-import { Bot, User, AlertTriangle, Info, BrainCircuit } from 'lucide-react';
+import { User, BrainCircuit, AlertTriangle, Info } from 'lucide-react';
 
 interface Message {
   id: string;
@@ -16,6 +16,7 @@ interface HighlightSection {
   type: 'hallucination' | 'irrelevant' | 'mismatch';
   label: string;
   icon: React.ReactNode;
+  position: number; // Position in the content for the annotation
 }
 
 const highlightSections: HighlightSection[] = [
@@ -24,21 +25,24 @@ const highlightSections: HighlightSection[] = [
     text: "Mathematically, vectors can be expressed in component form, such as (x, y) in two dimensions or (x, y, z) in three dimensions.",
     type: "hallucination",
     label: "AI Hallucination",
-    icon: <AlertTriangle className="w-4 h-4 text-amber-500" />
+    icon: <AlertTriangle className="w-4 h-4 text-amber-500" />,
+    position: 1 // Position in the paragraph for the annotation
   },
   {
     id: 'irrelevant-1',
     text: "Unlike scalars, which only have magnitude (such as temperature or mass), vectors provide additional information about direction, making them essential in various scientific and engineering applications.",
     type: "irrelevant",
     label: "Irrelevant Information",
-    icon: <Info className="w-4 h-4 text-blue-500" />
+    icon: <Info className="w-4 h-4 text-blue-500" />,
+    position: 0 // Position in the paragraph for the annotation
   },
   {
     id: 'mismatch-1',
     text: "physics (to describe forces, velocity, and acceleration), computer graphics (for transformations and rendering), and machine learning (as multi-dimensional feature representations)",
     type: "mismatch",
     label: "Mismatch of Student's Skill Level",
-    icon: <BrainCircuit className="w-4 h-4 text-purple-500" />
+    icon: <BrainCircuit className="w-4 h-4 text-purple-500" />,
+    position: 2 // Position in the paragraph for the annotation
   }
 ];
 
@@ -60,6 +64,7 @@ export default function GenericGPT() {
   const [isTyping, setIsTyping] = useState(false);
   const [showAnnotations, setShowAnnotations] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messageRefs = useRef<{[key: string]: HTMLDivElement | null}>({});
   
   useEffect(() => {
     // Set document title
@@ -184,71 +189,73 @@ export default function GenericGPT() {
   };
 
   // Process the text with formatting and annotations
-  const renderBotMessage = (content: string) => {
+  const renderBotMessage = (content: string, messageId: string) => {
     // Bold headers
     let formattedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     
+    // Create the base content with formatting
+    const contentWithFormatting = (
+      <div 
+        ref={el => messageRefs.current[messageId] = el} 
+        className="whitespace-pre-wrap" 
+        dangerouslySetInnerHTML={{ __html: formattedContent }} 
+      />
+    );
+    
+    // If annotations aren't showing yet, just return the formatted content
     if (!showAnnotations) {
-      return <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: formattedContent }} />;
+      return contentWithFormatting;
     }
     
-    // For each highlight section
-    let currentContent = formattedContent;
-    const contentParts: JSX.Element[] = [];
-    let lastIndex = 0;
-    
-    // Find and process each highlighted section
-    highlightSections.forEach((section) => {
-      const index = currentContent.indexOf(section.text);
-      if (index !== -1) {
-        // Add text before the highlight
-        if (index > lastIndex) {
-          contentParts.push(
-            <span key={`before-${section.id}`} dangerouslySetInnerHTML={{ __html: currentContent.substring(lastIndex, index) }} />
-          );
-        }
-        
-        // Style based on the type of highlight
-        const highlightStyles = {
-          hallucination: "bg-amber-100 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700",
-          irrelevant: "bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700",
-          mismatch: "bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700"
-        };
-        
-        // Add highlighted section with annotation
-        contentParts.push(
-          <div key={section.id} className="relative my-2">
-            <div className={`border rounded p-3 ${highlightStyles[section.type]}`}>
-              <div className="absolute -top-3 left-3 px-2 text-xs font-medium bg-white dark:bg-gray-800 rounded border border-inherit flex items-center gap-1">
-                {section.icon}
-                <span>{section.label}</span>
-              </div>
-              <div className="pt-2">
-                {section.text}
-              </div>
-            </div>
+    // Prepare annotations that will appear outside the message bubble
+    const annotations = highlightSections.map((section) => {
+      // Style based on the type of highlight
+      const highlightStyles = {
+        hallucination: "bg-amber-100 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700 shadow-amber-100/50",
+        irrelevant: "bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700 shadow-blue-100/50",
+        mismatch: "bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700 shadow-purple-100/50"
+      };
+
+      // Calculate position for annotation bubble
+      // We use different positions for different annotations
+      const offsetY = section.position * 40 - 20;
+      
+      return (
+        <div 
+          key={section.id}
+          className={`absolute right-0 transform translate-x-[105%] px-3 py-2 rounded-lg border ${highlightStyles[section.type]} min-w-48 max-w-60 z-10 shadow-lg animate-fade-in`}
+          style={{ top: `${offsetY}px` }}
+        >
+          <div className="absolute left-0 top-1/2 transform -translate-x-[90%] -translate-y-1/2">
+            <div className={`w-3 h-3 rotate-45 border-l border-b ${highlightStyles[section.type]}`} />
           </div>
-        );
-        
-        lastIndex = index + section.text.length;
-      }
+          <div className="flex items-center gap-1.5 mb-1 font-semibold text-xs">
+            {section.icon}
+            <span>{section.label}</span>
+          </div>
+          <div className="text-xs opacity-90">{section.text}</div>
+        </div>
+      );
     });
     
-    // Add any remaining content
-    if (lastIndex < currentContent.length) {
-      contentParts.push(
-        <span key="remaining" dangerouslySetInnerHTML={{ __html: currentContent.substring(lastIndex) }} />
-      );
-    }
-    
-    return <div className="space-y-2">{contentParts}</div>;
+    return (
+      <div className="relative">
+        {contentWithFormatting}
+        {annotations}
+      </div>
+    );
   };
 
   return (
     <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
       <header className="border-b border-gray-200 dark:border-gray-700 py-4 px-6 flex items-center justify-center">
-        <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-200">GenericGPT</h1>
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 rounded-md bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center">
+            <BrainCircuit className="w-5 h-5 text-white" />
+          </div>
+          <h1 className="text-xl font-semibold text-gray-800 dark:text-gray-200">GenericGPT</h1>
+        </div>
       </header>
       
       {/* Chat Container */}
@@ -260,8 +267,8 @@ export default function GenericGPT() {
               className={`flex items-start gap-4 ${message.isUser ? 'justify-end' : 'justify-start'}`}
             >
               {!message.isUser && (
-                <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center flex-shrink-0">
-                  <Bot className="w-5 h-5 text-white" />
+                <div className="w-8 h-8 rounded-md bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                  <BrainCircuit className="w-5 h-5 text-white" />
                 </div>
               )}
               
@@ -273,7 +280,7 @@ export default function GenericGPT() {
                 {message.isUser ? (
                   <p className="whitespace-pre-wrap">{message.content}</p>
                 ) : (
-                  renderBotMessage(message.content)
+                  renderBotMessage(message.content, message.id)
                 )}
               </div>
               
@@ -287,8 +294,8 @@ export default function GenericGPT() {
           
           {isTyping && !messages.some(message => !message.isComplete) && (
             <div className="flex items-start gap-4">
-              <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center flex-shrink-0">
-                <Bot className="w-5 h-5 text-white" />
+              <div className="w-8 h-8 rounded-md bg-gradient-to-br from-teal-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
+                <BrainCircuit className="w-5 h-5 text-white" />
               </div>
               <div className="rounded-lg px-4 py-3 bg-gray-100 dark:bg-gray-800">
                 <div className="flex space-x-2">
