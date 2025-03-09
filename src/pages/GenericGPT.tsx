@@ -49,7 +49,7 @@ const initialMessages: Message[] = [
     id: "initial-bot-response",
     content: "**Understanding Vectors**\nIn mathematics and physics, vectors are fundamental entities used to represent quantities that have both magnitude and direction. Unlike scalars, which only have magnitude (such as temperature or mass), vectors provide additional information about direction, making them essential in various scientific and engineering applications.\n\nA vector is typically represented as an arrow in a coordinate system. The length of the arrow indicates the vector's magnitude, while the direction of the arrow determines its orientation. Mathematically, vectors can be expressed in component form, such as (x, y) in two dimensions or (x, y, z) in three dimensions.\n\n**Operations with Vectors**\nVectors can be added, subtracted, and scaled using basic arithmetic operations. The vector sum follows the parallelogram rule or the tip-to-tail method, where placing the tail of one vector at the tip of another results in a new vector. Additionally, multiplying a vector by a scalar changes its magnitude but not its direction.\n\n**Applications of Vectors**\nVectors are widely used in physics (to describe forces, velocity, and acceleration), computer graphics (for transformations and rendering), and machine learning (as multi-dimensional feature representations). Their ability to encode direction and magnitude makes them an essential tool in modern science and technology.",
     isUser: false,
-    isComplete: false
+    isComplete: true
   }
 ];
 
@@ -156,10 +156,8 @@ export default function GenericGPT() {
     
     setIsTyping(false);
     
-    // Show annotations after typing is complete
-    setTimeout(() => {
-      setShowAnnotations(true);
-    }, 500);
+    // Show annotations immediately after typing is complete
+    setShowAnnotations(true);
   };
   
   useEffect(() => {
@@ -184,28 +182,27 @@ export default function GenericGPT() {
 
   // Function to render bot message with formatting and annotations
   const renderBotMessage = (content: string) => {
-    if (!showAnnotations) {
-      return <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />;
-    }
-
-    // Apply bold formatting to headers
+    // Apply bold formatting to headers first
     let formattedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     
-    // Create an array to hold all the text segments (regular and highlighted)
+    if (!showAnnotations) {
+      return <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: formattedContent }} />;
+    }
+
+    // Process each highlight
     const segments: JSX.Element[] = [];
-    let currentIndex = 0;
+    let remainingText = formattedContent;
     let key = 0;
     
-    // Process each highlight separately
-    textHighlights.forEach(highlight => {
-      const highlightIndex = formattedContent.indexOf(highlight.text, currentIndex);
+    // For each highlight, split the text and create annotated elements
+    for (const highlight of textHighlights) {
+      const parts = remainingText.split(highlight.text);
       
-      if (highlightIndex !== -1) {
+      if (parts.length > 1) {
         // Add text before the highlight
-        if (highlightIndex > currentIndex) {
-          const beforeText = formattedContent.slice(currentIndex, highlightIndex);
+        if (parts[0]) {
           segments.push(
-            <div key={key++} dangerouslySetInnerHTML={{ __html: beforeText }} />
+            <div key={key++} dangerouslySetInnerHTML={{ __html: parts[0] }} />
           );
         }
         
@@ -223,7 +220,7 @@ export default function GenericGPT() {
         };
         
         segments.push(
-          <div key={key++} className={`relative group my-2 ${bgColors[highlight.type]} p-2 rounded border ${borderColors[highlight.type]}`}>
+          <div key={key++} className={`relative group my-3 ${bgColors[highlight.type]} p-2 rounded border ${borderColors[highlight.type]}`}>
             <div className="flex items-start gap-2">
               {highlight.icon}
               <div className="flex-1">
@@ -236,15 +233,15 @@ export default function GenericGPT() {
           </div>
         );
         
-        // Update current index to after this highlight
-        currentIndex = highlightIndex + highlight.text.length;
+        // Update the remaining text for the next iteration
+        remainingText = parts.slice(1).join(highlight.text);
       }
-    });
+    }
     
-    // Add any remaining text after the last highlight
-    if (currentIndex < formattedContent.length) {
+    // Add any remaining text
+    if (remainingText) {
       segments.push(
-        <div key={key++} dangerouslySetInnerHTML={{ __html: formattedContent.slice(currentIndex) }} />
+        <div key={key++} dangerouslySetInnerHTML={{ __html: remainingText }} />
       );
     }
     

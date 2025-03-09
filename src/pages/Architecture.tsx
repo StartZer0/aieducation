@@ -111,32 +111,6 @@ const AboutMe = () => {
               </div>
             </CardContent>
           </Card>
-          
-          {/* Training Metrics */}
-          <Card className="shadow-xl border-2 border-rose-200 dark:border-rose-900 transition-all duration-300">
-            <CardContent className="p-3 flex items-center justify-between">
-              <div className="flex flex-col">
-                <h3 className="font-bold text-base">Training Metrics</h3>
-                <ul className="text-sm space-y-1 mt-1">
-                  <li className="flex items-center gap-1">
-                    <span>GPU hours</span>
-                    <Badge variant="outline" className="text-xs ml-1">24,000+</Badge>
-                  </li>
-                  <li className="flex items-center gap-1">
-                    <span>Model parameters</span>
-                    <Badge variant="outline" className="text-xs ml-1">7B</Badge>
-                  </li>
-                  <li className="flex items-center gap-1">
-                    <span>Training dataset size</span>
-                    <Badge variant="outline" className="text-xs ml-1">2.5TB</Badge>
-                  </li>
-                </ul>
-              </div>
-              <div className="bg-gradient-to-br from-rose-500 to-red-600 rounded-full p-2">
-                <BarChart className="h-6 w-6 text-white" />
-              </div>
-            </CardContent>
-          </Card>
         </div>
         
         {/* Middle Column - AI Models */}
