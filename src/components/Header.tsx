@@ -3,7 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   Menu, X, Book, GraduationCap, BarChart, Calendar, 
-  MessageCircle, School, FileText, Play, BookOpen, FileQuestion 
+  MessageCircle, School, FileText, Play, BookOpen, FileQuestion,
+  LogIn, UserPlus
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -11,7 +12,16 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isNavExpanded, setIsNavExpanded] = useState(false);
+  // For demo purposes - in a real app this would come from an auth provider
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
+  
+  useEffect(() => {
+    // Check if user is on dashboard or other protected routes and simulate login
+    setIsLoggedIn(['/dashboard', '/analytics', '/schedule', '/ai-tutor', 
+                  '/explain-to-me', '/essay-analysis', '/study'].some(path => 
+                    location.pathname.startsWith(path)));
+  }, [location.pathname]);
   
   useEffect(() => {
     const handleScroll = () => {
@@ -45,6 +55,11 @@ const Header = () => {
     { label: 'Practice', icon: <Play className="w-5 h-5" />, path: '/ai-tutor', variant: 'ghost' as const },
   ];
 
+  const authActions = [
+    { label: 'Log In', icon: <LogIn className="w-5 h-5" />, path: '/login', variant: 'default' as const },
+    { label: 'Sign Up', icon: <UserPlus className="w-5 h-5" />, path: '/signup', variant: 'outline' as const },
+  ];
+
   const isActive = (path: string) => location.pathname === path;
 
   return (
@@ -64,19 +79,37 @@ const Header = () => {
         
         {/* Main Action Buttons - Desktop */}
         <div className="hidden md:flex items-center space-x-3 mx-auto">
-          {mainActions.map((action) => (
-            <Button
-              key={action.label}
-              variant={action.variant}
-              asChild
-              className="shadow-sm hover:shadow-md transition-all"
-            >
-              <Link to={action.path} className="flex items-center gap-2">
-                {action.icon}
-                <span>{action.label}</span>
-              </Link>
-            </Button>
-          ))}
+          {isLoggedIn ? (
+            // Show learning actions for logged in users
+            mainActions.map((action) => (
+              <Button
+                key={action.label}
+                variant={action.variant}
+                asChild
+                className="shadow-sm hover:shadow-md transition-all"
+              >
+                <Link to={action.path} className="flex items-center gap-2">
+                  {action.icon}
+                  <span>{action.label}</span>
+                </Link>
+              </Button>
+            ))
+          ) : (
+            // Show auth actions for visitors
+            authActions.map((action) => (
+              <Button
+                key={action.label}
+                variant={action.variant}
+                asChild
+                className="shadow-sm hover:shadow-md transition-all"
+              >
+                <Link to={action.path} className="flex items-center gap-2">
+                  {action.icon}
+                  <span>{action.label}</span>
+                </Link>
+              </Button>
+            ))
+          )}
         </div>
         
         {/* Right side navigation trigger */}
@@ -134,20 +167,39 @@ const Header = () => {
         <div className="md:hidden fixed inset-0 z-50 bg-background/95 dark:bg-background/95 backdrop-blur-md pt-20 px-4 animate-fade-in">
           <div className="flex flex-col space-y-6">
             <div className="flex flex-col space-y-3">
-              {mainActions.map((action) => (
-                <Button
-                  key={action.label}
-                  variant={action.variant}
-                  asChild
-                  className="w-full justify-start"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <Link to={action.path} className="flex items-center gap-2">
-                    {action.icon}
-                    <span>{action.label}</span>
-                  </Link>
-                </Button>
-              ))}
+              {isLoggedIn ? (
+                // Show learning actions for logged in users (mobile)
+                mainActions.map((action) => (
+                  <Button
+                    key={action.label}
+                    variant={action.variant}
+                    asChild
+                    className="w-full justify-start"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Link to={action.path} className="flex items-center gap-2">
+                      {action.icon}
+                      <span>{action.label}</span>
+                    </Link>
+                  </Button>
+                ))
+              ) : (
+                // Show auth actions for visitors (mobile)
+                authActions.map((action) => (
+                  <Button
+                    key={action.label}
+                    variant={action.variant}
+                    asChild
+                    className="w-full justify-start"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    <Link to={action.path} className="flex items-center gap-2">
+                      {action.icon}
+                      <span>{action.label}</span>
+                    </Link>
+                  </Button>
+                ))
+              )}
             </div>
             
             <div className="border-t border-border my-2"></div>
