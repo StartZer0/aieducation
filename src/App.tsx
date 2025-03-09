@@ -16,6 +16,7 @@ import EssayAnalysis from "./pages/EssayAnalysis";
 import AITutor from "./pages/AITutor";
 import Analytics from "./pages/Analytics";
 import Architecture from "./pages/Architecture";
+import GenericGPT from "./pages/GenericGPT";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,23 +27,82 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Header />
-        <main>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/study/:subjectId?/:topicId?" element={<Study />} />
-            <Route path="/schedule" element={<Scheduler />} />
-            <Route path="/test-chats" element={<TestChats />} />
-            <Route path="/test-chats2" element={<TestChats2 />} />
-            <Route path="/explain-to-me" element={<ExplainToMe />} />
-            <Route path="/essay-analysis" element={<EssayAnalysis />} />
-            <Route path="/ai-tutor" element={<AITutor />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/architecture" element={<Architecture />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
+        <Routes>
+          <Route path="/" element={<>
+            <Header />
+            <main>
+              <Index />
+            </main>
+          </>} />
+          <Route path="/dashboard" element={<>
+            <Header />
+            <main>
+              <Dashboard />
+            </main>
+          </>} />
+          <Route path="/study/:subjectId?/:topicId?" element={<>
+            <Header />
+            <main>
+              <Study />
+            </main>
+          </>} />
+          <Route path="/schedule" element={<>
+            <Header />
+            <main>
+              <Scheduler />
+            </main>
+          </>} />
+          <Route path="/test-chats" element={<>
+            <Header />
+            <main>
+              <TestChats />
+            </main>
+          </>} />
+          <Route path="/test-chats2" element={<>
+            <Header />
+            <main>
+              <TestChats2 />
+            </main>
+          </>} />
+          <Route path="/explain-to-me" element={<>
+            <Header />
+            <main>
+              <ExplainToMe />
+            </main>
+          </>} />
+          <Route path="/essay-analysis" element={<>
+            <Header />
+            <main>
+              <EssayAnalysis />
+            </main>
+          </>} />
+          <Route path="/ai-tutor" element={<>
+            <Header />
+            <main>
+              <AITutor />
+            </main>
+          </>} />
+          <Route path="/analytics" element={<>
+            <Header />
+            <main>
+              <Analytics />
+            </main>
+          </>} />
+          <Route path="/architecture" element={<>
+            <Header />
+            <main>
+              <Architecture />
+            </main>
+          </>} />
+          {/* GenericGPT route without Header */}
+          <Route path="/genericgpt" element={<GenericGPT />} />
+          <Route path="*" element={<>
+            <Header />
+            <main>
+              <NotFound />
+            </main>
+          </>} />
+        </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
