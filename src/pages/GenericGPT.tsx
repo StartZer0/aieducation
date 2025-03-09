@@ -9,49 +9,50 @@ interface Message {
   isComplete: boolean;
 }
 
-// Define special sections to highlight/label
-interface TextHighlight {
+// Highlight sections that need special treatment
+interface HighlightSection {
+  id: string;
   text: string;
   type: 'hallucination' | 'irrelevant' | 'mismatch';
   label: string;
   icon: React.ReactNode;
 }
 
-const textHighlights: TextHighlight[] = [
+const highlightSections: HighlightSection[] = [
   {
+    id: 'hallucination-1',
     text: "Mathematically, vectors can be expressed in component form, such as (x, y) in two dimensions or (x, y, z) in three dimensions.",
     type: "hallucination",
     label: "AI Hallucination",
     icon: <AlertTriangle className="w-4 h-4 text-amber-500" />
   },
   {
+    id: 'irrelevant-1',
     text: "Unlike scalars, which only have magnitude (such as temperature or mass), vectors provide additional information about direction, making them essential in various scientific and engineering applications.",
     type: "irrelevant",
     label: "Irrelevant Information",
     icon: <Info className="w-4 h-4 text-blue-500" />
   },
   {
-    text: "physics (to describe forces, velocity, and acceleration), computer graphics (for transformations and rendering), and machine learning (as multi-dimensional feature representations).",
+    id: 'mismatch-1',
+    text: "physics (to describe forces, velocity, and acceleration), computer graphics (for transformations and rendering), and machine learning (as multi-dimensional feature representations)",
     type: "mismatch",
     label: "Mismatch of Student's Skill Level",
     icon: <BrainCircuit className="w-4 h-4 text-purple-500" />
   }
 ];
 
-const initialMessages: Message[] = [
-  {
-    id: "initial-user-message",
-    content: "Teach me Linear Algebra",
-    isUser: true,
-    isComplete: true
-  },
-  {
-    id: "initial-bot-response",
-    content: "**Understanding Vectors**\nIn mathematics and physics, vectors are fundamental entities used to represent quantities that have both magnitude and direction. Unlike scalars, which only have magnitude (such as temperature or mass), vectors provide additional information about direction, making them essential in various scientific and engineering applications.\n\nA vector is typically represented as an arrow in a coordinate system. The length of the arrow indicates the vector's magnitude, while the direction of the arrow determines its orientation. Mathematically, vectors can be expressed in component form, such as (x, y) in two dimensions or (x, y, z) in three dimensions.\n\n**Operations with Vectors**\nVectors can be added, subtracted, and scaled using basic arithmetic operations. The vector sum follows the parallelogram rule or the tip-to-tail method, where placing the tail of one vector at the tip of another results in a new vector. Additionally, multiplying a vector by a scalar changes its magnitude but not its direction.\n\n**Applications of Vectors**\nVectors are widely used in physics (to describe forces, velocity, and acceleration), computer graphics (for transformations and rendering), and machine learning (as multi-dimensional feature representations). Their ability to encode direction and magnitude makes them an essential tool in modern science and technology.",
-    isUser: false,
-    isComplete: true
-  }
-];
+// Format the bot response with bold headers
+const botResponse = `**Understanding Vectors**
+In mathematics and physics, vectors are fundamental entities used to represent quantities that have both magnitude and direction. Unlike scalars, which only have magnitude (such as temperature or mass), vectors provide additional information about direction, making them essential in various scientific and engineering applications.
+
+A vector is typically represented as an arrow in a coordinate system. The length of the arrow indicates the vector's magnitude, while the direction of the arrow determines its orientation. Mathematically, vectors can be expressed in component form, such as (x, y) in two dimensions or (x, y, z) in three dimensions.
+
+**Operations with Vectors**
+Vectors can be added, subtracted, and scaled using basic arithmetic operations. The vector sum follows the parallelogram rule or the tip-to-tail method, where placing the tail of one vector at the tip of another results in a new vector. Additionally, multiplying a vector by a scalar changes its magnitude but not its direction.
+
+**Applications of Vectors**
+Vectors are widely used in physics (to describe forces, velocity, and acceleration), computer graphics (for transformations and rendering), and machine learning (as multi-dimensional feature representations). Their ability to encode direction and magnitude makes them an essential tool in modern science and technology.`;
 
 export default function GenericGPT() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -61,7 +62,7 @@ export default function GenericGPT() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
-    // Set the document title
+    // Set document title
     document.title = "GenericGPT";
     
     // Start with first user message being typed
@@ -100,7 +101,7 @@ export default function GenericGPT() {
     setIsTyping(false);
     
     // After typing is complete, start the bot response
-    simulateBotTyping(initialMessages[1].content, initialMessages[1].id);
+    simulateBotTyping(botResponse, "bot-response-1");
   };
   
   const simulateBotTyping = async (text: string, messageId: string) => {
@@ -156,14 +157,16 @@ export default function GenericGPT() {
     
     setIsTyping(false);
     
-    // Show annotations immediately after typing is complete
-    setShowAnnotations(true);
+    // Show annotations after typing is complete
+    setTimeout(() => {
+      setShowAnnotations(true);
+    }, 500);
   };
   
   useEffect(() => {
     // Scroll to bottom when messages update
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+  }, [messages, showAnnotations]);
   
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
@@ -180,74 +183,67 @@ export default function GenericGPT() {
     setInputValue("");
   };
 
-  // Function to render bot message with formatting and annotations
+  // Process the text with formatting and annotations
   const renderBotMessage = (content: string) => {
-    // Apply bold formatting to headers first
+    // Bold headers
     let formattedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     
     if (!showAnnotations) {
       return <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: formattedContent }} />;
     }
-
-    // Process each highlight
-    const segments: JSX.Element[] = [];
-    let remainingText = formattedContent;
-    let key = 0;
     
-    // For each highlight, split the text and create annotated elements
-    for (const highlight of textHighlights) {
-      const parts = remainingText.split(highlight.text);
-      
-      if (parts.length > 1) {
+    // For each highlight section
+    let currentContent = formattedContent;
+    const contentParts: JSX.Element[] = [];
+    let lastIndex = 0;
+    
+    // Find and process each highlighted section
+    highlightSections.forEach((section) => {
+      const index = currentContent.indexOf(section.text);
+      if (index !== -1) {
         // Add text before the highlight
-        if (parts[0]) {
-          segments.push(
-            <div key={key++} dangerouslySetInnerHTML={{ __html: parts[0] }} />
+        if (index > lastIndex) {
+          contentParts.push(
+            <span key={`before-${section.id}`} dangerouslySetInnerHTML={{ __html: currentContent.substring(lastIndex, index) }} />
           );
         }
         
-        // Add the highlighted text with annotation
-        const bgColors = {
-          hallucination: "bg-amber-100 dark:bg-amber-900/40",
-          irrelevant: "bg-blue-100 dark:bg-blue-900/40",
-          mismatch: "bg-purple-100 dark:bg-purple-900/40"
+        // Style based on the type of highlight
+        const highlightStyles = {
+          hallucination: "bg-amber-100 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700",
+          irrelevant: "bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700",
+          mismatch: "bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700"
         };
         
-        const borderColors = {
-          hallucination: "border-amber-300 dark:border-amber-700",
-          irrelevant: "border-blue-300 dark:border-blue-700",
-          mismatch: "border-purple-300 dark:border-purple-700"
-        };
-        
-        segments.push(
-          <div key={key++} className={`relative group my-3 ${bgColors[highlight.type]} p-2 rounded border ${borderColors[highlight.type]}`}>
-            <div className="flex items-start gap-2">
-              {highlight.icon}
-              <div className="flex-1">
-                <div className="text-xs font-semibold mb-1 flex items-center">
-                  {highlight.label}
-                </div>
-                <div>{highlight.text}</div>
+        // Add highlighted section with annotation
+        contentParts.push(
+          <div key={section.id} className="relative my-2">
+            <div className={`border rounded p-3 ${highlightStyles[section.type]}`}>
+              <div className="absolute -top-3 left-3 px-2 text-xs font-medium bg-white dark:bg-gray-800 rounded border border-inherit flex items-center gap-1">
+                {section.icon}
+                <span>{section.label}</span>
+              </div>
+              <div className="pt-2">
+                {section.text}
               </div>
             </div>
           </div>
         );
         
-        // Update the remaining text for the next iteration
-        remainingText = parts.slice(1).join(highlight.text);
+        lastIndex = index + section.text.length;
       }
-    }
+    });
     
-    // Add any remaining text
-    if (remainingText) {
-      segments.push(
-        <div key={key++} dangerouslySetInnerHTML={{ __html: remainingText }} />
+    // Add any remaining content
+    if (lastIndex < currentContent.length) {
+      contentParts.push(
+        <span key="remaining" dangerouslySetInnerHTML={{ __html: currentContent.substring(lastIndex) }} />
       );
     }
     
-    return <div className="space-y-2">{segments}</div>;
+    return <div className="space-y-2">{contentParts}</div>;
   };
-  
+
   return (
     <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
