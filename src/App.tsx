@@ -15,7 +15,7 @@ import ExplainToMe from "./pages/ExplainToMe";
 import EssayAnalysis from "./pages/EssayAnalysis";
 import AITutor from "./pages/AITutor";
 import Analytics from "./pages/Analytics";
-import Architecture from "./pages/Architecture";
+import AboutMe from "./pages/Architecture";
 import GenericGPT from "./pages/GenericGPT";
 import NotFound from "./pages/NotFound";
 
@@ -88,10 +88,10 @@ const App = () => (
               <Analytics />
             </main>
           </>} />
-          <Route path="/architecture" element={<>
+          <Route path="/about-me" element={<>
             <Header />
             <main>
-              <Architecture />
+              <AboutMe />
             </main>
           </>} />
           {/* GenericGPT route without Header */}

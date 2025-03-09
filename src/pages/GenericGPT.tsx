@@ -27,7 +27,7 @@ const textHighlights: TextHighlight[] = [
   {
     text: "Unlike scalars, which only have magnitude (such as temperature or mass), vectors provide additional information about direction, making them essential in various scientific and engineering applications.",
     type: "irrelevant",
-    label: "Irrelevent Information",
+    label: "Irrelevant Information",
     icon: <Info className="w-4 h-4 text-blue-500" />
   },
   {
@@ -47,7 +47,7 @@ const initialMessages: Message[] = [
   },
   {
     id: "initial-bot-response",
-    content: "Understanding Vectors\nIn mathematics and physics, vectors are fundamental entities used to represent quantities that have both magnitude and direction. Unlike scalars, which only have magnitude (such as temperature or mass), vectors provide additional information about direction, making them essential in various scientific and engineering applications.\n\nA vector is typically represented as an arrow in a coordinate system. The length of the arrow indicates the vector's magnitude, while the direction of the arrow determines its orientation. Mathematically, vectors can be expressed in component form, such as (x, y) in two dimensions or (x, y, z) in three dimensions.\n\nOperations with Vectors\nVectors can be added, subtracted, and scaled using basic arithmetic operations. The vector sum follows the parallelogram rule or the tip-to-tail method, where placing the tail of one vector at the tip of another results in a new vector. Additionally, multiplying a vector by a scalar changes its magnitude but not its direction.\n\nApplications of Vectors\nVectors are widely used in physics (to describe forces, velocity, and acceleration), computer graphics (for transformations and rendering), and machine learning (as multi-dimensional feature representations). Their ability to encode direction and magnitude makes them an essential tool in modern science and technology.",
+    content: "**Understanding Vectors**\nIn mathematics and physics, vectors are fundamental entities used to represent quantities that have both magnitude and direction. Unlike scalars, which only have magnitude (such as temperature or mass), vectors provide additional information about direction, making them essential in various scientific and engineering applications.\n\nA vector is typically represented as an arrow in a coordinate system. The length of the arrow indicates the vector's magnitude, while the direction of the arrow determines its orientation. Mathematically, vectors can be expressed in component form, such as (x, y) in two dimensions or (x, y, z) in three dimensions.\n\n**Operations with Vectors**\nVectors can be added, subtracted, and scaled using basic arithmetic operations. The vector sum follows the parallelogram rule or the tip-to-tail method, where placing the tail of one vector at the tip of another results in a new vector. Additionally, multiplying a vector by a scalar changes its magnitude but not its direction.\n\n**Applications of Vectors**\nVectors are widely used in physics (to describe forces, velocity, and acceleration), computer graphics (for transformations and rendering), and machine learning (as multi-dimensional feature representations). Their ability to encode direction and magnitude makes them an essential tool in modern science and technology.",
     isUser: false,
     isComplete: false
   }
@@ -182,24 +182,31 @@ export default function GenericGPT() {
     setInputValue("");
   };
 
-  // Function to highlight and annotate specific parts of the text
-  const renderAnnotatedText = (text: string) => {
+  // Function to render bot message with formatting and annotations
+  const renderBotMessage = (content: string) => {
     if (!showAnnotations) {
-      return <p className="whitespace-pre-wrap">{text}</p>;
+      return <div className="whitespace-pre-wrap" dangerouslySetInnerHTML={{ __html: content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />;
     }
 
-    let remainingText = text;
-    const elements: JSX.Element[] = [];
+    // Apply bold formatting to headers
+    let formattedContent = content.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Create an array to hold all the text segments (regular and highlighted)
+    const segments: JSX.Element[] = [];
+    let currentIndex = 0;
     let key = 0;
-
-    // Process each highlight
-    textHighlights.forEach((highlight) => {
-      const parts = remainingText.split(highlight.text);
+    
+    // Process each highlight separately
+    textHighlights.forEach(highlight => {
+      const highlightIndex = formattedContent.indexOf(highlight.text, currentIndex);
       
-      if (parts.length > 1) {
+      if (highlightIndex !== -1) {
         // Add text before the highlight
-        if (parts[0]) {
-          elements.push(<span key={key++}>{parts[0]}</span>);
+        if (highlightIndex > currentIndex) {
+          const beforeText = formattedContent.slice(currentIndex, highlightIndex);
+          segments.push(
+            <div key={key++} dangerouslySetInnerHTML={{ __html: beforeText }} />
+          );
         }
         
         // Add the highlighted text with annotation
@@ -215,31 +222,33 @@ export default function GenericGPT() {
           mismatch: "border-purple-300 dark:border-purple-700"
         };
         
-        elements.push(
-          <div key={key++} className={`relative group my-1 ${bgColors[highlight.type]} p-1 rounded border ${borderColors[highlight.type]}`}>
-            <div className="flex items-start gap-1">
+        segments.push(
+          <div key={key++} className={`relative group my-2 ${bgColors[highlight.type]} p-2 rounded border ${borderColors[highlight.type]}`}>
+            <div className="flex items-start gap-2">
               {highlight.icon}
-              <div>
+              <div className="flex-1">
                 <div className="text-xs font-semibold mb-1 flex items-center">
                   {highlight.label}
                 </div>
-                <span>{highlight.text}</span>
+                <div>{highlight.text}</div>
               </div>
             </div>
           </div>
         );
         
-        // Update remaining text to continue processing
-        remainingText = parts.slice(1).join(highlight.text);
+        // Update current index to after this highlight
+        currentIndex = highlightIndex + highlight.text.length;
       }
     });
     
-    // Add any remaining text
-    if (remainingText) {
-      elements.push(<span key={key++}>{remainingText}</span>);
+    // Add any remaining text after the last highlight
+    if (currentIndex < formattedContent.length) {
+      segments.push(
+        <div key={key++} dangerouslySetInnerHTML={{ __html: formattedContent.slice(currentIndex) }} />
+      );
     }
     
-    return <div className="whitespace-pre-wrap space-y-1">{elements}</div>;
+    return <div className="space-y-2">{segments}</div>;
   };
   
   return (
@@ -271,7 +280,7 @@ export default function GenericGPT() {
                 {message.isUser ? (
                   <p className="whitespace-pre-wrap">{message.content}</p>
                 ) : (
-                  renderAnnotatedText(message.content)
+                  renderBotMessage(message.content)
                 )}
               </div>
               
