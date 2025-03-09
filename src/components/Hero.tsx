@@ -11,8 +11,8 @@ const Hero = () => {
       <div className="absolute bottom-20 -right-10 w-80 h-80 bg-teal-100 dark:bg-teal-900/20 rounded-full blur-3xl opacity-50 animate-float" style={{ animationDelay: '2s' }}></div>
       <div className="absolute top-1/2 left-1/3 w-40 h-40 bg-purple-100 dark:bg-purple-900/20 rounded-full blur-3xl opacity-30 animate-float" style={{ animationDelay: '4s' }}></div>
       
-      {/* Floating Icons */}
-      <div className="absolute top-40 right-[10%] hidden md:block">
+      {/* Floating Icons - Repositioned Brain icon */}
+      <div className="absolute top-40 right-[20%] hidden md:block">
         <div className="relative w-16 h-16 bg-white dark:bg-card rounded-2xl shadow-xl flex items-center justify-center animate-float" style={{ animationDelay: '1s' }}>
           <Brain className="w-8 h-8 text-blue" />
           <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue rounded-full"></div>
