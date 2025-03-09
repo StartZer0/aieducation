@@ -115,17 +115,23 @@ export default function GenericGPT() {
       isComplete: false
     }]);
     
+    // Make the typing look more natural by using variable speeds
     const totalChars = text.length;
-    const maxTypingTime = 2000; // 2 seconds maximum for the entire text
-    const charsPerBatch = Math.ceil(totalChars / 10); // Divide text into batches
+    const minTypingSpeed = 10; // milliseconds per character (faster)
+    const maxTypingSpeed = 60; // milliseconds per character (slower)
     
     let currentText = "";
-    let startTime = Date.now();
+    let lastPausePosition = 0;
     
-    // Type the text in batches to complete within 2 seconds
-    for (let i = 0; i < totalChars; i += charsPerBatch) {
-      const endIdx = Math.min(i + charsPerBatch, totalChars);
-      currentText += text.substring(i, endIdx);
+    for (let i = 0; i < totalChars; i++) {
+      // Add random pauses at periods, commas and line breaks to make it look more natural
+      const shouldPause = 
+        text[i] === '.' || 
+        text[i] === ',' || 
+        text[i] === '\n' || 
+        (i - lastPausePosition > 40 && Math.random() > 0.7); // Random pauses during longer stretches
+      
+      currentText += text[i];
       
       setMessages(prev => [
         ...prev.slice(0, -1),
@@ -137,12 +143,20 @@ export default function GenericGPT() {
         }
       ]);
       
-      const elapsedTime = Date.now() - startTime;
-      const remainingBatches = Math.ceil((totalChars - endIdx) / charsPerBatch);
-      if (remainingBatches > 0) {
-        const timePerBatch = (maxTypingTime - elapsedTime) / remainingBatches;
-        await new Promise(resolve => setTimeout(resolve, Math.max(50, timePerBatch)));
+      // Variable typing speed
+      const charSpeed = Math.floor(Math.random() * (maxTypingSpeed - minTypingSpeed) + minTypingSpeed);
+      
+      // Additional pause at punctuation or paragraph breaks
+      let pauseTime = charSpeed;
+      if (shouldPause) {
+        lastPausePosition = i;
+        if (text[i] === '.') pauseTime += 300; 
+        else if (text[i] === ',') pauseTime += 150;
+        else if (text[i] === '\n') pauseTime += 500;
+        else pauseTime += 100; // Random pause
       }
+      
+      await new Promise(resolve => setTimeout(resolve, pauseTime));
     }
     
     setMessages(prev => [
@@ -157,7 +171,7 @@ export default function GenericGPT() {
     
     setIsTyping(false);
     
-    // Show annotations after typing is complete
+    // Show annotations after typing is complete with a small delay
     setTimeout(() => {
       setShowAnnotations(true);
     }, 500);
@@ -204,32 +218,47 @@ export default function GenericGPT() {
     return (
       <div className="relative">
         {contentElement}
-        {/* Annotation Bubble - displayed outside the message bubble */}
-        <div className="absolute right-0 top-0 transform translate-x-[105%] w-72 bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg animate-fade-in z-10">
-          {/* Irrelevant Information Label */}
-          <div className="flex items-center gap-1.5 mb-2 text-blue-600 dark:text-blue-300 font-medium">
-            <Info className="w-5 h-5" />
-            <h3 className="text-sm">Irrelevant Information</h3>
+        
+        {/* Left side annotation bubbles */}
+        <div className="absolute left-0 top-0 transform -translate-x-[105%] flex flex-col gap-4 w-72">
+          {/* AI Hallucination Bubble */}
+          <div className="bg-amber-100 dark:bg-amber-900/30 rounded-lg p-4 border border-amber-200 dark:border-amber-800 shadow-lg animate-fade-in">
+            <div className="flex items-center gap-1.5 mb-2 text-amber-600 dark:text-amber-300 font-medium">
+              <AlertTriangle className="w-5 h-5" />
+              <h3 className="text-sm">AI Hallucination</h3>
+            </div>
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              {highlightSections[0].text}
+            </p>
+            {/* Triangle pointer to content - right side of bubble */}
+            <div className="absolute right-0 top-4 transform translate-x-[50%] rotate-45 w-3 h-3 bg-amber-100 dark:bg-amber-900/30 border-r border-t border-amber-200 dark:border-amber-800"></div>
           </div>
-          
-          {/* Irrelevant Information Content */}
-          <p className="text-sm mb-3 text-gray-700 dark:text-gray-300">
-            {highlightSections[1].text}
-          </p>
-          
-          {/* Mismatch of Student's Skill Level Label */}
-          <div className="flex items-center gap-1.5 mb-2 text-purple-600 dark:text-purple-300 font-medium">
-            <BrainCircuit className="w-5 h-5" />
-            <h3 className="text-sm">Mismatch of Student's Skill Level</h3>
+
+          {/* Irrelevant Information Bubble */}
+          <div className="bg-blue-100 dark:bg-blue-900/30 rounded-lg p-4 border border-blue-200 dark:border-blue-800 shadow-lg animate-fade-in" style={{ animationDelay: '150ms' }}>
+            <div className="flex items-center gap-1.5 mb-2 text-blue-600 dark:text-blue-300 font-medium">
+              <Info className="w-5 h-5" />
+              <h3 className="text-sm">Irrelevant Information</h3>
+            </div>
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              {highlightSections[1].text}
+            </p>
+            {/* Triangle pointer to content - right side of bubble */}
+            <div className="absolute right-0 top-4 transform translate-x-[50%] rotate-45 w-3 h-3 bg-blue-100 dark:bg-blue-900/30 border-r border-t border-blue-200 dark:border-blue-800"></div>
           </div>
-          
-          {/* Mismatch Content */}
-          <p className="text-sm text-gray-700 dark:text-gray-300">
-            {highlightSections[2].text}
-          </p>
-          
-          {/* Triangle pointer to content */}
-          <div className="absolute left-0 top-8 transform -translate-x-[50%] rotate-45 w-3 h-3 bg-blue-100 dark:bg-blue-900/30 border-l border-b border-blue-200 dark:border-blue-800"></div>
+
+          {/* Mismatch of Student's Skill Level Bubble */}
+          <div className="bg-purple-100 dark:bg-purple-900/30 rounded-lg p-4 border border-purple-200 dark:border-purple-800 shadow-lg animate-fade-in" style={{ animationDelay: '300ms' }}>
+            <div className="flex items-center gap-1.5 mb-2 text-purple-600 dark:text-purple-300 font-medium">
+              <BrainCircuit className="w-5 h-5" />
+              <h3 className="text-sm">Mismatch of Student's Skill Level</h3>
+            </div>
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              {highlightSections[2].text}
+            </p>
+            {/* Triangle pointer to content - right side of bubble */}
+            <div className="absolute right-0 top-4 transform translate-x-[50%] rotate-45 w-3 h-3 bg-purple-100 dark:bg-purple-900/30 border-r border-t border-purple-200 dark:border-purple-800"></div>
+          </div>
         </div>
       </div>
     );
