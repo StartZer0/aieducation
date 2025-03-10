@@ -46,10 +46,6 @@ This project is built with:
 
 ## 🚀 Getting Started
 
-### Using Lovable
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/b9ef6959-56ce-4427-91f8-4ddbcbc486b8) and start prompting.
-
 ### Using your local environment
 
 ```sh
@@ -79,19 +75,13 @@ The project is organized into several key areas:
 
 ## 🌐 Deployment
 
-You can deploy this project in two ways:
-
-1. Through Lovable: Open [Lovable](https://lovable.dev/projects/b9ef6959-56ce-4427-91f8-4ddbcbc486b8) and click on Share -> Publish.
-2. Using custom domains: While Lovable doesn't directly support custom domains, you can deploy to services like Netlify. See our [Custom Domains Guide](https://docs.lovable.dev/tips-tricks/custom-domain/).
+You can deploy this project. Using custom domains. You can deploy to services like Netlify.
 
 ## 📝 Contributing
 
 We welcome contributions to enhance Edu.AI! Feel free to open issues or submit pull requests.
 
 ## 🔗 Links
-
-- [Lovable Project](https://lovable.dev/projects/b9ef6959-56ce-4427-91f8-4ddbcbc486b8)
-- [Documentation](https://docs.lovable.dev/)
 
 ## 📄 License
 
