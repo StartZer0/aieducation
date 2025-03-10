@@ -1,9 +1,9 @@
 
-# Edu.AI - Interactive Learning Platform
+# Aiducation - Interactive Learning Platform
 
 ![Edu.AI Banner](https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?auto=format&fit=crop&w=1200&q=80)
 
-## ✨ About Edu.AI
+## ✨ About Aiducation
 
 Edu.AI is an intelligent learning platform that combines the power of AI with interactive educational content. It provides personalized learning experiences across various subjects, helping students visualize complex concepts, analyze their performance, and improve their understanding through AI-assisted tutoring.
 
