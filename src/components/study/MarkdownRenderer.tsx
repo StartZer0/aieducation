@@ -11,6 +11,11 @@ interface MarkdownRendererProps {
   className?: string;
 }
 
+// Create a wrapper function to handle the type incompatibility
+const rehypeKatexPlugin = () => {
+  return rehypeKatex as unknown as any;
+};
+
 export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ 
   markdown, 
   className 
@@ -19,8 +24,7 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     <div className={cn("prose dark:prose-invert max-w-none", className)}>
       <ReactMarkdown 
         remarkPlugins={[remarkMath]}
-        // Use type assertion to address the compatibility issue between packages
-        rehypePlugins={[rehypeKatex as any]}
+        rehypePlugins={[rehypeKatexPlugin]}
       >
         {markdown}
       </ReactMarkdown>
