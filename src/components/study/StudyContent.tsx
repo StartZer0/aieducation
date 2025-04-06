@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote, Sparkles, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,6 +9,10 @@ import { ContentRenderer } from './ContentRenderer';
 import { InteractiveFunctionGraph } from './InteractiveFunctionGraph';
 import { useToast } from '@/hooks/use-toast';
 import InteractiveQuadraticFunctions from './InteractiveQuadraticFunctions';
+import { MarkdownRenderer } from './MarkdownRenderer';
+import { AIGeneratedContent } from './AIGeneratedContent';
+import { useContentGeneration } from '@/hooks/useContentGeneration';
+import { AITutorChat } from './AITutorChat';
 
 interface StudyContentProps {
   title: string;
@@ -44,12 +47,19 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
   const chatEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
-  // Initial AI tutor message state
+  const {
+    content: generatedContent,
+    questions: generatedQuestions,
+    isGeneratingContent,
+    isGeneratingQuestions,
+    generateQuestionsContent,
+    shouldGenerateContent
+  } = useContentGeneration(topicId, title, explanationLevel);
+  
   const [initialAIMessage, setInitialAIMessage] = useState('');
   const [chatStarted, setChatStarted] = useState(false);
   
   useEffect(() => {
-    // Set initial AI tutor message based on the current topic
     if (topicId === 'quadratic-functions') {
       setInitialAIMessage("Hello! I'm your AI tutor for quadratic functions. What would you like to learn about them? I can explain the standard form, vertex form, or how to find roots.");
     } else {
@@ -76,7 +86,6 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
   const handleSendMessage = () => {
     if (message.trim() === '') return;
     
-    // Set chat as started if this is the first user message
     if (!chatStarted) {
       setChatStarted(true);
     }
@@ -85,7 +94,6 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
     setDisplayedResponse('');
     setShowGraph(false);
     
-    // Set a sample response for demo purposes
     const exampleResponse = `Quadratic functions are polynomial functions with the highest degree of 2. The standard form is f(x) = ax² + bx + c where a, b, and c are constants and a ≠ 0.
 
 The graph of a quadratic function is a parabola. The coefficient 'a' determines the shape and direction of the parabola:
@@ -115,6 +123,17 @@ Would you like me to explain more about any of these aspects?`;
   };
 
   const getContent = () => {
+    if (shouldGenerateContent) {
+      return (
+        <AIGeneratedContent 
+          content={generatedContent}
+          isGenerating={isGeneratingContent}
+          topicTitle={title}
+          generateQuestionsContent={generateQuestionsContent}
+        />
+      );
+    }
+    
     if (subjectId === 'mathematics' && topicId === 'quadratic-functions') {
       if (explanationLevel === 'ai') {
         return <InteractiveQuadraticFunctions />;
@@ -256,6 +275,28 @@ Would you like me to explain more about any of these aspects?`;
       );
     }
     
+    if (subjectId === 'mathematics' && 
+        (topicId.includes('algebra') || 
+         ['indices-and-surds', 'simultaneous-equations', 'inequalities', 'polynomials'].includes(topicId))) {
+      
+      return (
+        <div className="space-y-6">
+          <p>
+            This is the study content for {title}. Select the "AI" option from the explanation level dropdown to generate dynamic content.
+          </p>
+          
+          <h2 className="text-2xl font-semibold mt-6 mb-4">{title}</h2>
+          
+          <div className="p-5 bg-blue-50 dark:bg-blue-950/40 border border-blue-100 dark:border-blue-900 rounded-lg mb-6">
+            <h3 className="text-xl font-semibold mb-3">Key Concepts</h3>
+            <p className="mb-3">
+              This section covers important concepts related to {title}. Choose the AI-suggested option to generate detailed content.
+            </p>
+          </div>
+        </div>
+      );
+    }
+    
     return (
       <div className="flex items-center justify-center p-12 text-muted-foreground">
         Content for {title} is being developed.
@@ -263,33 +304,27 @@ Would you like me to explain more about any of these aspects?`;
     );
   };
   
-  const renderSummary = () => (
-    <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-800">
-      <h3 className="text-xl font-medium mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Summary: {title}</h3>
-      <ul className="space-y-3">
-        <li className="flex items-start">
-          <span className="mr-2 text-blue-500">•</span>
-          <span>A quadratic function has the form f(x) = ax² + bx + c where a ≠ 0.</span>
-        </li>
-        <li className="flex items-start">
-          <span className="mr-2 text-blue-500">•</span>
-          <span>The graph of a quadratic function is a parabola, opening upward when a {`>`} 0 and downward when a {`<`} 0.</span>
-        </li>
-        <li className="flex items-start">
-          <span className="mr-2 text-blue-500">•</span>
-          <span>The vertex is at (-b/2a, f(-b/2a)) and represents either a minimum or maximum.</span>
-        </li>
-        <li className="flex items-start">
-          <span className="mr-2 text-blue-500">•</span>
-          <span>The axis of symmetry is the vertical line x = -b/2a.</span>
-        </li>
-        <li className="flex items-start">
-          <span className="mr-2 text-blue-500">•</span>
-          <span>The discriminant b² - 4ac determines the number of roots: two distinct real roots if positive, one real root if zero, or no real roots if negative.</span>
-        </li>
-      </ul>
-    </Card>
-  );
+  const renderSummary = () => {
+    if (generatedContent && shouldGenerateContent) {
+      return (
+        <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-800">
+          <h3 className="text-xl font-medium mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Summary: {title}</h3>
+          <AIGeneratedContent 
+            content={generatedContent}
+            isGenerating={isGeneratingContent}
+            topicTitle={title}
+          />
+        </Card>
+      );
+    }
+  
+    return (
+      <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-800">
+        <h3 className="text-xl font-medium mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">Summary: {title}</h3>
+        <p>Select the "AI" option from the explanation level dropdown to generate a summary.</p>
+      </Card>
+    );
+  };
   
   const renderFlashcards = () => {
     const [currentFlashcard, setCurrentFlashcard] = useState(0);
@@ -414,32 +449,49 @@ Would you like me to explain more about any of these aspects?`;
   };
   
   const renderQuestions = () => {
-    const [showAnswers, setShowAnswers] = useState<Record<number, boolean>>({});
-
-    const checkAnswer = (questionNumber: number, submittedAnswer: string) => {
-      const answers = {
-        1: "The graph of f(x) opens upward with a minimum point, while g(x) opens downward with a maximum point due to the coefficient of x² being positive (2) and negative (-2) respectively.",
-        2: "|k| > 6 (i.e., k < -6 or k > 6)",
-        3: "f(x) = x² + 2x + 1",
-        4: "Maximum height: 20.9m at t = 2.04s; hits ground at t = 4.2s"
-      };
-
-      const correct = submittedAnswer.toLowerCase().includes(answers[questionNumber as keyof typeof answers].toLowerCase());
+    if (generatedQuestions) {
+      return (
+        <div className="space-y-4">
+          <MarkdownRenderer markdown={generatedQuestions} />
+        </div>
+      );
+    }
+    
+    if (isGeneratingQuestions) {
+      return (
+        <div className="w-full py-10 flex flex-col items-center justify-center">
+          <Loader2 className="h-10 w-10 animate-spin mb-4 text-blue-500" />
+          <p className="text-center text-muted-foreground">
+            Generating practice questions...
+          </p>
+        </div>
+      );
+    }
+    
+    if (subjectId === 'mathematics' && 
+        (topicId.includes('algebra') || 
+         ['indices-and-surds', 'simultaneous-equations', 'inequalities', 'polynomials'].includes(topicId)) &&
+        topicId !== 'quadratic-functions') {
       
-      toast({
-        title: correct ? "Correct! 🎉" : "Not quite right",
-        description: correct 
-          ? "Great job! Your understanding of quadratic functions is solid."
-          : "Let's review this concept. Here's a hint: Think about how the coefficients affect the shape and direction of the parabola.",
-        variant: "default",
-        className: correct 
-          ? "bg-green-50 border-green-200 text-green-800 dark:bg-green-900/30"
-          : "bg-orange-50 border-orange-200 text-orange-800 dark:bg-orange-900/30",
-      });
-
-      setShowAnswers(prev => ({...prev, [questionNumber]: true}));
-    };
-
+      return (
+        <div className="flex flex-col items-center justify-center py-10">
+          <Card className="p-8 text-center max-w-md">
+            <HelpCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+            <h3 className="text-xl font-semibold mb-2">Generate Practice Questions</h3>
+            <p className="text-muted-foreground mb-4">
+              Click below to generate AI-created practice questions for {title}
+            </p>
+            <Button 
+              onClick={generateQuestionsContent}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              Generate Questions
+            </Button>
+          </Card>
+        </div>
+      );
+    }
+    
     return (
       <div className="space-y-4">
         {[1, 2, 3, 4].map((questionNum) => (
@@ -541,78 +593,11 @@ Would you like me to explain more about any of these aspects?`;
   const renderAITutor = () => {
     return (
       <div className="flex flex-col h-full">
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {/* Initial AI tutor message */}
-          <div className="flex items-start gap-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-blue-400 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="w-4 h-4 text-white" />
-            </div>
-            <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg max-w-[85%]">
-              <p className="text-sm">{initialAIMessage}</p>
-            </div>
-          </div>
-          
-          {/* User message (only show if chat has started) */}
-          {chatStarted && (
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
-                <span className="text-blue-600 text-sm font-medium">You</span>
-              </div>
-              <div className="bg-muted p-3 rounded-lg max-w-[85%]">
-                <p>{message}</p>
-              </div>
-            </div>
-          )}
-          
-          {displayedResponse && (
-            <div className="flex items-start gap-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-blue-400 flex items-center justify-center flex-shrink-0">
-                <Sparkles className="w-4 h-4 text-white" />
-              </div>
-              <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg max-w-[85%]">
-                <p className="whitespace-pre-wrap text-sm">
-                  {displayedResponse}
-                </p>
-                
-                {showGraph && (
-                  <div className="mt-4 pt-4 border-t border-blue-200 dark:border-blue-800">
-                    <h4 className="text-sm font-medium mb-2">Interactive Quadratic Function</h4>
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-3">
-                      <InteractiveFunctionGraph 
-                        containerId="ai-function-graph" 
-                        className="mt-2"
-                      />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
-          <div ref={chatEndRef} />
-        </div>
-        
-        <div className="border-t p-4">
-          <div className="flex gap-2">
-            <Textarea 
-              value={message} 
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder="Ask about quadratic functions..."
-              className="min-h-[60px] resize-none"
-            />
-            <Button 
-              className="flex-shrink-0" 
-              size="icon" 
-              onClick={handleSendMessage}
-              disabled={isTyping || message.trim() === ''}
-            >
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+        <AITutorChat topicId={topicId} topicTitle={title} />
       </div>
     );
   };
-
+  
   return (
     <div className="flex flex-col h-full overflow-hidden">
       <nav className="flex items-center space-x-1 p-4 border-b border-border text-sm">
