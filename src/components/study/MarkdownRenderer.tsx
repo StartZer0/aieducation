@@ -2,6 +2,9 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import "katex/dist/katex.min.css";
 
 interface MarkdownRendererProps {
   markdown: string;
@@ -14,7 +17,10 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
 }) => {
   return (
     <div className={cn("prose dark:prose-invert max-w-none", className)}>
-      <ReactMarkdown>
+      <ReactMarkdown 
+        remarkPlugins={[remarkMath]}
+        rehypePlugins={[rehypeKatex]}
+      >
         {markdown}
       </ReactMarkdown>
     </div>

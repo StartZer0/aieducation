@@ -39,7 +39,7 @@ export const generateContent = async (prompt: string): Promise<string> => {
 
   try {
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=${apiKey}`,
       {
         method: "POST",
         headers: {
@@ -88,11 +88,11 @@ export const generateMathContent = async (
   const prompt = `Create A-level mathematics study content for the topic "${topic}" at a ${difficultyLevel} difficulty level. 
   Include:
   1. Clear explanations of key concepts
-  2. Mathematical formulas with explanations
+  2. Mathematical formulas using LaTeX notation (use $ for inline math and $$ for block math)
   3. Examples that demonstrate application
   4. Visual descriptions for educational graphics
   
-  Format the response in markdown with HTML for mathematical formulas.`;
+  Format the response in markdown with LaTeX for mathematical formulas.`;
   
   return generateContent(prompt);
 };
@@ -109,7 +109,7 @@ export const generateQuestions = async (
   2. Include a sample answer
   3. Add a brief explanation of the solution approach
   
-  Format the response in markdown with HTML for mathematical formulas.`;
+  Format the response in markdown using LaTeX notation for mathematical formulas (use $ for inline math and $$ for block math).`;
   
   return generateContent(prompt);
 };
@@ -120,7 +120,7 @@ export const generateTermDefinition = async (term: string, context: string): Pro
   1. A clear and concise definition
   2. How it relates to the broader mathematical concept
   
-  Keep the response under 100 words and explain as if to an A-level student.`;
+  Keep the response under 100 words and explain as if to an A-level student. Use LaTeX notation for mathematical formulas if needed.`;
   
   return generateContent(prompt);
 };
@@ -132,10 +132,10 @@ export const generateAITutorResponse = async (question: string, topic: string): 
   
   Provide:
   1. A clear and detailed explanation
-  2. Any relevant formulas or mathematical concepts
+  2. Any relevant formulas or mathematical concepts using LaTeX notation (use $ for inline math and $$ for block math)
   3. An example if appropriate
   
-  Format the response in markdown with HTML for mathematical formulas.`;
+  Format the response in markdown with LaTeX for mathematical formulas.`;
   
   return generateContent(prompt);
 };
