@@ -4,7 +4,6 @@ import { MarkdownRenderer } from "./MarkdownRenderer";
 import { Loader2, Bot } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DynamicTermDefinition } from "./DynamicTermDefinition";
 import { AIApiKeyNotice } from "./AIApiKeyNotice";
 
 interface AIGeneratedContentProps {

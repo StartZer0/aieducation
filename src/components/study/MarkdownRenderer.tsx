@@ -19,7 +19,8 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
     <div className={cn("prose dark:prose-invert max-w-none", className)}>
       <ReactMarkdown 
         remarkPlugins={[remarkMath]}
-        rehypePlugins={[rehypeKatex]}
+        // Fix type compatibility issue by using type assertion
+        rehypePlugins={[rehypeKatex as any]}
       >
         {markdown}
       </ReactMarkdown>
