@@ -28,13 +28,13 @@ interface GeminiResponse {
 export const generateContent = async (prompt: string): Promise<string> => {
   const apiKey = import.meta.env.VITE_GEMINI_API_KEY || "";
 
-  if (!apiKey) {
+  if (!apiKey || apiKey === "your_gemini_api_key_here") {
     toast({
       title: "API Key Missing",
-      description: "Please set your Gemini API key in the environment variables",
+      description: "Please set your Gemini API key in the .env file (VITE_GEMINI_API_KEY)",
       variant: "destructive",
     });
-    return "API key is missing. Please set VITE_GEMINI_API_KEY in your environment.";
+    return "To use AI features, you need to set your Gemini API key in the .env file. Get a key at https://aistudio.google.com/app/apikey";
   }
 
   try {

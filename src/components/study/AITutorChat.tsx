@@ -7,6 +7,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Textarea } from "@/components/ui/textarea";
 import { generateAITutorResponse } from "@/services/geminiService";
 import { MarkdownRenderer } from "./MarkdownRenderer";
+import { AIApiKeyNotice } from "./AIApiKeyNotice";
 
 interface Message {
   id: string;
@@ -122,6 +123,7 @@ Key properties include:
 
   return (
     <div className="h-full flex flex-col">
+      <AIApiKeyNotice />
       <ScrollArea className="flex-1 p-4" ref={scrollAreaRef}>
         <div className="space-y-4">
           {messages.map((message) => (
