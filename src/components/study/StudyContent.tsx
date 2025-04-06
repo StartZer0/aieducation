@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote, Sparkles, Send } from 'lucide-react';
+import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote, Sparkles, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -39,6 +40,7 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
   const [explanationLevel, setExplanationLevel] = useState('medium');
   const [activeTab, setActiveTab] = useState('content');
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
+  const [showAnswers, setShowAnswers] = useState<Record<number, boolean>>({});
   const [message, setMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [displayedResponse, setDisplayedResponse] = useState('');
@@ -120,6 +122,17 @@ Would you like me to explain more about any of these aspects?`;
     setTimeout(() => {
       chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
+  };
+
+  const checkAnswer = (questionNum: number, userAnswer: string) => {
+    // Simple placeholder function for the checkAnswer functionality
+    setShowAnswers(prev => ({...prev, [questionNum]: true}));
+    
+    toast({
+      title: "Answer submitted",
+      description: "Review the sample answer for comparison.",
+      className: "bg-green-50 border-green-200 text-green-800",
+    });
   };
 
   const getContent = () => {
