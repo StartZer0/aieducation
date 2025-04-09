@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote, Sparkles, Send } from 'lucide-react';
+import { ChevronRight, ArrowLeft, ArrowRight, Book, HelpCircle, FileText, StickyNote, Sparkles, Send, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -44,6 +44,7 @@ export function StudyContent({ title, breadcrumbs, prevTopic, nextTopic, subject
   const [displayedResponse, setDisplayedResponse] = useState('');
   const [fullResponse, setFullResponse] = useState('');
   const [showGraph, setShowGraph] = useState(false);
+  const [showAnswers, setShowAnswers] = useState<Record<number, boolean>>({});
   const chatEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
   
@@ -120,6 +121,19 @@ Would you like me to explain more about any of these aspects?`;
     setTimeout(() => {
       chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, 100);
+  };
+
+  const checkAnswer = (questionId: number, answer: string) => {
+    toast({
+      title: "Answer submitted",
+      description: "Your answer has been recorded.",
+      className: "bg-green-50 border-green-200 text-green-800",
+    });
+    
+    setShowAnswers(prev => ({
+      ...prev, 
+      [questionId]: true
+    }));
   };
 
   const getContent = () => {
