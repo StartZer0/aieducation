@@ -4,7 +4,7 @@ import { MarkdownRenderer } from "./MarkdownRenderer";
 import { Loader2, Bot } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { AIApiKeyNotice } from "./AIApiKeyNotice";
+import { DynamicTermDefinition } from "./DynamicTermDefinition";
 
 interface AIGeneratedContentProps {
   content: string | null;
@@ -33,10 +33,45 @@ export function AIGeneratedContent({
     );
   }
 
+  // Process the content to wrap specific terms in DynamicTermDefinition component
+  const processContent = (text: string) => {
+    if (!text) return null;
+    
+    // Sample mathematical terms that might need definitions
+    const terms = ["function", "polynomial", "inequality", "equation", "variable", "coefficient"];
+    
+    let processedContent = text;
+    
+    // This is a simple way to identify terms - in a real-world scenario,
+    // a more sophisticated approach might be needed
+    terms.forEach(term => {
+      const regex = new RegExp(`\\b${term}\\b`, 'gi');
+      processedContent = processedContent.replace(regex, `<term>${term}</term>`);
+    });
+    
+    // Split by <term> tags
+    const parts = processedContent.split(/<term>|<\/term>/);
+    
+    return parts.map((part, index) => {
+      // Every odd part is a term
+      if (index % 2 === 1) {
+        return (
+          <DynamicTermDefinition 
+            key={`term-${index}`} 
+            term={part} 
+            context={topicTitle}
+          >
+            {part}
+          </DynamicTermDefinition>
+        );
+      }
+      return part;
+    });
+  };
+
   if (!content) {
     return (
       <Card className="p-8 text-center">
-        <AIApiKeyNotice />
         <Bot className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
         <h3 className="text-xl font-semibold mb-2">AI Content Generation</h3>
         <p className="text-muted-foreground mb-4">
@@ -54,7 +89,6 @@ export function AIGeneratedContent({
 
   return (
     <div className="space-y-6">
-      <AIApiKeyNotice />
       <div className="flex items-center gap-2 mb-4 text-blue-600 border-b pb-2">
         <Bot className="h-5 w-5" />
         <span className="font-medium">AI-Generated Content</span>
