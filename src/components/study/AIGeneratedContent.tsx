@@ -33,42 +33,6 @@ export function AIGeneratedContent({
     );
   }
 
-  // Process the content to wrap specific terms in DynamicTermDefinition component
-  const processContent = (text: string) => {
-    if (!text) return null;
-    
-    // Sample mathematical terms that might need definitions
-    const terms = ["function", "polynomial", "inequality", "equation", "variable", "coefficient"];
-    
-    let processedContent = text;
-    
-    // This is a simple way to identify terms - in a real-world scenario,
-    // a more sophisticated approach might be needed
-    terms.forEach(term => {
-      const regex = new RegExp(`\\b${term}\\b`, 'gi');
-      processedContent = processedContent.replace(regex, `<term>${term}</term>`);
-    });
-    
-    // Split by <term> tags
-    const parts = processedContent.split(/<term>|<\/term>/);
-    
-    return parts.map((part, index) => {
-      // Every odd part is a term
-      if (index % 2 === 1) {
-        return (
-          <DynamicTermDefinition 
-            key={`term-${index}`} 
-            term={part} 
-            context={topicTitle}
-          >
-            {part}
-          </DynamicTermDefinition>
-        );
-      }
-      return part;
-    });
-  };
-
   if (!content) {
     return (
       <Card className="p-8 text-center">
