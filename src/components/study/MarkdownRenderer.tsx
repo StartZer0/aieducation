@@ -18,8 +18,8 @@ export const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({
   return (
     <div className={cn("prose dark:prose-invert max-w-none", className)}>
       <ReactMarkdown
-        remarkPlugins={[remarkMath]}
-        rehypePlugins={[rehypeKatex]}
+        remarkPlugins={[remarkMath as any]}
+        rehypePlugins={[rehypeKatex as any]}
       >
         {markdown}
       </ReactMarkdown>
