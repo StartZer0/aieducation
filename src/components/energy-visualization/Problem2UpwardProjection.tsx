@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
+import { useUpwardProjectionAnimation } from './hooks/useUpwardProjectionAnimation';
 
 interface Problem2Props {
   initialVelocity: number;
@@ -26,21 +27,11 @@ const Problem2UpwardProjection: React.FC<Problem2Props> = ({
   setInitialVelocity,
   setMass,
   setMaxHeight,
-  setResistance,
-  objectPosition,
-  setObjectPosition,
-  objectDirection,
-  setObjectDirection,
-  animationId,
-  setAnimationId
+  setResistance
 }) => {
   // Constants
   const GRAVITY = 9.81;
   
-  // Animation state
-  const [isAnimating, setIsAnimating] = useState(false);
-  const animationFrameRef = useRef<number | null>(null);
-
   // Refs
   const visualization2Ref = useRef<HTMLDivElement>(null);
   const object2Ref = useRef<HTMLDivElement>(null);
@@ -57,6 +48,28 @@ const Problem2UpwardProjection: React.FC<Problem2Props> = ({
   const theoreticalHeight2Ref = useRef<HTMLSpanElement>(null);
   const actualHeight2Ref = useRef<HTMLSpanElement>(null);
   const energyLoss2Ref = useRef<HTMLSpanElement>(null);
+
+  // Use our custom animation hook
+  const {
+    isAnimating,
+    toggleAnimation,
+    resetAnimation,
+    cleanup
+  } = useUpwardProjectionAnimation({
+    initialVelocity,
+    mass,
+    maxHeight,
+    resistance,
+    gravity: GRAVITY,
+    objectRef: object2Ref,
+    velocityVectorRef: velocityVector2Ref,
+    heightMarkerRef: heightMarker2Ref,
+    heightLabelRef: heightLabel2Ref,
+    potentialEnergyRef: potentialEnergy2Ref,
+    kineticEnergyRef: kineticEnergy2Ref,
+    lostEnergyRef: lostEnergy2Ref,
+    visualizationRef: visualization2Ref
+  });
 
   // Initialize visualization
   const initVisualization = useCallback(() => {
@@ -120,133 +133,7 @@ const Problem2UpwardProjection: React.FC<Problem2Props> = ({
     if (theoreticalHeight2Ref.current) theoreticalHeight2Ref.current.textContent = theoreticalMaxHeight.toFixed(2);
     if (actualHeight2Ref.current) actualHeight2Ref.current.textContent = maxHeight.toFixed(2);
     if (energyLoss2Ref.current) energyLoss2Ref.current.textContent = energyLoss.toFixed(2);
-    
-    setObjectPosition(0);
-    setObjectDirection(1);
-  }, [initialVelocity, mass, maxHeight, setObjectPosition, setObjectDirection, GRAVITY]);
-
-  // Animate object
-  const animateObject = useCallback(() => {
-    if (!object2Ref.current || !velocityVector2Ref.current || !potentialEnergy2Ref.current || 
-        !kineticEnergy2Ref.current || !lostEnergy2Ref.current || !visualization2Ref.current || 
-        !heightMarker2Ref.current || !heightLabel2Ref.current) {
-      return;
-    }
-    
-    if (objectPosition >= 2) {
-      // Animation complete
-      cancelAnimationFrame(animationFrameRef.current!);
-      animationFrameRef.current = null;
-      setIsAnimating(false);
-      return;
-    }
-    
-    // Next frame - using a small fixed increment for smooth animation
-    const deltaPosition = 0.005 * (objectPosition < 1 ? 1 : 1.5); // Move faster on the way down
-    const newPos = objectPosition + deltaPosition;
-    
-    // Check for direction change at max height
-    let newDirection = objectDirection;
-    if (newPos >= 1 && objectDirection === 1) {
-      newDirection = -1; // Change direction to down
-    }
-    
-    // Calculate current height
-    let currentHeight;
-    if (newPos <= 1) {
-      // Going up
-      currentHeight = maxHeight * newPos;
-    } else {
-      // Coming down
-      currentHeight = maxHeight * (2 - newPos);
-    }
-    
-    // Calculate visual position
-    const visHeight = visualization2Ref.current.clientHeight;
-    const pixelsPerMeter = (visHeight - 50) / maxHeight;
-    const objectY = 10 + currentHeight * pixelsPerMeter;
-    
-    // Update object position
-    object2Ref.current.style.bottom = objectY + 'px';
-    
-    // Update height marker
-    heightMarker2Ref.current.style.height = objectY + 'px';
-    heightLabel2Ref.current.style.bottom = (objectY / 2) + 'px';
-    heightLabel2Ref.current.textContent = `h = ${currentHeight.toFixed(1)} m`;
-    
-    // Calculate current energy values
-    const initialKE = 0.5 * mass * initialVelocity * initialVelocity;
-    const potential = mass * GRAVITY * currentHeight;
-    
-    // Calculate how much energy has been lost so far
-    // More loss as we get closer to the peak
-    const peakRatio = newPos <= 1 ? newPos : 2 - newPos;
-    const lossRatio = Math.pow(peakRatio, resistance); // More loss with higher resistance
-    
-    const totalLoss = initialKE - mass * GRAVITY * maxHeight;
-    const currentLoss = totalLoss * lossRatio;
-    
-    // Remaining energy is distributed between potential and kinetic
-    const total = initialKE;
-    const available = total - currentLoss;
-    const kinetic = available - potential;
-    
-    // Calculate current velocity based on kinetic energy
-    let currentVelocity = Math.sqrt(2 * kinetic / mass) * (newDirection === 1 ? 1 : -1);
-    if (newPos > 0.98 && newPos < 1.02) {
-      currentVelocity = 0; // Exactly at the peak
-    }
-    
-    // Update energy bars
-    potentialEnergy2Ref.current.style.width = (potential / total * 100) + '%';
-    kineticEnergy2Ref.current.style.width = (kinetic / total * 100) + '%';
-    lostEnergy2Ref.current.style.width = (currentLoss / total * 100) + '%';
-    
-    // Update velocity vector
-    const absVelocity = Math.abs(currentVelocity);
-    const maxVelocity = initialVelocity;
-    const vectorLength = (absVelocity / maxVelocity) * 40;
-    
-    velocityVector2Ref.current.style.opacity = absVelocity > 0.5 ? '1' : '0';
-    velocityVector2Ref.current.style.width = vectorLength + 'px';
-    velocityVector2Ref.current.style.left = object2Ref.current.offsetLeft + (newDirection === 1 ? 15 : -vectorLength) + 'px';
-    velocityVector2Ref.current.style.bottom = objectY + 'px';
-    velocityVector2Ref.current.style.transform = `rotate(${newDirection === 1 ? -90 : 90}deg)`;
-    
-    // Update state for next frame
-    setObjectPosition(newPos);
-    setObjectDirection(newDirection);
-    
-    // Continue animation
-    animationFrameRef.current = requestAnimationFrame(animateObject);
-  }, [objectPosition, objectDirection, initialVelocity, mass, maxHeight, resistance, setObjectPosition, setObjectDirection, GRAVITY]);
-
-  // Start/pause simulation
-  const toggleAnimation = () => {
-    if (isAnimating) {
-      // Pause animation
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-        animationFrameRef.current = null;
-      }
-      setIsAnimating(false);
-    } else {
-      // Start or resume animation
-      setIsAnimating(true);
-      animationFrameRef.current = requestAnimationFrame(animateObject);
-    }
-  };
-
-  // Reset simulation
-  const resetSimulation = () => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
-    
-    setIsAnimating(false);
-    initVisualization();
-  };
+  }, [initialVelocity, mass, maxHeight, GRAVITY]);
 
   // Event handlers for inputs
   const handleInitialVelocityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -317,17 +204,19 @@ const Problem2UpwardProjection: React.FC<Problem2Props> = ({
     setResistance(newResistance);
   };
 
-  // Initialize visualization on mount
+  // Initialize visualization on mount and handle cleanup on unmount
   useEffect(() => {
     initVisualization();
     
-    // Cleanup animation on unmount
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [initVisualization]);
+    // Cleanup function
+    return cleanup;
+  }, [initVisualization, cleanup]);
+
+  // Reset simulation and re-initialize when parameters change
+  const handleReset = () => {
+    resetAnimation();
+    initVisualization();
+  };
 
   return (
     <div>
@@ -428,7 +317,7 @@ const Problem2UpwardProjection: React.FC<Problem2Props> = ({
         </button>
         <button 
           className="px-3 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
-          onClick={resetSimulation}
+          onClick={handleReset}
         >
           Reset
         </button>
