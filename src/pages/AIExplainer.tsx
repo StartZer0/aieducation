@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -318,22 +317,16 @@ The expression b² - 4ac, known as the **discriminant**, reveals important infor
 <h1>Learning Outcomes and Relevance in A-Levels</h1>
     
 <div class="concept-box">
-    <h2>Why Quadratic Functions Matter in A-Level Mathematics</h2>
+    <h2><strong>Why Quadratic Functions Matter in A-Level Mathematics</strong></h2>
     
-    <p>Understanding quadratic functions is crucial for A-Level Mathematics success because they form the foundation for many advanced mathematical concepts. These functions appear consistently throughout the curriculum and in examination scenarios, making mastery of their properties essential for achieving high grades.</p>
+    <p>In the A-Level curriculum, students are expected to develop a comprehensive understanding of quadratic functions, including their different forms, properties, and applications. This knowledge is assessed through various examination questions that test both theoretical understanding and practical problem-solving skills.
+
+    The study of quadratics also builds essential algebraic manipulation skills that transfer to other areas of mathematics. When students master techniques such as completing the square or working with the discriminant, they develop analytical thinking that proves valuable across the entire A-Level curriculum. Understanding transformations of quadratic functions also prepares students for more complex function transformations in advanced topics.</p>
     
     <div class="key-point">
         <p>Quadratic functions serve as building blocks for more complex mathematical ideas, providing students with fundamental skills in algebraic manipulation, graphical interpretation, and problem-solving that transfer to numerous other areas of the A-Level syllabus.</p>
     </div>
-    
-    <p>In the A-Level curriculum, students are expected to develop a comprehensive understanding of quadratic functions, including their different forms, properties, and applications. This knowledge is assessed through various examination questions that test both theoretical understanding and practical problem-solving skills.</p>
-    
-    <p>The study of quadratics also builds essential algebraic manipulation skills that transfer to other areas of mathematics. When students master techniques such as completing the square or working with the discriminant, they develop analytical thinking that proves valuable across the entire A-Level curriculum. Understanding transformations of quadratic functions also prepares students for more complex function transformations in advanced topics.</p>
-</div>
-    
-<div class="concept-box">
-    <h2>Core Learning Outcomes</h2>
-    
+
     <p>By the end of the A-Level quadratic functions unit, students should be able to:</p>
     
     <div class="grid-2">
