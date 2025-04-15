@@ -24,6 +24,24 @@ interface QuestionsSectionProps {
   setShowAnswers: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
 }
 
+interface PlaceholderCardProps {
+  title: string;
+  onClick: () => void;
+  isLoading: boolean;
+  content?: string;
+  contentComponent?: React.ReactNode;
+  icon?: React.ReactNode;
+  delay: number;
+  bgColor: string;
+  titleColor: string;
+  visualMode?: boolean;
+  isFormatted?: boolean;
+  isHtml?: boolean;
+  useAnimatedContent?: boolean;
+  hasCustomContent?: boolean;
+  loadingStates: Record<string, boolean>;
+}
+
 const AIExplainer = () => {
   const [showPrompt, setShowPrompt] = useState(true);
   const [prompt, setPrompt] = useState('');
@@ -656,6 +674,7 @@ This is the minimum point of the parabola since a > 0.`
                 visualMode={true}
                 useAnimatedContent={false}
                 isFormatted={true}
+                loadingStates={loadingStates}
               />
               
               <PlaceholderCard
@@ -670,6 +689,7 @@ This is the minimum point of the parabola since a > 0.`
                 isFormatted={true}
                 isHtml={true}
                 useAnimatedContent={true}
+                loadingStates={loadingStates}
               />
               
               <PlaceholderCard
@@ -683,6 +703,7 @@ This is the minimum point of the parabola since a > 0.`
                 bgColor="#E5DEFF"
                 titleColor="#9333EA"
                 hasCustomContent={true}
+                loadingStates={loadingStates}
               />
               
               <PlaceholderCard
@@ -703,6 +724,7 @@ This is the minimum point of the parabola since a > 0.`
                 bgColor="#FEF9E7"
                 titleColor="#F59E0B"
                 hasCustomContent={true}
+                loadingStates={loadingStates}
               />
             </div>
           </motion.div>
@@ -711,23 +733,6 @@ This is the minimum point of the parabola since a > 0.`
     </div>
   );
 };
-
-interface PlaceholderCardProps {
-  title: string;
-  onClick: () => void;
-  isLoading: boolean;
-  content?: string;
-  contentComponent?: React.ReactNode;
-  icon?: React.ReactNode;
-  delay: number;
-  bgColor: string;
-  titleColor: string;
-  visualMode?: boolean;
-  isFormatted?: boolean;
-  isHtml?: boolean;
-  useAnimatedContent?: boolean;
-  hasCustomContent?: boolean;
-}
 
 const PlaceholderCard: React.FC<PlaceholderCardProps> = ({ 
   title, 
@@ -743,7 +748,8 @@ const PlaceholderCard: React.FC<PlaceholderCardProps> = ({
   isFormatted = false,
   isHtml = false,
   useAnimatedContent = false,
-  hasCustomContent = false
+  hasCustomContent = false,
+  loadingStates
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -757,7 +763,7 @@ const PlaceholderCard: React.FC<PlaceholderCardProps> = ({
     if (!isLoading && loadingStates[title.toLowerCase().split(' ')[0]] === true) {
       setIsExpanded(true);
     }
-  }, [isLoading, title]);
+  }, [isLoading, title, loadingStates]);
 
   const handleClose = () => {
     setIsExpanded(false);
@@ -927,7 +933,7 @@ const QuestionsSection: React.FC<QuestionsSectionProps> = ({
                 {showAnswers[q.id] ? "Hide Solution" : "Check Answer"}
                 {showAnswers[q.id] ? (
                   <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7-7m14-8l-7 7-7-7" />
                   </svg>
                 ) : (
                   <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
