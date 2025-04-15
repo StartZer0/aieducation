@@ -267,6 +267,201 @@ The expression b² - 4ac, known as the **discriminant**, reveals important infor
 </div>
 `;
 
+  const fullLearningOutcomesContent = `
+<h1>Learning Outcomes and Relevance in A-Levels</h1>
+    
+<div class="concept-box">
+    <h2>Why Quadratic Functions Matter in A-Level Mathematics</h2>
+    
+    <p>Understanding quadratic functions is crucial for A-Level Mathematics success because they form the foundation for many advanced mathematical concepts. These functions appear consistently throughout the curriculum and in examination scenarios, making mastery of their properties essential for achieving high grades.</p>
+    
+    <div class="key-point">
+        <p>Quadratic functions serve as building blocks for more complex mathematical ideas, providing students with fundamental skills in algebraic manipulation, graphical interpretation, and problem-solving that transfer to numerous other areas of the A-Level syllabus.</p>
+    </div>
+    
+    <p>In the A-Level curriculum, students are expected to develop a comprehensive understanding of quadratic functions, including their different forms, properties, and applications. This knowledge is assessed through various examination questions that test both theoretical understanding and practical problem-solving skills.</p>
+    
+    <p>The study of quadratics also builds essential algebraic manipulation skills that transfer to other areas of mathematics. When students master techniques such as completing the square or working with the discriminant, they develop analytical thinking that proves valuable across the entire A-Level curriculum. Understanding transformations of quadratic functions also prepares students for more complex function transformations in advanced topics.</p>
+</div>
+    
+<div class="concept-box">
+    <h2>Core Learning Outcomes</h2>
+    
+    <p>By the end of the A-Level quadratic functions unit, students should be able to:</p>
+    
+    <div class="grid-2">
+        <div class="application-card">
+            <div class="application-title">🔍 Analyze Quadratic Structure</div>
+            <p>Identify and interpret the standard form <span class="highlight">f(x) = ax² + bx + c</span>, vertex form <span class="highlight">f(x) = a(x-h)² + k</span>, and factored form <span class="highlight">f(x) = a(x-r₁)(x-r₂)</span>, converting between them as needed.</p>
+        </div>
+        
+        <div class="application-card">
+            <div class="application-title">📊 Graph Interpretation</div>
+            <p>Sketch quadratic graphs accurately, identifying key features such as the vertex, axis of symmetry, y-intercept, and x-intercepts (roots). Interpret what these features represent in context.</p>
+        </div>
+    </div>
+    
+    <div class="grid-2">
+        <div class="application-card">
+            <div class="application-title">🧮 Solving Techniques</div>
+            <p>Solve quadratic equations using various methods including factoring, completing the square, and the quadratic formula. Apply the discriminant <span class="highlight">Δ = b² - 4ac</span> to analyze the nature of roots.</p>
+        </div>
+        
+        <div class="application-card">
+            <div class="application-title">📈 Modeling Applications</div>
+            <p>Apply quadratic functions to model real-world situations, particularly in physics (projectile motion), optimization problems, and data analysis. Interpret solutions in context.</p>
+        </div>
+    </div>
+    
+    <div class="grid-2">
+        <div class="application-card">
+            <div class="application-title">🔄 Transformations</div>
+            <p>Understand and apply transformations to quadratic functions, including translations, stretches, and reflections. This skill extends to all function types in later units.</p>
+        </div>
+        
+        <div class="application-card">
+            <div class="application-title">🧩 Completing the Square</div>
+            <p>Master the technique of completing the square to rewrite quadratics in vertex form, enabling easier identification of key features and supporting integration with calculus topics.</p>
+        </div>
+    </div>
+</div>
+    
+<div class="concept-box">
+    <h2>Cross-Topic Applications in A-Level Mathematics</h2>
+    
+    <p>Quadratic functions integrate with multiple areas of the A-Level mathematics curriculum, making them a cornerstone concept that resurfaces throughout the course. Their applications extend beyond pure mathematics into applied contexts:</p>
+    
+    <div class="visual-container">
+        <svg width="700" height="400" viewBox="0 0 700 400">
+            <!-- Central node -->
+            <circle cx="350" cy="200" r="60" fill="#4169E1" opacity="0.8"/>
+            <text x="350" y="205" text-anchor="middle" fill="white" font-weight="bold">Quadratic Functions</text>
+            
+            <!-- Connected topics -->
+            <!-- Calculus -->
+            <circle cx="200" cy="100" r="50" fill="#4CAF50" opacity="0.8"/>
+            <text x="200" y="105" text-anchor="middle" fill="white" font-weight="bold">Calculus</text>
+            <line x1="290" y1="160" x2="250" y2="130" stroke="#333" stroke-width="2" stroke-dasharray="5,3"/>
+            
+            <!-- Mechanics -->
+            <circle cx="500" cy="100" r="50" fill="#E74C3C" opacity="0.8"/>
+            <text x="500" y="105" text-anchor="middle" fill="white" font-weight="bold">Mechanics</text>
+            <line x1="410" y1="160" x2="450" y2="130" stroke="#333" stroke-width="2" stroke-dasharray="5,3"/>
+            
+            <!-- Statistics -->
+            <circle cx="200" cy="300" r="50" fill="#FFA500" opacity="0.8"/>
+            <text x="200" y="305" text-anchor="middle" fill="white" font-weight="bold">Statistics</text>
+            <line x1="290" y1="240" x2="250" y2="270" stroke="#333" stroke-width="2" stroke-dasharray="5,3"/>
+            
+            <!-- Further Pure -->
+            <circle cx="500" cy="300" r="50" fill="#9C27B0" opacity="0.8"/>
+            <text x="500" y="295" text-anchor="middle" fill="white" font-weight="bold">Functions &</text>
+            <text x="500" y="315" text-anchor="middle" fill="white" font-weight="bold">Transformations</text>
+            <line x1="410" y1="240" x2="450" y2="270" stroke="#333" stroke-width="2" stroke-dasharray="5,3"/>
+        </svg>
+    </div>
+    
+    <div class="grid-2">
+        <div>
+            <h3>In Pure Mathematics</h3>
+            <p><span class="highlight">Calculus:</span> Quadratic functions provide excellent examples for introducing differentiation and integration. Finding the derivative of a quadratic function helps locate maximum and minimum points, while integration of quadratics appears in area problems.</p>
+            
+            <p><span class="highlight">Functions and Transformations:</span> Quadratics serve as a foundation for understanding how function transformations work. The effects of vertical and horizontal shifts, stretches, and reflections are clearly visualized with quadratic graphs.</p>
+            
+            <p><span class="highlight">Algebraic Methods:</span> Techniques developed for quadratics, such as completing the square and using the discriminant, extend to solving more complex problems including inequalities and function analysis.</p>
+        </div>
+        
+        <div>
+            <h3>In Applied Mathematics</h3>
+            <p><span class="highlight">Mechanics:</span> Projectile motion is modeled using quadratic functions, where the position of an object at time t follows the equation <span class="formula">s(t) = ut + ½at²</span> for constant acceleration. This allows calculation of maximum height, flight time, and range.</p>
+            
+            <p><span class="highlight">Statistics:</span> Quadratic regression models help analyze data with curved relationships. The method of least squares may involve quadratic functions to find best-fit curves.</p>
+            
+            <p><span class="highlight">Decision Mathematics:</span> In optimization problems, the objective function often takes a quadratic form, especially when modeling diminishing returns or increasing costs.</p>
+        </div>
+    </div>
+</div>
+    
+<div class="activity-box">
+    <h2>Examination-Style Questions</h2>
+    
+    <p>To succeed in A-Level examinations, students must be able to apply their understanding of quadratic functions to solve various types of problems. Here are some representative questions that demonstrate the kinds of challenges students might encounter:</p>
+    
+    <div class="question-box">
+        <div class="question-title">Question 1: Analysis and Graphing</div>
+        <p>For the function h(x) = 3x² + 12x + 7:</p>
+        <ol type="a">
+            <li>Find the coordinates of the vertex</li>
+            <li>Determine the axis of symmetry</li>
+            <li>Calculate any x-intercepts</li>
+            <li>State the range of the function</li>
+            <li>Sketch the graph, clearly showing all key points</li>
+        </ol>
+    </div>
+    
+    <div class="question-box">
+        <div class="question-title">Question 2: Applied Context</div>
+        <p>A projectile is launched with a path modeled by the function h(t) = -4.9t² + 20t + 1.5, where h is the height in meters and t is the time in seconds.</p>
+        <ol type="a">
+            <li>What is the initial height of the projectile?</li>
+            <li>What is the initial velocity of the projectile?</li>
+            <li>Calculate the maximum height reached by the projectile</li>
+            <li>At what time does the projectile reach its maximum height?</li>
+            <li>When does the projectile hit the ground?</li>
+            <li>How does the discriminant of this function relate to the physical situation?</li>
+        </ol>
+    </div>
+    
+    <div class="question-box">
+        <div class="question-title">Question 3: Transformations and Forms</div>
+        <p>The function f(x) = 2x² - 8x + 7 can be written in the form f(x) = 2(x - p)² + q.</p>
+        <ol type="a">
+            <li>Find the values of p and q</li>
+            <li>Hence, state the coordinates of the vertex of the curve</li>
+            <li>Show that the minimum value of f(x) is 1</li>
+            <li>Determine the range of the function</li>
+            <li>If g(x) = f(x - 3), describe the transformation that maps f onto g</li>
+        </ol>
+    </div>
+</div>
+    
+<div class="concept-box">
+    <h2>Real-World Applications and Career Relevance</h2>
+    
+    <p>The study of quadratic functions in A-Level Mathematics prepares students for numerous applications in higher education and professional careers:</p>
+    
+    <div class="grid-2">
+        <div class="application-card">
+            <div class="application-title">🏗️ Engineering</div>
+            <p>Engineers use quadratic functions to model arches, cables in suspension bridges, and trajectories. Structural engineers analyze parabolic shapes for their strength and load-bearing properties.</p>
+        </div>
+        
+        <div class="application-card">
+            <div class="application-title">📊 Economics</div>
+            <p>Certain supply and demand models follow quadratic patterns, particularly when examining diminishing returns. Revenue and profit functions often take quadratic forms, with the vertex representing maximum profit.</p>
+        </div>
+    </div>
+    
+    <div class="grid-2">
+        <div class="application-card">
+            <div class="application-title">🔭 Physics</div>
+            <p>Beyond projectile motion, quadratic relationships appear in optics (parabolic mirrors), electrical circuits (energy storage), and quantum mechanics (wave functions).</p>
+        </div>
+        
+        <div class="application-card">
+            <div class="application-title">💻 Computer Science</div>
+            <p>Algorithms employ quadratic functions in computational complexity analysis. Certain sorting algorithms have quadratic time complexity, represented as O(n²).</p>
+        </div>
+    </div>
+    
+    <div class="key-point">
+        <p>The analytical thinking developed through studying quadratic functions—breaking complex problems into manageable components, recognizing patterns, and applying mathematical models to real situations—provides valuable transferable skills for any career path.</p>
+    </div>
+    
+    <p>By mastering quadratic functions in A-Level Mathematics, students develop not only the technical knowledge required for examination success but also a foundation for understanding the mathematical principles that describe countless phenomena in our world.</p>
+</div>
+`;
+
   const questions = [
     {
       id: 'q1',
@@ -428,12 +623,14 @@ This is the minimum point of the parabola since a > 0.`
               
               <ContentCard 
                 title="Learning Outcomes and Relevance" 
-                content={learningOutcomesContent}
+                content={fullLearningOutcomesContent}
                 icon={<GraduationCap className="w-6 h-6" />} 
                 delay={0.4}
                 bgColor="#F2FCE2"
                 titleColor="#16A34A"
                 isFormatted={true}
+                isHtml={true}
+                useAnimatedContent={true}
               />
               
               <QuestionsCard 
@@ -464,6 +661,7 @@ interface ContentCardProps {
   titleColor: string;
   visualMode?: boolean;
   isFormatted?: boolean;
+  isHtml?: boolean;
   useAnimatedContent?: boolean;
 }
 
@@ -476,6 +674,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
   titleColor, 
   visualMode = false,
   isFormatted = false,
+  isHtml = false,
   useAnimatedContent = false
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -503,17 +702,29 @@ const ContentCard: React.FC<ContentCardProps> = ({
               </h2>
               
               {isFormatted ? (
-                <div 
-                  className="prose max-w-none overview-content"
-                  dangerouslySetInnerHTML={{ __html: content }}
-                />
+                isHtml ? (
+                  <div className="prose max-w-none">
+                    <AnimatedContent
+                      content={content}
+                      speed={5}
+                      animate={true}
+                      isHtml={true}
+                    />
+                  </div>
+                ) : (
+                  <div 
+                    className="prose max-w-none overview-content"
+                    dangerouslySetInnerHTML={{ __html: content }}
+                  />
+                )
               ) : useAnimatedContent ? (
                 <div className="prose max-w-none">
                   <AnimatedContent
                     content={content}
-                    speed={20}
+                    speed={10}
                     highlightTerms={true}
                     visualMode={visualMode}
+                    isHtml={isHtml}
                   />
                 </div>
               ) : (

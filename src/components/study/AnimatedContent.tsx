@@ -7,6 +7,7 @@ interface AnimatedContentProps {
   highlightTerms?: boolean;
   visualMode?: boolean;
   animate?: boolean;
+  isHtml?: boolean;
 }
 
 export const AnimatedContent: React.FC<AnimatedContentProps> = ({
@@ -14,15 +15,18 @@ export const AnimatedContent: React.FC<AnimatedContentProps> = ({
   speed = 10, // Speed increased from 30 to 10 (lower value = faster animation)
   highlightTerms = false,
   visualMode = false,
-  animate = true
+  animate = true,
+  isHtml = false
 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [isComplete, setIsComplete] = useState(!animate);
 
   useEffect(() => {
-    // If animation is disabled, display all text immediately
+    // If animation is disabled, display all content immediately
     if (!animate) {
       setDisplayedText(content);
+      setIsComplete(true);
       return;
     }
 
@@ -33,11 +37,13 @@ export const AnimatedContent: React.FC<AnimatedContentProps> = ({
       }, speed);
       
       return () => clearTimeout(timer);
+    } else {
+      setIsComplete(true);
     }
   }, [currentIndex, content, speed, animate]);
 
   const formatText = (text: string) => {
-    if (!text) return '';
+    if (!text || isHtml) return text; // Return as-is if empty or already HTML
     
     // Process markdown headings
     let processedText = text.replace(/^# (.*?)$/gm, '<h1 class="text-2xl font-bold my-4">$1</h1>');
@@ -66,12 +72,12 @@ export const AnimatedContent: React.FC<AnimatedContentProps> = ({
     }).join('');
   };
 
-  const formattedText = formatText(displayedText);
+  const contentToRender = isHtml ? displayedText : formatText(displayedText);
   
   return (
     <div 
-      className="whitespace-pre-wrap"
-      dangerouslySetInnerHTML={{ __html: formattedText }}
+      className={`whitespace-pre-wrap ${isComplete ? 'content-complete' : 'content-animating'}`}
+      dangerouslySetInnerHTML={{ __html: contentToRender }}
     />
   );
 };
