@@ -1,11 +1,5 @@
 
-import { useState, useRef, useCallback, RefObject } from 'react';
-
-interface UpwardProjectionAnimationState {
-  objectPosition: number;
-  objectDirection: number;
-  isAnimating: boolean;
-}
+import { useState, useRef, useCallback, RefObject, useEffect } from 'react';
 
 interface UpwardProjectionAnimationConfig {
   initialVelocity: number;
@@ -41,31 +35,55 @@ export function useUpwardProjectionAnimation({
   const [objectPosition, setObjectPosition] = useState<number>(0);
   const [objectDirection, setObjectDirection] = useState<number>(1);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  
+  // Animation refs
   const animationFrameRef = useRef<number | null>(null);
+  const lastTimestampRef = useRef<number | null>(null);
+  const positionRef = useRef<number>(0);
+  const directionRef = useRef<number>(1);
 
-  // Animate object
-  const animateObject = useCallback(() => {
+  // Animate object with timestamp-based animation
+  const animateObject = useCallback((timestamp: number) => {
     if (!objectRef.current || !velocityVectorRef.current || !potentialEnergyRef.current || 
         !kineticEnergyRef.current || !lostEnergyRef.current || !visualizationRef.current || 
         !heightMarkerRef.current || !heightLabelRef.current) {
+      animationFrameRef.current = requestAnimationFrame(animateObject);
       return;
     }
     
-    if (objectPosition >= 2) {
+    // Initialize timestamp on first frame
+    if (!lastTimestampRef.current) {
+      lastTimestampRef.current = timestamp;
+      animationFrameRef.current = requestAnimationFrame(animateObject);
+      return;
+    }
+    
+    // Get current position and direction from refs
+    let currentPos = positionRef.current;
+    let currentDirection = directionRef.current;
+    
+    // Check if animation is complete
+    if (currentPos >= 2) {
       // Animation complete
       cancelAnimationFrame(animationFrameRef.current!);
       animationFrameRef.current = null;
+      lastTimestampRef.current = null;
       setIsAnimating(false);
       return;
     }
     
-    // Next frame - using a small fixed increment for smooth animation
-    const deltaPosition = 0.005 * (objectPosition < 1 ? 1 : 1.5); // Move faster on the way down
-    const newPos = objectPosition + deltaPosition;
+    // Calculate delta time in seconds, capped to prevent large jumps
+    const deltaTime = Math.min((timestamp - lastTimestampRef.current) / 1000, 0.05);
+    lastTimestampRef.current = timestamp;
+    
+    // Calculate new position based on delta time, with speed factor and different speeds for up/down
+    const speedFactor = 0.6;
+    const adjustedSpeed = currentPos < 1 ? speedFactor : speedFactor * 1.5; // Move faster on the way down
+    const newPos = currentPos + adjustedSpeed * deltaTime;
     
     // Check for direction change at max height
-    let newDirection = objectDirection;
-    if (newPos >= 1 && objectDirection === 1) {
+    let newDirection = currentDirection;
+    if (newPos >= 1 && currentDirection === 1) {
       newDirection = -1; // Change direction to down
     }
     
@@ -131,15 +149,22 @@ export function useUpwardProjectionAnimation({
     velocityVectorRef.current.style.bottom = objectY + 'px';
     velocityVectorRef.current.style.transform = `rotate(${newDirection === 1 ? -90 : 90}deg)`;
     
-    // Update state for next frame
-    setObjectPosition(newPos);
-    setObjectDirection(newDirection);
+    // Update refs for next frame
+    positionRef.current = newPos;
+    directionRef.current = newDirection;
+    
+    // Update React state less frequently to reduce renders
+    if (Math.abs(newPos - objectPosition) > 0.01 || newDirection !== objectDirection) {
+      setObjectPosition(newPos);
+      setObjectDirection(newDirection);
+    }
     
     // Continue animation
     animationFrameRef.current = requestAnimationFrame(animateObject);
-  }, [objectPosition, objectDirection, initialVelocity, mass, maxHeight, resistance, gravity, 
+  }, [initialVelocity, mass, maxHeight, resistance, gravity, 
       objectRef, velocityVectorRef, heightMarkerRef, heightLabelRef, 
-      potentialEnergyRef, kineticEnergyRef, lostEnergyRef, visualizationRef]);
+      potentialEnergyRef, kineticEnergyRef, lostEnergyRef, visualizationRef,
+      objectPosition, objectDirection]);
 
   // Start/pause simulation
   const toggleAnimation = useCallback(() => {
@@ -149,10 +174,12 @@ export function useUpwardProjectionAnimation({
         cancelAnimationFrame(animationFrameRef.current);
         animationFrameRef.current = null;
       }
+      lastTimestampRef.current = null;
       setIsAnimating(false);
     } else {
       // Start or resume animation
       setIsAnimating(true);
+      lastTimestampRef.current = null;
       animationFrameRef.current = requestAnimationFrame(animateObject);
     }
   }, [isAnimating, animateObject]);
@@ -164,7 +191,10 @@ export function useUpwardProjectionAnimation({
       animationFrameRef.current = null;
     }
     
+    lastTimestampRef.current = null;
     setIsAnimating(false);
+    positionRef.current = 0;
+    directionRef.current = 1;
     setObjectPosition(0);
     setObjectDirection(1);
   }, []);
@@ -175,7 +205,13 @@ export function useUpwardProjectionAnimation({
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
     }
+    lastTimestampRef.current = null;
   }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return cleanup;
+  }, [cleanup]);
 
   return {
     objectPosition,

@@ -1,10 +1,5 @@
 
-import { useState, useRef, useCallback, RefObject } from 'react';
-
-interface HighDiverAnimationState {
-  diverPosition: number;
-  isAnimating: boolean;
-}
+import { useState, useRef, useCallback, RefObject, useEffect } from 'react';
 
 interface HighDiverAnimationConfig {
   height: number;
@@ -29,25 +24,47 @@ export function useHighDiverAnimation({
 }: HighDiverAnimationConfig) {
   const [diverPosition, setDiverPosition] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  
+  // Animation refs
   const animationFrameRef = useRef<number | null>(null);
+  const lastTimestampRef = useRef<number | null>(null);
+  const positionRef = useRef<number>(0);
 
-  // Animate diver
-  const animateDiver = useCallback(() => {
+  // Animate diver with timestamp-based animation
+  const animateDiver = useCallback((timestamp: number) => {
     if (!diverRef.current || !velocityVectorRef.current || !potentialEnergyRef.current || 
         !kineticEnergyRef.current || !visualizationRef.current) {
+      animationFrameRef.current = requestAnimationFrame(animateDiver);
       return;
     }
     
-    if (diverPosition >= 1) {
+    // Initialize timestamp on first frame
+    if (!lastTimestampRef.current) {
+      lastTimestampRef.current = timestamp;
+      animationFrameRef.current = requestAnimationFrame(animateDiver);
+      return;
+    }
+    
+    // Get current position from ref
+    let currentPos = positionRef.current;
+    
+    // Check if animation is complete
+    if (currentPos >= 1) {
       // Animation complete
       cancelAnimationFrame(animationFrameRef.current!);
       animationFrameRef.current = null;
+      lastTimestampRef.current = null;
       setIsAnimating(false);
       return;
     }
     
-    // Next frame - using a fixed small increment for smooth animation
-    const newPos = diverPosition + 0.005;
+    // Calculate delta time in seconds, capped to prevent large jumps
+    const deltaTime = Math.min((timestamp - lastTimestampRef.current) / 1000, 0.05);
+    lastTimestampRef.current = timestamp;
+    
+    // Calculate new position based on delta time, with speed factor
+    const speedFactor = 0.5;
+    const newPos = Math.min(currentPos + speedFactor * deltaTime, 1);
     
     // Calculate current position
     const visHeight = visualizationRef.current.clientHeight;
@@ -83,8 +100,13 @@ export function useHighDiverAnimation({
       velocityVectorRef.current.style.transform = 'rotate(90deg)';
     }
     
-    // Update position state for next frame
-    setDiverPosition(newPos);
+    // Update ref for next frame
+    positionRef.current = newPos;
+    
+    // Update React state less frequently to reduce renders
+    if (Math.abs(newPos - diverPosition) > 0.01) {
+      setDiverPosition(newPos);
+    }
     
     // Continue animation
     animationFrameRef.current = requestAnimationFrame(animateDiver);
@@ -98,10 +120,12 @@ export function useHighDiverAnimation({
         cancelAnimationFrame(animationFrameRef.current);
         animationFrameRef.current = null;
       }
+      lastTimestampRef.current = null;
       setIsAnimating(false);
     } else {
       // Start or resume animation
       setIsAnimating(true);
+      lastTimestampRef.current = null;
       animationFrameRef.current = requestAnimationFrame(animateDiver);
     }
   }, [isAnimating, animateDiver]);
@@ -113,7 +137,9 @@ export function useHighDiverAnimation({
       animationFrameRef.current = null;
     }
     
+    lastTimestampRef.current = null;
     setIsAnimating(false);
+    positionRef.current = 0;
     setDiverPosition(0);
   }, []);
 
@@ -123,7 +149,13 @@ export function useHighDiverAnimation({
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
     }
+    lastTimestampRef.current = null;
   }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return cleanup;
+  }, [cleanup]);
 
   return {
     diverPosition,

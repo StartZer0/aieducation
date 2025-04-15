@@ -1,5 +1,5 @@
 
-import { useState, useRef, useCallback, RefObject } from 'react';
+import { useState, useRef, useCallback, RefObject, useEffect } from 'react';
 
 interface BouncingBallAnimationConfig {
   initialHeight: number;
@@ -45,7 +45,12 @@ export function useBouncingBallAnimation({
   const [ballPosition, setBallPosition] = useState<number>(0);
   const [ballDirection, setBallDirection] = useState<number>(1);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  
+  // Animation refs
   const animationFrameRef = useRef<number | null>(null);
+  const lastTimestampRef = useRef<number | null>(null);
+  const positionRef = useRef<number>(0);
+  const directionRef = useRef<number>(1);
 
   // Initialize visualization
   const initVisualization = useCallback(() => {
@@ -102,37 +107,59 @@ export function useBouncingBallAnimation({
     if (energyGainedRef?.current) energyGainedRef.current.textContent = reboundPE.toFixed(4);
     if (reboundVelocityRef?.current) reboundVelocityRef.current.textContent = reboundVelocity.toFixed(2);
     
+    // Reset animation state
+    positionRef.current = 0;
+    directionRef.current = 1;
     setBallPosition(0);
     setBallDirection(1);
   }, [initialHeight, reboundHeight, mass, gravity, ballRef, tableRef, heightMarkerRef, heightLabelRef, 
       velocityVectorRef, potentialEnergyRef, kineticEnergyRef, lostEnergyRef, visualizationRef,
       energyLostRef, kineticBeforeImpactRef, velocityBeforeImpactRef, energyGainedRef, reboundVelocityRef]);
 
-  // Animate ball
-  const animateBall = useCallback(() => {
+  // Animate ball with timestamp-based animation
+  const animateBall = useCallback((timestamp: number) => {
     if (!ballRef.current || !velocityVectorRef.current || !potentialEnergyRef.current || 
         !kineticEnergyRef.current || !lostEnergyRef.current || !visualizationRef.current || 
         !heightMarkerRef.current || !heightLabelRef.current) {
+      animationFrameRef.current = requestAnimationFrame(animateBall);
       return;
     }
     
-    if (ballPosition >= 3) {
+    // Initialize timestamp on first frame
+    if (!lastTimestampRef.current) {
+      lastTimestampRef.current = timestamp;
+      animationFrameRef.current = requestAnimationFrame(animateBall);
+      return;
+    }
+    
+    // Get current position and direction from refs
+    let currentPos = positionRef.current;
+    let currentDirection = directionRef.current;
+    
+    // Check if animation is complete
+    if (currentPos >= 3) {
       // Animation complete
       cancelAnimationFrame(animationFrameRef.current!);
       animationFrameRef.current = null;
+      lastTimestampRef.current = null;
       setIsAnimating(false);
       return;
     }
     
-    // Next frame - using a small fixed increment for smooth animation
-    const newPos = ballPosition + 0.01;
+    // Calculate delta time in seconds, capped to prevent large jumps
+    const deltaTime = Math.min((timestamp - lastTimestampRef.current) / 1000, 0.05);
+    lastTimestampRef.current = timestamp;
+    
+    // Calculate new position based on delta time, with speed factor
+    const speedFactor = 0.7;
+    let newPos = currentPos + speedFactor * deltaTime;
     
     // Handle direction changes
-    let newDirection = ballDirection;
-    if (newPos >= 1 && newPos < 1.05 && ballDirection === 1) {
+    let newDirection = currentDirection;
+    if (newPos >= 1 && newPos < 1.05 && currentDirection === 1) {
       // Impact
       newDirection = -1; // Change direction to up
-    } else if (newPos >= 2 && ballDirection === -1) {
+    } else if (newPos >= 2 && currentDirection === -1) {
       // Peak of rebound
       newDirection = 1; // Change direction to down
     }
@@ -204,15 +231,22 @@ export function useBouncingBallAnimation({
       velocityVectorRef.current.style.opacity = '0';
     }
     
-    // Update state for next frame
-    setBallPosition(newPos);
-    setBallDirection(newDirection);
+    // Update refs for next frame
+    positionRef.current = newPos;
+    directionRef.current = newDirection;
+    
+    // Update React state less frequently to reduce renders
+    if (Math.abs(newPos - ballPosition) > 0.01 || newDirection !== ballDirection) {
+      setBallPosition(newPos);
+      setBallDirection(newDirection);
+    }
     
     // Continue animation
     animationFrameRef.current = requestAnimationFrame(animateBall);
-  }, [ballPosition, ballDirection, initialHeight, reboundHeight, mass, gravity, 
+  }, [initialHeight, reboundHeight, mass, gravity, 
       ballRef, velocityVectorRef, heightMarkerRef, heightLabelRef, 
-      potentialEnergyRef, kineticEnergyRef, lostEnergyRef, visualizationRef]);
+      potentialEnergyRef, kineticEnergyRef, lostEnergyRef, visualizationRef,
+      ballPosition, ballDirection]);
 
   // Start/pause simulation
   const toggleAnimation = useCallback(() => {
@@ -222,10 +256,12 @@ export function useBouncingBallAnimation({
         cancelAnimationFrame(animationFrameRef.current);
         animationFrameRef.current = null;
       }
+      lastTimestampRef.current = null;
       setIsAnimating(false);
     } else {
       // Start or resume animation
       setIsAnimating(true);
+      lastTimestampRef.current = null;
       animationFrameRef.current = requestAnimationFrame(animateBall);
     }
   }, [isAnimating, animateBall]);
@@ -237,7 +273,10 @@ export function useBouncingBallAnimation({
       animationFrameRef.current = null;
     }
     
+    lastTimestampRef.current = null;
     setIsAnimating(false);
+    positionRef.current = 0;
+    directionRef.current = 1;
     setBallPosition(0);
     setBallDirection(1);
     initVisualization();
@@ -249,7 +288,13 @@ export function useBouncingBallAnimation({
       cancelAnimationFrame(animationFrameRef.current);
       animationFrameRef.current = null;
     }
+    lastTimestampRef.current = null;
   }, []);
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return cleanup;
+  }, [cleanup]);
 
   return {
     ballPosition,
