@@ -36,31 +36,31 @@ export function RAGContent({
             <TabsTrigger value="medium">Medium</TabsTrigger>
             <TabsTrigger value="advanced">Advanced</TabsTrigger>
           </TabsList>
+        
+          <CardContent className="p-6 h-[680px] overflow-auto">
+            <TabsContent value="easy">
+              {activeTab === "easy" && (
+                <TypewriterText text={easyModeContent} speed={0.33} />
+              )}
+            </TabsContent>
+            <TabsContent value="medium">
+              {activeTab === "medium" && (
+                <TypewriterText text={mediumModeContent} speed={0.33} />
+              )}
+            </TabsContent>
+            <TabsContent value="advanced">
+              {activeTab === "advanced" && (
+                <TypewriterText text={advancedModeContent} speed={0.33} />
+                {activeTab === "advanced" && (
+                  <div className="mt-6">
+                    <KineticEnergyVisualization />
+                  </div>
+                )}
+              )}
+            </TabsContent>
+          </CardContent>
         </Tabs>
       </CardHeader>
-      <CardContent className="p-6 h-[680px] overflow-auto">
-        <TabsContent 
-          value="easy" 
-          forceMount={activeTab === "easy" as const ? true : undefined}
-        >
-          <TypewriterText text={easyModeContent} speed={0.33} />
-        </TabsContent>
-        <TabsContent 
-          value="medium" 
-          forceMount={activeTab === "medium" as const ? true : undefined}
-        >
-          <TypewriterText text={mediumModeContent} speed={0.33} />
-        </TabsContent>
-        <TabsContent 
-          value="advanced" 
-          forceMount={activeTab === "advanced" as const ? true : undefined}
-        >
-          <TypewriterText text={advancedModeContent} speed={0.33} />
-          <div className="mt-6">
-            <KineticEnergyVisualization />
-          </div>
-        </TabsContent>
-      </CardContent>
     </Card>
   );
 }
