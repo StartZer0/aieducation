@@ -7,9 +7,8 @@ export const KineticEnergyVisualization: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
-  // Refs for animation control
-  const isPlayingRef = useRef<boolean>(false);
-  const animationRef = useRef<number | null>(null);
+  // Animation refs for properly handling requestAnimationFrame
+  const animationIdRef = useRef<number | null>(null);
   const startTimeRef = useRef<number | null>(null);
   
   // State for input values
@@ -150,9 +149,7 @@ export const KineticEnergyVisualization: React.FC = () => {
   
   // Animation function
   const animate = useCallback((timestamp: number) => {
-    if (!isPlayingRef.current) return;
-    
-    if (startTimeRef.current === null) {
+    if (!startTimeRef.current) {
       startTimeRef.current = timestamp;
     }
     
@@ -163,47 +160,48 @@ export const KineticEnergyVisualization: React.FC = () => {
     const newTime = 5 * progress;
     setTime(newTime);
     
-    if (progress < 1 && isPlayingRef.current) {
-      animationRef.current = requestAnimationFrame(animate);
-    } else if (progress >= 1) {
+    if (progress < 1) {
+      animationIdRef.current = requestAnimationFrame(animate);
+    } else {
       // Animation completed
       startTimeRef.current = null;
-      animationRef.current = null;
-      isPlayingRef.current = false;
+      animationIdRef.current = null;
       setIsPlaying(false);
     }
   }, []);
   
   // Toggle animation
   const toggleAnimation = useCallback(() => {
-    isPlayingRef.current = !isPlayingRef.current;
-    setIsPlaying(isPlayingRef.current);
-    
-    if (isPlayingRef.current) {
-      // Start animation
-      startTimeRef.current = null;
-      if (animationRef.current !== null) {
-        cancelAnimationFrame(animationRef.current);
+    setIsPlaying(prevIsPlaying => {
+      const newIsPlaying = !prevIsPlaying;
+      
+      if (newIsPlaying) {
+        // Start animation
+        startTimeRef.current = null;
+        if (animationIdRef.current !== null) {
+          cancelAnimationFrame(animationIdRef.current);
+        }
+        animationIdRef.current = requestAnimationFrame(animate);
+      } else {
+        // Stop animation
+        if (animationIdRef.current !== null) {
+          cancelAnimationFrame(animationIdRef.current);
+          animationIdRef.current = null;
+        }
       }
-      animationRef.current = requestAnimationFrame(animate);
-    } else {
-      // Stop animation
-      if (animationRef.current !== null) {
-        cancelAnimationFrame(animationRef.current);
-        animationRef.current = null;
-      }
-    }
+      
+      return newIsPlaying;
+    });
   }, [animate]);
   
   // Reset visualization
   const resetVisualization = useCallback(() => {
     // Stop animation if playing
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-      animationRef.current = null;
+    if (animationIdRef.current) {
+      cancelAnimationFrame(animationIdRef.current);
+      animationIdRef.current = null;
     }
     
-    isPlayingRef.current = false;
     setIsPlaying(false);
     startTimeRef.current = null;
     setTime(0);
@@ -223,9 +221,9 @@ export const KineticEnergyVisualization: React.FC = () => {
     
     // Clean up animation on unmount
     return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-        animationRef.current = null;
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current);
+        animationIdRef.current = null;
       }
     };
   }, [drawScene]);
@@ -306,6 +304,7 @@ export const KineticEnergyVisualization: React.FC = () => {
                 onChange={(e) => setTime(parseFloat(e.target.value))}
                 className="w-[90%] block"
                 id="timeSlider"
+                disabled={isPlaying}
               />
             </label>
           </div>
@@ -363,4 +362,3 @@ export const KineticEnergyVisualization: React.FC = () => {
     </Card>
   );
 };
-
