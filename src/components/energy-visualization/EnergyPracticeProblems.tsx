@@ -45,7 +45,7 @@ const EnergyPracticeProblems: React.FC = () => {
       if (animationId2) cancelAnimationFrame(animationId2);
       if (animationId3) cancelAnimationFrame(animationId3);
     };
-  }, []);
+  }, [animationId1, animationId2, animationId3]);
   
   return (
     <Card className="w-full shadow-sm">

@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 interface Problem3Props {
   initialHeight: number;
@@ -32,6 +32,10 @@ const Problem3BouncingBall: React.FC<Problem3Props> = ({
 }) => {
   // Constants
   const GRAVITY = 9.81;
+  
+  // Animation state
+  const [isAnimating, setIsAnimating] = useState(false);
+  const animationFrameRef = useRef<number | null>(null);
 
   // Refs
   const visualization3Ref = useRef<HTMLDivElement>(null);
@@ -51,7 +55,7 @@ const Problem3BouncingBall: React.FC<Problem3Props> = ({
   const reboundVelocity3Ref = useRef<HTMLSpanElement>(null);
 
   // Initialize visualization
-  const initVisualization = () => {
+  const initVisualization = useCallback(() => {
     if (!visualization3Ref.current || !ball3Ref.current || !table3Ref.current || 
         !heightMarker3Ref.current || !heightLabel3Ref.current || !velocityVector3Ref.current || 
         !potentialEnergy3Ref.current || !kineticEnergy3Ref.current || 
@@ -109,10 +113,10 @@ const Problem3BouncingBall: React.FC<Problem3Props> = ({
     
     setBallPosition(0);
     setBallDirection(1);
-  };
+  }, [initialHeight, reboundHeight, mass, setBallPosition, setBallDirection, GRAVITY]);
 
   // Animate ball
-  const animateBall = () => {
+  const animateBall = useCallback(() => {
     if (!ball3Ref.current || !velocityVector3Ref.current || !potentialEnergy3Ref.current || 
         !kineticEnergy3Ref.current || !lostEnergy3Ref.current || !visualization3Ref.current || 
         !heightMarker3Ref.current || !heightLabel3Ref.current) {
@@ -121,8 +125,9 @@ const Problem3BouncingBall: React.FC<Problem3Props> = ({
     
     if (ballPosition >= 3) {
       // Animation complete
-      cancelAnimationFrame(animationId as number);
-      setAnimationId(null);
+      cancelAnimationFrame(animationFrameRef.current!);
+      animationFrameRef.current = null;
+      setIsAnimating(false);
       return;
     }
     
@@ -211,28 +216,33 @@ const Problem3BouncingBall: React.FC<Problem3Props> = ({
     setBallDirection(newDirection);
     
     // Continue animation
-    const id = requestAnimationFrame(animateBall);
-    setAnimationId(id);
-  };
+    animationFrameRef.current = requestAnimationFrame(animateBall);
+  }, [ballPosition, ballDirection, initialHeight, reboundHeight, mass, setBallPosition, setBallDirection, GRAVITY]);
 
   // Start/pause simulation
-  const startSimulation = () => {
-    if (animationId !== null) {
-      cancelAnimationFrame(animationId);
-      setAnimationId(null);
+  const toggleAnimation = () => {
+    if (isAnimating) {
+      // Pause animation
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+      setIsAnimating(false);
     } else {
-      const id = requestAnimationFrame(animateBall);
-      setAnimationId(id);
+      // Start or resume animation
+      setIsAnimating(true);
+      animationFrameRef.current = requestAnimationFrame(animateBall);
     }
   };
 
   // Reset simulation
   const resetSimulation = () => {
-    if (animationId !== null) {
-      cancelAnimationFrame(animationId);
-      setAnimationId(null);
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
     }
     
+    setIsAnimating(false);
     initVisualization();
   };
 
@@ -262,7 +272,7 @@ const Problem3BouncingBall: React.FC<Problem3Props> = ({
     if (reboundVelocity3Ref.current) reboundVelocity3Ref.current.textContent = reboundVelocity.toFixed(2);
     
     // Update visualization if not animating
-    if (animationId === null) {
+    if (!isAnimating) {
       initVisualization();
     }
   };
@@ -286,7 +296,7 @@ const Problem3BouncingBall: React.FC<Problem3Props> = ({
     if (reboundVelocity3Ref.current) reboundVelocity3Ref.current.textContent = reboundVelocity.toFixed(2);
     
     // Update visualization if not animating
-    if (animationId === null) {
+    if (!isAnimating) {
       initVisualization();
     }
   };
@@ -308,7 +318,14 @@ const Problem3BouncingBall: React.FC<Problem3Props> = ({
   // Initialize visualization on mount
   useEffect(() => {
     initVisualization();
-  }, []);
+    
+    // Cleanup animation on unmount
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [initVisualization]);
 
   return (
     <div>
@@ -391,9 +408,9 @@ const Problem3BouncingBall: React.FC<Problem3Props> = ({
       <div className="flex gap-2 mb-4">
         <button 
           className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-          onClick={startSimulation}
+          onClick={toggleAnimation}
         >
-          {animationId !== null ? "Pause Simulation" : "Start Simulation"}
+          {isAnimating ? "Pause Simulation" : "Start Simulation"}
         </button>
         <button 
           className="px-3 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"

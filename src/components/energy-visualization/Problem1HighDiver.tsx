@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 interface Problem1Props {
   height: number;
@@ -24,6 +24,10 @@ const Problem1HighDiver: React.FC<Problem1Props> = ({
 }) => {
   // Constants
   const GRAVITY = 9.81;
+  
+  // Animation state
+  const [isAnimating, setIsAnimating] = useState(false);
+  const animationFrameRef = useRef<number | null>(null);
 
   // Refs
   const visualization1Ref = useRef<HTMLDivElement>(null);
@@ -41,7 +45,7 @@ const Problem1HighDiver: React.FC<Problem1Props> = ({
   const finalEnergy1Ref = useRef<HTMLSpanElement>(null);
 
   // Initialize visualization
-  const initVisualization = () => {
+  const initVisualization = useCallback(() => {
     if (!visualization1Ref.current || !diver1Ref.current || !platform1Ref.current || 
         !water1Ref.current || !heightMarker1Ref.current || !heightLabel1Ref.current || 
         !velocityVector1Ref.current || !potentialEnergy1Ref.current || 
@@ -92,10 +96,10 @@ const Problem1HighDiver: React.FC<Problem1Props> = ({
     if (finalEnergy1Ref.current) finalEnergy1Ref.current.textContent = potential.toFixed(2);
     
     setDiverPosition(0);
-  };
+  }, [height, mass, setDiverPosition, GRAVITY]);
 
   // Animate diver
-  const animateDiver = () => {
+  const animateDiver = useCallback(() => {
     if (!diver1Ref.current || !velocityVector1Ref.current || !potentialEnergy1Ref.current || 
         !kineticEnergy1Ref.current || !visualization1Ref.current) {
       return;
@@ -103,8 +107,9 @@ const Problem1HighDiver: React.FC<Problem1Props> = ({
     
     if (diverPosition >= 1) {
       // Animation complete
-      cancelAnimationFrame(animationId as number);
-      setAnimationId(null);
+      cancelAnimationFrame(animationFrameRef.current!);
+      animationFrameRef.current = null;
+      setIsAnimating(false);
       return;
     }
     
@@ -149,28 +154,33 @@ const Problem1HighDiver: React.FC<Problem1Props> = ({
     setDiverPosition(newPos);
     
     // Continue animation
-    const id = requestAnimationFrame(animateDiver);
-    setAnimationId(id);
-  };
+    animationFrameRef.current = requestAnimationFrame(animateDiver);
+  }, [diverPosition, height, mass, setDiverPosition, GRAVITY]);
 
   // Start/pause simulation
-  const startSimulation = () => {
-    if (animationId !== null) {
-      cancelAnimationFrame(animationId);
-      setAnimationId(null);
+  const toggleAnimation = () => {
+    if (isAnimating) {
+      // Pause animation
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+      setIsAnimating(false);
     } else {
-      const id = requestAnimationFrame(animateDiver);
-      setAnimationId(id);
+      // Start or resume animation
+      setIsAnimating(true);
+      animationFrameRef.current = requestAnimationFrame(animateDiver);
     }
   };
 
   // Reset simulation
   const resetSimulation = () => {
-    if (animationId !== null) {
-      cancelAnimationFrame(animationId);
-      setAnimationId(null);
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
     }
     
+    setIsAnimating(false);
     initVisualization();
   };
 
@@ -188,7 +198,7 @@ const Problem1HighDiver: React.FC<Problem1Props> = ({
     if (finalEnergy1Ref.current) finalEnergy1Ref.current.textContent = potential.toFixed(2);
     
     // Update visualization if not animating
-    if (animationId === null) {
+    if (!isAnimating) {
       initVisualization();
     }
   };
@@ -207,7 +217,14 @@ const Problem1HighDiver: React.FC<Problem1Props> = ({
   // Initialize visualization on mount
   useEffect(() => {
     initVisualization();
-  }, []);
+    
+    // Cleanup animation on unmount
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [initVisualization]);
 
   return (
     <div>
@@ -270,9 +287,9 @@ const Problem1HighDiver: React.FC<Problem1Props> = ({
       <div className="flex gap-2 mb-4">
         <button 
           className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-          onClick={startSimulation}
+          onClick={toggleAnimation}
         >
-          {animationId !== null ? "Pause Simulation" : "Start Simulation"}
+          {isAnimating ? "Pause Simulation" : "Start Simulation"}
         </button>
         <button 
           className="px-3 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"

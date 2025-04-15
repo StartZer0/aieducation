@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 interface Problem2Props {
   initialVelocity: number;
@@ -36,6 +36,10 @@ const Problem2UpwardProjection: React.FC<Problem2Props> = ({
 }) => {
   // Constants
   const GRAVITY = 9.81;
+  
+  // Animation state
+  const [isAnimating, setIsAnimating] = useState(false);
+  const animationFrameRef = useRef<number | null>(null);
 
   // Refs
   const visualization2Ref = useRef<HTMLDivElement>(null);
@@ -55,7 +59,7 @@ const Problem2UpwardProjection: React.FC<Problem2Props> = ({
   const energyLoss2Ref = useRef<HTMLSpanElement>(null);
 
   // Initialize visualization
-  const initVisualization = () => {
+  const initVisualization = useCallback(() => {
     if (!visualization2Ref.current || !object2Ref.current || !ground2Ref.current || 
         !trajectory2Ref.current || !heightMarker2Ref.current || !heightLabel2Ref.current || 
         !velocityVector2Ref.current || !potentialEnergy2Ref.current || 
@@ -119,10 +123,10 @@ const Problem2UpwardProjection: React.FC<Problem2Props> = ({
     
     setObjectPosition(0);
     setObjectDirection(1);
-  };
+  }, [initialVelocity, mass, maxHeight, setObjectPosition, setObjectDirection, GRAVITY]);
 
   // Animate object
-  const animateObject = () => {
+  const animateObject = useCallback(() => {
     if (!object2Ref.current || !velocityVector2Ref.current || !potentialEnergy2Ref.current || 
         !kineticEnergy2Ref.current || !lostEnergy2Ref.current || !visualization2Ref.current || 
         !heightMarker2Ref.current || !heightLabel2Ref.current) {
@@ -131,8 +135,9 @@ const Problem2UpwardProjection: React.FC<Problem2Props> = ({
     
     if (objectPosition >= 2) {
       // Animation complete
-      cancelAnimationFrame(animationId as number);
-      setAnimationId(null);
+      cancelAnimationFrame(animationFrameRef.current!);
+      animationFrameRef.current = null;
+      setIsAnimating(false);
       return;
     }
     
@@ -213,28 +218,33 @@ const Problem2UpwardProjection: React.FC<Problem2Props> = ({
     setObjectDirection(newDirection);
     
     // Continue animation
-    const id = requestAnimationFrame(animateObject);
-    setAnimationId(id);
-  };
+    animationFrameRef.current = requestAnimationFrame(animateObject);
+  }, [objectPosition, objectDirection, initialVelocity, mass, maxHeight, resistance, setObjectPosition, setObjectDirection, GRAVITY]);
 
   // Start/pause simulation
-  const startSimulation = () => {
-    if (animationId !== null) {
-      cancelAnimationFrame(animationId);
-      setAnimationId(null);
+  const toggleAnimation = () => {
+    if (isAnimating) {
+      // Pause animation
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
+      }
+      setIsAnimating(false);
     } else {
-      const id = requestAnimationFrame(animateObject);
-      setAnimationId(id);
+      // Start or resume animation
+      setIsAnimating(true);
+      animationFrameRef.current = requestAnimationFrame(animateObject);
     }
   };
 
   // Reset simulation
   const resetSimulation = () => {
-    if (animationId !== null) {
-      cancelAnimationFrame(animationId);
-      setAnimationId(null);
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
     }
     
+    setIsAnimating(false);
     initVisualization();
   };
 
@@ -260,7 +270,7 @@ const Problem2UpwardProjection: React.FC<Problem2Props> = ({
     }
     
     // Update visualization if not animating
-    if (animationId === null) {
+    if (!isAnimating) {
       initVisualization();
     }
   };
@@ -297,7 +307,7 @@ const Problem2UpwardProjection: React.FC<Problem2Props> = ({
     if (energyLoss2Ref.current) energyLoss2Ref.current.textContent = energyLoss.toFixed(2);
     
     // Update visualization if not animating
-    if (animationId === null) {
+    if (!isAnimating) {
       initVisualization();
     }
   };
@@ -310,7 +320,14 @@ const Problem2UpwardProjection: React.FC<Problem2Props> = ({
   // Initialize visualization on mount
   useEffect(() => {
     initVisualization();
-  }, []);
+    
+    // Cleanup animation on unmount
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+    };
+  }, [initVisualization]);
 
   return (
     <div>
@@ -405,9 +422,9 @@ const Problem2UpwardProjection: React.FC<Problem2Props> = ({
       <div className="flex gap-2 mb-4">
         <button 
           className="px-3 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition"
-          onClick={startSimulation}
+          onClick={toggleAnimation}
         >
-          {animationId !== null ? "Pause Simulation" : "Start Simulation"}
+          {isAnimating ? "Pause Simulation" : "Start Simulation"}
         </button>
         <button 
           className="px-3 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
