@@ -44,8 +44,6 @@ The expression b² - 4ac, known as the **discriminant**, reveals important infor
 
   const formattedOverviewContent = `
 <div class="flex flex-col space-y-5">
-  <h2 class="text-xl font-bold text-center text-indigo-700 mb-2">QuadraLearn — Visual Guide to Quadratic Functions</h2>
-  
   <div class="bg-white rounded-lg p-4 shadow-sm">
     <p class="font-medium mb-1">Source:</p>
     <p>KS4 Mathematics Curriculum – Term 2 Algebra Module</p>
