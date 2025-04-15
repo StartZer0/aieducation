@@ -242,13 +242,13 @@ You can interact with the sliders to explore how changing mass, force, and time 
             </Tabs>
           </CardHeader>
           <CardContent className="p-6 h-[680px] overflow-auto">
-            <TabsContent value="easy" forceMount={activeTab === "easy"}>
+            <TabsContent value="easy" forceMount={activeTab === "easy" ? true : false}>
               <TypewriterText text={easyModeContent} speed={0.33} />
             </TabsContent>
-            <TabsContent value="medium" forceMount={activeTab === "medium"}>
+            <TabsContent value="medium" forceMount={activeTab === "medium" ? true : false}>
               <TypewriterText text={mediumModeContent} speed={0.33} />
             </TabsContent>
-            <TabsContent value="advanced" forceMount={activeTab === "advanced"}>
+            <TabsContent value="advanced" forceMount={activeTab === "advanced" ? true : false}>
               <TypewriterText text={advancedModeContent} speed={0.33} />
               <div className="mt-6">
                 <KineticEnergyVisualization />
