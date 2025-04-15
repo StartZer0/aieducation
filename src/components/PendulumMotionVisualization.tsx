@@ -2,7 +2,7 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 
-export const PendulumMotionVisualization: React.FC = () => {
+const PendulumMotionVisualization: React.FC = () => {
   // Refs
   const containerRef = useRef<HTMLDivElement>(null);
   const pendulumPathRef = useRef<HTMLDivElement>(null);
@@ -37,6 +37,11 @@ export const PendulumMotionVisualization: React.FC = () => {
   const angularVelocityRef = useRef(0); // Angular velocity in rad/s
   const lastTimestampRef = useRef<number | null>(null);
   const animationIdRef = useRef<number | null>(null);
+  const percentagesRef = useRef({
+    potentialEnergyPercent: 0,
+    kineticEnergyPercent: 0,
+    totalEnergyPercent: 0
+  });
 
   // Constants
   const GRAVITY = 9.8; // m/s²
@@ -45,7 +50,10 @@ export const PendulumMotionVisualization: React.FC = () => {
   const resetPendulum = useCallback(() => {
     angleRef.current = initialAngle * Math.PI / 180; // Convert to radians
     angularVelocityRef.current = 0;
-    updatePendulum();
+    const percentages = updatePendulum();
+    if (percentages) {
+      percentagesRef.current = percentages;
+    }
   }, [initialAngle]);
 
   // Update pendulum position and energy
@@ -216,7 +224,10 @@ export const PendulumMotionVisualization: React.FC = () => {
     angleRef.current += angularVelocityRef.current * deltaTime;
     
     // Update pendulum position and energy
-    updatePendulum();
+    const percentages = updatePendulum();
+    if (percentages) {
+      percentagesRef.current = percentages;
+    }
     
     // Continue animation if still running
     if (isRunning) {
@@ -232,7 +243,9 @@ export const PendulumMotionVisualization: React.FC = () => {
       if (newRunningState) {
         // Start animation
         lastTimestampRef.current = null;
-        animationIdRef.current = requestAnimationFrame(animate);
+        if (!animationIdRef.current) {
+          animationIdRef.current = requestAnimationFrame(animate);
+        }
       } else {
         // Stop animation
         if (animationIdRef.current) {
@@ -285,11 +298,8 @@ export const PendulumMotionVisualization: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, [initVisualization]);
 
-  // Calculate energy percentages for display bars
-  const percentages = updatePendulum();
-  const potentialEnergyPercent = percentages?.potentialEnergyPercent || 0;
-  const kineticEnergyPercent = percentages?.kineticEnergyPercent || 0;
-  const totalEnergyPercent = percentages?.totalEnergyPercent || 0;
+  // Use ref for percentages instead of recalculating in render
+  const { potentialEnergyPercent, kineticEnergyPercent, totalEnergyPercent } = percentagesRef.current;
 
   return (
     <Card className="w-full shadow-sm">
@@ -443,4 +453,4 @@ export const PendulumMotionVisualization: React.FC = () => {
   );
 };
 
-export default PendulumMotionVisualization;
+export default React.memo(PendulumMotionVisualization);
