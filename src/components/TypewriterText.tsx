@@ -16,6 +16,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const wordsRef = useRef<string[]>([]);
   const currentWordIndexRef = useRef<number>(0);
+  const isInitialRenderRef = useRef<boolean>(true);
   
   // Using useCallback to prevent recreation of this function on each render
   const typeNextWord = useCallback(() => {
@@ -32,18 +33,26 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   }, [speed]);
   
   useEffect(() => {
-    if (!text) return;
-    
     // Reset state when text changes
-    setIsComplete(false);
     setDisplayedText('');
+    setIsComplete(false);
     currentWordIndexRef.current = 0;
     
+    if (!text) return;
+
     // Split text into words
     wordsRef.current = text.split(' ');
     
-    // Start typing animation
-    typeNextWord();
+    // Initial render check to prevent double initialization
+    if (isInitialRenderRef.current) {
+      isInitialRenderRef.current = false;
+      
+      // Start typing animation
+      typeNextWord();
+    } else {
+      // Start typing animation after text change
+      typeNextWord();
+    }
     
     // Cleanup function
     return () => {
@@ -64,4 +73,4 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   );
 };
 
-export default TypewriterText;
+export default React.memo(TypewriterText);

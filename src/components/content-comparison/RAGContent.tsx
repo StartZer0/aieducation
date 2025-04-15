@@ -36,26 +36,19 @@ export const RAGContent = memo(function RAGContent({
             <TabsTrigger value="medium">Medium</TabsTrigger>
             <TabsTrigger value="advanced">Advanced</TabsTrigger>
           </TabsList>
-        
-          <CardContent className="p-6 h-[680px] overflow-auto">
-            <TabsContent value="easy">
-              {activeTab === "easy" && (
-                <TypewriterText text={easyModeContent} />
-              )}
-            </TabsContent>
-            <TabsContent value="medium">
-              {activeTab === "medium" && (
-                <TypewriterText text={mediumModeContent} />
-              )}
-            </TabsContent>
-            <TabsContent value="advanced">
-              {activeTab === "advanced" && (
-                <TypewriterText text={advancedModeContent} />
-              )}
-            </TabsContent>
-          </CardContent>
         </Tabs>
       </CardHeader>
+      <CardContent className="p-6 h-[680px] overflow-auto">
+        {activeTab === "easy" && (
+          <TypewriterText text={easyModeContent} />
+        )}
+        {activeTab === "medium" && (
+          <TypewriterText text={mediumModeContent} />
+        )}
+        {activeTab === "advanced" && (
+          <TypewriterText text={advancedModeContent} />
+        )}
+      </CardContent>
     </Card>
   );
 });

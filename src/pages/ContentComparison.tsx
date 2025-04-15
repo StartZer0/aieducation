@@ -10,6 +10,7 @@ import PendulumMotionVisualization from "@/components/PendulumMotionVisualizatio
 const ContentComparison = memo(function ContentComparison() {
   const [activeTab, setActiveTab] = useState<string>("medium");
   
+  // Using useCallback to prevent function recreation on each render
   const handleTabChange = useCallback((tab: string) => {
     setActiveTab(tab);
   }, []);
