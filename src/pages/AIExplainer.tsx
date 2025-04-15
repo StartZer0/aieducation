@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -208,7 +208,8 @@ The expression b² - 4ac, known as the **discriminant**, reveals important infor
 </div>
 `;
 
-  const learningOutcomesContent = `
+  // First instance of learningOutcomesContent - simplified version
+  const briefLearningOutcomesContent = `
 <div class="flex flex-col space-y-5">
   <div class="text-center mb-4">
     <h2 class="text-xl font-bold text-gray-800">Learning Outcomes and Relevance in A-Levels</h2>
@@ -276,194 +277,8 @@ The expression b² - 4ac, known as the **discriminant**, reveals important infor
 </div>
 `;
 
-  const fullLearningOutcomesContent = `
-<h1>Learning Outcomes and Relevance in A-Levels</h1>
-    
-<div class="concept-box">
-    <h2>Why Quadratic Functions Matter in A-Level Mathematics</h2>
-    
-    <p>Understanding quadratic functions is crucial for A-Level Mathematics success because they form the foundation for many advanced mathematical concepts. These functions appear consistently throughout the curriculum and in examination scenarios, making mastery of their properties essential for achieving high grades.</p>
-    
-    <div class="key-point">
-        <p>Quadratic functions serve as building blocks for more complex mathematical ideas, providing students with fundamental skills in algebraic manipulation, graphical interpretation, and problem-solving that transfer to numerous other areas of the A-Level syllabus.</p>
-    </div>
-    
-    <p>In the A-Level curriculum, students are expected to develop a comprehensive understanding of quadratic functions, including their different forms, properties, and applications. This knowledge is assessed through various examination questions that test both theoretical understanding and practical problem-solving skills.</p>
-    
-    <p>The study of quadratics also builds essential algebraic manipulation skills that transfer to other areas of mathematics. When students master techniques such as completing the square or working with the discriminant, they develop analytical thinking that proves valuable across the entire A-Level curriculum. Understanding transformations of quadratic functions also prepares students for more complex function transformations in advanced topics.</p>
-</div>
-    
-<div class="concept-box">
-    <h2>Core Learning Outcomes</h2>
-    
-    <p>By the end of the A-Level quadratic functions unit, students should be able to:</p>
-    
-    <div class="grid-2">
-        <div class="application-card">
-            <div class="application-title">🔍 Analyze Quadratic Structure</div>
-            <p>Identify and interpret the standard form <span class="highlight">f(x) = ax² + bx + c</span>, vertex form <span class="highlight">f(x) = a(x-h)² + k</span>, and factored form <span class="highlight">f(x) = a(x-r₁)(x-r₂)</span>, converting between them as needed.</p>
-        </div>
-        
-        <div class="application-card">
-            <div class="application-title">📊 Graph Interpretation</div>
-            <p>Sketch quadratic graphs accurately, identifying key features such as the vertex, axis of symmetry, y-intercept, and x-intercepts (roots). Interpret what these features represent in context.</p>
-        </div>
-    </div>
-    
-    <div class="grid-2">
-        <div class="application-card">
-            <div class="application-title">🧮 Solving Techniques</div>
-            <p>Solve quadratic equations using various methods including factoring, completing the square, and the quadratic formula. Apply the discriminant <span class="highlight">Δ = b² - 4ac</span> to analyze the nature of roots.</p>
-        </div>
-        
-        <div class="application-card">
-            <div class="application-title">📈 Modeling Applications</div>
-            <p>Apply quadratic functions to model real-world situations, particularly in physics (projectile motion), optimization problems, and data analysis. Interpret solutions in context.</p>
-        </div>
-    </div>
-    
-    <div class="grid-2">
-        <div class="application-card">
-            <div class="application-title">🔄 Transformations</div>
-            <p>Understand and apply transformations to quadratic functions, including translations, stretches, and reflections. This skill extends to all function types in later units.</p>
-        </div>
-        
-        <div class="application-card">
-            <div class="application-title">🧩 Completing the Square</div>
-            <p>Master the technique of completing the square to rewrite quadratics in vertex form, enabling easier identification of key features and supporting integration with calculus topics.</p>
-        </div>
-    </div>
-</div>
-
-<div class="concept-box">
-    <h2>The Impact of Coefficients</h2>
-    
-    <p>Each coefficient in the standard form <span class="formula">f(x) = ax² + bx + c</span> plays a specific role in determining the shape and position of the parabola:</p>
-    
-    <div class="parameter-box">
-        <div class="parameter">a</div>
-        <div class="effect">
-            <p>Controls how steep or wide the parabola is. The <span class="highlight">sign of a</span> determines whether the parabola opens upward or downward, while the <span class="highlight">magnitude of a</span> affects the steepness. A larger |a| creates a narrower curve, while a smaller |a| creates a wider one.</p>
-        </div>
-    </div>
-    
-    <div class="parameter-box">
-        <div class="parameter">b</div>
-        <div class="effect">
-            <p>Influences the left-right position of the vertex. The coefficient b affects the horizontal shift of the parabola through its relationship with the x-coordinate of the vertex <span class="formula">(-b/2a)</span>. Changing b shifts the axis of symmetry and consequently the entire parabola horizontally.</p>
-        </div>
-    </div>
-    
-    <div class="parameter-box">
-        <div class="parameter">c</div>
-        <div class="effect">
-            <p>Determines the y-intercept (where the parabola crosses the y-axis at the point (0, c)). Changing c shifts the entire parabola up or down without affecting its shape or the x-coordinate of the vertex. This vertical shift changes where the parabola intersects the y-axis and may affect whether or where it crosses the x-axis.</p>
-        </div>
-    </div>
-    
-    <p>Understanding how these coefficients interact provides powerful insights into the behavior of quadratic functions. By analyzing these values, we can predict the shape, orientation, and key points of the parabola without having to plot multiple points.</p>
-    
-    <div class="key-point">
-        <p>When working with quadratic functions in different forms (standard, vertex, or factored), we can extract important information about the function's behavior. The vertex form <span class="formula">f(x) = a(x-h)² + k</span> directly reveals the vertex coordinates (h, k), while the factored form <span class="formula">f(x) = a(x-r₁)(x-r₂)</span> immediately shows the x-intercepts r₁ and r₂.</p>
-    </div>
-</div>
-
-<div class="concept-box">
-    <h2>Applications and Significance</h2>
-    
-    <p>Quadratic functions appear throughout mathematics and are essential for modeling many real-world phenomena. Their distinctive parabolic shape makes them ideal for describing situations involving:</p>
-    
-    <div class="grid-2">
-        <div>
-            <p><span class="highlight">📈 Projectile Motion:</span> Objects thrown or launched follow parabolic paths due to constant gravitational acceleration. The height of an object at time t can be modeled as <span class="formula">h(t) = h₀ + v₀t - ½gt²</span>.</p>
-        </div>
-        <div>
-            <p><span class="highlight">📡 Reflection Properties:</span> Parabolic shapes are used in satellite dishes, telescopes, and flashlights because they can focus parallel rays to a single point (or vice versa).</p>
-        </div>
-    </div>
-    
-    <div class="grid-2">
-        <div>
-            <p><span class="highlight">💰 Optimization Problems:</span> Quadratics help determine maximum profit, minimum cost, or optimal dimensions by finding the vertex of the relevant quadratic model.</p>
-        </div>
-        <div>
-            <p><span class="highlight">🏗️ Architecture and Engineering:</span> Arches, suspension bridges, and certain structural designs incorporate parabolic shapes for their strength and aesthetic properties.</p>
-        </div>
-    </div>
-    
-    <p>The ability to analyze and manipulate quadratic functions provides a foundation for understanding more complex mathematical relationships. As students progress in their mathematical education, the concepts and techniques used with quadratics extend to higher-degree polynomials, rational functions, and calculus applications.</p>
-</div>
-`;
-
-  const learningOutcomesContent = `
-<div class="flex flex-col space-y-5">
-  <div class="text-center mb-4">
-    <h2 class="text-xl font-bold text-gray-800">Learning Outcomes and Relevance in A-Levels</h2>
-  </div>
-
-  <div class="bg-white rounded-lg p-4 shadow-sm">
-    <p class="font-medium mb-1">Source:</p>
-    <p>UK A-Level Mathematics Curriculum — Pure Mathematics Strand</p>
-  </div>
-
-  <div class="bg-white rounded-lg p-4 shadow-sm">
-    <p class="font-medium mb-2">Exam Learning Objective in Quadratic Functions:</p>
-    <ul class="space-y-2 pl-2">
-      <li class="flex items-start">
-        <span class="text-blue-600 mr-2">•</span>
-        <span>Graph quadratic functions and identify their features</span>
-      </li>
-      <li class="flex items-start">
-        <span class="text-blue-600 mr-2">•</span>
-        <span>Solve quadratic equations using factoring, completing the square, and the quadratic formula</span>
-      </li>
-      <li class="flex items-start">
-        <span class="text-blue-600 mr-2">•</span>
-        <span>Interpret and apply the discriminant to classify roots</span>
-      </li>
-      <li class="flex items-start">
-        <span class="text-blue-600 mr-2">•</span>
-        <span>Apply quadratics in real-life modeling: mechanics, economics, and optimization</span>
-      </li>
-      <li class="flex items-start">
-        <span class="text-blue-600 mr-2">•</span>
-        <span>Understand transformations of quadratic graphs and connect them to other functions</span>
-      </li>
-    </ul>
-  </div>
-
-  <div class="bg-white rounded-lg p-4 shadow-sm">
-    <p class="font-medium mb-2">Why This Matters</p>
-    <p class="mb-3">
-      Quadratic functions form a core part of A-Level Mathematics and are essential for understanding more advanced topics.
-      Students learn to graph, transform, and solve quadratics, which builds algebraic fluency and critical thinking.
-    </p>
-    
-    <p class="font-medium mb-2">Real-world applications reinforce relevance:</p>
-    
-    <ul class="space-y-2">
-      <li class="flex items-start">
-        <span class="mr-2">📐</span>
-        <span><strong>In mechanics:</strong> projectile motion and flight calculations</span>
-      </li>
-      <li class="flex items-start">
-        <span class="mr-2">💰</span>
-        <span><strong>In economics:</strong> modeling profit/cost relationships</span>
-      </li>
-      <li class="flex items-start">
-        <span class="mr-2">⚙️</span>
-        <span><strong>In engineering:</strong> structural design of arches and bridges</span>
-      </li>
-    </ul>
-    
-    <p class="mt-3">
-      These skills prepare students for STEM fields and help them see math as a practical, problem-solving tool.
-    </p>
-  </div>
-</div>
-`;
-
-  const fullLearningOutcomesContent = `
+  // First instance of fullLearningOutcomesContent - comprehensive version
+  const detailedLearningOutcomesContent = `
 <h1>Learning Outcomes and Relevance in A-Levels</h1>
     
 <div class="concept-box">
@@ -844,7 +659,7 @@ This is the minimum point of the parabola since a > 0.`
                 title="Learning Outcomes and Relevance in A-Levels"
                 onClick={() => handleCardClick('learningOutcomes')}
                 isLoading={loadingStates.learningOutcomes}
-                content={fullLearningOutcomesContent}
+                content={detailedLearningOutcomesContent}
                 icon={<GraduationCap className="w-6 h-6" />} 
                 delay={0.4}
                 bgColor="#F2FCE2"
@@ -943,7 +758,7 @@ const PlaceholderCard: React.FC<PlaceholderCardProps> = ({
     if (!isLoading && !isExpanded) {
       setIsExpanded(true);
     }
-  }, [isLoading]);
+  }, [isLoading, isExpanded]);
 
   // Handle closing the card
   const handleClose = () => {
