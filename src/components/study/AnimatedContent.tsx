@@ -12,7 +12,7 @@ interface AnimatedContentProps {
 
 export const AnimatedContent: React.FC<AnimatedContentProps> = ({
   content,
-  speed = 10, // Speed increased from 30 to 10 (lower value = faster animation)
+  speed = 5, // Reduced from 10 to 5 for faster animation
   highlightTerms = false,
   visualMode = false,
   animate = true,
