@@ -92,36 +92,71 @@ The expression b² - 4ac, known as the **discriminant**, reveals important infor
 `;
 
   const learningOutcomesContent = `
-# Learning Outcomes and Relevance in A-Levels
+<div class="flex flex-col space-y-5">
+  <div class="text-center mb-4">
+    <h2 class="text-xl font-bold text-gray-800">Learning Outcomes and Relevance in A-Levels</h2>
+  </div>
 
-## Key Learning Objectives:
+  <div class="bg-white rounded-lg p-4 shadow-sm">
+    <p class="font-medium mb-1">Source:</p>
+    <p>UK A-Level Mathematics Curriculum — Pure Mathematics Strand</p>
+  </div>
 
-1. **Graph quadratic functions** and identify their key features (vertex, axis of symmetry, intercepts)
-2. **Solve quadratic equations** using factoring, completing the square, and the quadratic formula
-3. **Analyze the discriminant** to determine the nature and number of roots
-4. Apply quadratics to **solve real-world problems**
+  <div class="bg-white rounded-lg p-4 shadow-sm">
+    <p class="font-medium mb-2">Exam Learning Objective in Quadratic Functions:</p>
+    <ul class="space-y-2 pl-2">
+      <li class="flex items-start">
+        <span class="text-blue-600 mr-2">•</span>
+        <span>Graph quadratic functions and identify their features</span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-blue-600 mr-2">•</span>
+        <span>Solve quadratic equations using factoring, completing the square, and the quadratic formula</span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-blue-600 mr-2">•</span>
+        <span>Interpret and apply the discriminant to classify roots</span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-blue-600 mr-2">•</span>
+        <span>Apply quadratics in real-life modeling: mechanics, economics, and optimization</span>
+      </li>
+      <li class="flex items-start">
+        <span class="text-blue-600 mr-2">•</span>
+        <span>Understand transformations of quadratic graphs and connect them to other functions</span>
+      </li>
+    </ul>
+  </div>
 
-## Importance in A-Level Mathematics:
-
-Quadratic functions form the foundation for many advanced mathematical concepts in the A-Level curriculum. They appear consistently in examinations and are essential for:
-
-* **Calculus**: Finding maximum/minimum values
-* **Mechanics**: Modeling projectile motion
-* **Statistics**: Quadratic regression models
-* **Coordinate Geometry**: Conic sections
-
-## Real-World Applications:
-
-* Engineers use quadratics to model arches and cables in suspension bridges
-* Economists apply them to analyze certain supply and demand relationships
-* Physicists utilize them to describe motion under constant acceleration
-
-## Assessment Focus Areas:
-
-* Graph sketching and transformation questions
-* Finding roots and solving equations
-* Optimization problems (maximum/minimum values)
-* Applications to rates of change and area problems
+  <div class="bg-white rounded-lg p-4 shadow-sm">
+    <p class="font-medium mb-2">Why This Matters</p>
+    <p class="mb-3">
+      Quadratic functions form a core part of A-Level Mathematics and are essential for understanding more advanced topics.
+      Students learn to graph, transform, and solve quadratics, which builds algebraic fluency and critical thinking.
+    </p>
+    
+    <p class="font-medium mb-2">Real-world applications reinforce relevance:</p>
+    
+    <ul class="space-y-2">
+      <li class="flex items-start">
+        <span class="mr-2">📐</span>
+        <span><strong>In mechanics:</strong> projectile motion and flight calculations</span>
+      </li>
+      <li class="flex items-start">
+        <span class="mr-2">💰</span>
+        <span><strong>In economics:</strong> modeling profit/cost relationships</span>
+      </li>
+      <li class="flex items-start">
+        <span class="mr-2">⚙️</span>
+        <span><strong>In engineering:</strong> structural design of arches and bridges</span>
+      </li>
+    </ul>
+    
+    <p class="mt-3">
+      These skills prepare students for STEM fields and help them see math as a practical, problem-solving tool.
+    </p>
+  </div>
+</div>
 `;
 
   const questions = [
@@ -289,6 +324,7 @@ This is the minimum point of the parabola since a > 0.`
                 delay={0.4}
                 bgColor="#F2FCE2"
                 titleColor="#16A34A"
+                isFormatted={true}
               />
               
               <QuestionsCard 
