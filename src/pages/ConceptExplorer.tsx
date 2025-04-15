@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -31,25 +30,17 @@ const ConceptExplorer = () => {
 
 A **quadratic function** is a polynomial function of degree 2, expressed in the standard form f(x) = ax² + bx + c, where a, b, and c are constants, and a must not equal zero. 
 
-## Key Characteristics:
+The graph of every quadratic function forms a distinctive curve called a **parabola**. When the coefficient a is positive, the parabola opens upward creating a U-shape, and the function has a minimum value. Conversely, when a is negative, the parabola opens downward in an inverted U-shape, and the function reaches a maximum value at its highest point. 
 
-* The graph of every quadratic function forms a distinctive curve called a **parabola**
-* When the coefficient a is positive, the parabola opens upward creating a U-shape
-* When a is negative, the parabola opens downward in an inverted U-shape
-* The function has a minimum value when a > 0 and a maximum value when a < 0
+The steepness of the parabola is determined by the absolute value of a. A larger value of |a| creates a narrower, more tightly curved parabola, while a smaller value produces a wider, more gently curved shape. This relationship is important when analyzing how quickly a quadratic function increases or decreases. 
 
-## Important Properties:
+Every parabola has a turning point called the **vertex**, which represents either the minimum or maximum value of the function. For a quadratic in standard form, the vertex occurs at the point (-b/2a, f(-b/2a)). This can also be calculated using the formula (-b/2a, c-b²/4a). The vertex is a crucial feature when sketching graphs or solving optimization problems. 
 
-* **Vertex**: (-b/2a, f(-b/2a)) or (-b/2a, c-b²/4a)
-* **Axis of symmetry**: x = -b/2a
-* **y-intercept**: (0, c)
-* **x-intercepts**: Found by solving ax² + bx + c = 0 using the quadratic formula: x = (-b ± √(b² - 4ac))/2a
-* **Discriminant (b² - 4ac)**:
-  - Positive: two distinct real roots
-  - Zero: one repeated root
-  - Negative: no real roots (parabola doesn't cross x-axis)
+Through the vertex runs a vertical line called the **axis of symmetry**, located at x = -b/2a. This line divides the parabola into two mirror-image halves, highlighting the perfect symmetry of quadratic functions. When we identify the axis of symmetry, we can use it to find corresponding points on either side of the parabola. 
 
-The steepness of the parabola is determined by the absolute value of a. A larger value of |a| creates a narrower parabola, while a smaller value produces a wider shape.
+The **y-intercept** of a quadratic function occurs at the point (0, c), where the parabola crosses the y-axis. The **x-intercepts**, if they exist, are the points where the parabola crosses the x-axis. These can be found by solving the equation ax² + bx + c = 0 using the quadratic formula: x = (-b ± √(b² - 4ac))/2a. 
+
+The expression b² - 4ac, known as the **discriminant**, reveals important information about the nature of these x-intercepts. When the discriminant is positive, the quadratic equation has two distinct real roots, meaning the parabola crosses the x-axis at two different points. When the discriminant equals zero, there is exactly one real root (a repeated root), indicating that the parabola touches the x-axis at precisely one point. When the discriminant is negative, there are no real roots, signifying that the parabola never intersects the x-axis.
 `;
 
   const learningOutcomesContent = `
@@ -241,6 +232,7 @@ This is the minimum point of the parabola since a > 0.`
                 delay={0.2}
                 bgColor="#E8ECF7"
                 titleColor="#2563EB"
+                visualMode={true}
               />
               
               <ContentCard 
@@ -278,9 +270,18 @@ interface ContentCardProps {
   delay: number;
   bgColor: string;
   titleColor: string;
+  visualMode?: boolean;
 }
 
-const ContentCard: React.FC<ContentCardProps> = ({ title, content, icon, delay, bgColor, titleColor }) => {
+const ContentCard: React.FC<ContentCardProps> = ({ 
+  title, 
+  content, 
+  icon, 
+  delay, 
+  bgColor, 
+  titleColor, 
+  visualMode = false 
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -305,7 +306,12 @@ const ContentCard: React.FC<ContentCardProps> = ({ title, content, icon, delay, 
                 {title}
               </h2>
               <div className="prose max-w-none">
-                <TypewriterText markdown={content} speed={20} highlightTerms={true} />
+                <TypewriterText
+                  markdown={content}
+                  speed={20}
+                  highlightTerms={true}
+                  visualMode={visualMode}
+                />
               </div>
               <div className="mt-4 flex justify-center">
                 <Button variant="outline" onClick={() => setIsExpanded(false)}>
@@ -487,7 +493,7 @@ const QuestionsCard: React.FC<QuestionsCardProps> = ({
               <h2 className="text-2xl font-bold mb-2 text-[#F59E0B]">
                 Practice Questions
               </h2>
-              <p className="text-[#333333]">Click to expand</p>
+              <p className="text-[#333333]">Click to explore</p>
               
               <div className="absolute bottom-4 right-4 animate-pulse">
                 <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
