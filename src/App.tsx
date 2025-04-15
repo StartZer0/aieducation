@@ -18,7 +18,7 @@ import Analytics from "./pages/Analytics";
 import AboutMe from "./pages/Architecture";
 import GenericGPT from "./pages/GenericGPT";
 import ContentComparison from "./pages/ContentComparison";
-import QuadraticExplorer from "./pages/QuadraticExplorer";
+import ConceptExplorer from "./pages/QuadraticExplorer";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -105,7 +105,7 @@ const App = () => (
           <Route path="/quadratic-explorer" element={<>
             <Header />
             <main>
-              <QuadraticExplorer />
+              <ConceptExplorer />
             </main>
           </>} />
           {/* GenericGPT route without Header */}

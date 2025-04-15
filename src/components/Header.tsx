@@ -45,7 +45,7 @@ const Header = () => {
     { path: '/explain-to-me', label: 'Exam Paper Solver', icon: <School className="w-5 h-5 mr-2" />, show: true },
     { path: '/essay-analysis', label: 'Essay Feedback', icon: <FileText className="w-5 h-5 mr-2" />, show: true },
     { path: '/content-comparison', label: 'Content Comparison', icon: <BookOpenCheck className="w-5 h-5 mr-2" />, show: true },
-    { path: '/quadratic-explorer', label: 'Quadratic Explorer', icon: <LineChart className="w-5 h-5 mr-2" />, show: true },
+    { path: '/quadratic-explorer', label: 'Concept Explorer', icon: <LineChart className="w-5 h-5 mr-2" />, show: true },
     { path: '/test-chats', label: 'Learning Examples', icon: <Book className="w-5 h-5 mr-2" />, show: false },
     { path: '/test-chats2', label: 'Advanced Examples', icon: <Book className="w-5 h-5 mr-2" />, show: false },
   ];

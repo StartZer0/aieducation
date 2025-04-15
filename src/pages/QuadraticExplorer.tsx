@@ -4,13 +4,26 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
-import { InteractiveFunctionGraph } from '@/components/study/InteractiveFunctionGraph';
-import { MarkdownRenderer } from '@/components/study/MarkdownRenderer';
+import { Input } from '@/components/ui/input';
+import { Check, X } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import InteractiveQuadraticFunctions from '@/components/study/InteractiveQuadraticFunctions';
+import TypewriterText from '@/components/TypewriterText';
 
-const QuadraticExplorer = () => {
+const ConceptExplorer = () => {
   const [showPrompt, setShowPrompt] = useState(true);
   const [prompt, setPrompt] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [userAnswers, setUserAnswers] = useState({
+    q1: '',
+    q2: '',
+    q3: ''
+  });
+  const [showAnswers, setShowAnswers] = useState({
+    q1: false,
+    q2: false,
+    q3: false
+  });
 
   // Content sections
   const overviewContent = `
@@ -43,14 +56,13 @@ The study of quadratics also builds essential algebraic manipulation skills that
 Real-world applications give context to these abstract concepts. Engineers use quadratics to model arches and cables in suspension bridges. Economists apply them to analyze certain supply and demand relationships. Physicists utilize them to describe motion under constant acceleration. These connections help students appreciate the practical significance of mathematical theory.
 `;
 
-  const practiceQuestionsContent = `
-# Practice Exam Questions with Answers
-
-## Question 1
-How would the graph of f(x) = 2x² - 4x + 5 differ from the graph of g(x) = -2x² - 4x + 5?
-
-**Answer:**
-These two functions differ primarily in their orientation and key points:
+  // Sample questions
+  const questions = [
+    {
+      id: 'q1',
+      question: 'How would the graph of f(x) = 2x² - 4x + 5 differ from the graph of g(x) = -2x² - 4x + 5?',
+      correctAnswer: 'orientation',
+      explanation: `These two functions differ primarily in their orientation and key points:
 
 For f(x) = 2x² - 4x + 5:
 - Since a = 2 (positive), this parabola opens upward (U-shape)
@@ -66,13 +78,13 @@ For g(x) = -2x² - 4x + 5:
 - The axis of symmetry is the vertical line x = -1
 - The y-intercept is also at (0, 5)
 - This function has two x-intercepts because the discriminant is positive
-- The range is (-∞, 7], meaning the function never exceeds y = 7
-
-## Question 2
-If you change the value of c in a quadratic function, how does it affect the graph?
-
-**Answer:**
-When you change the value of c in a quadratic function f(x) = ax² + bx + c:
+- The range is (-∞, 7], meaning the function never exceeds y = 7`
+    },
+    {
+      id: 'q2',
+      question: 'If you change the value of c in a quadratic function, how does it affect the graph?',
+      correctAnswer: 'vertical shift',
+      explanation: `When you change the value of c in a quadratic function f(x) = ax² + bx + c:
 The value of c serves as a vertical shift for the entire parabola. Increasing c shifts the parabola upward, while decreasing c shifts it downward.
 
 Importantly, changing c does not affect:
@@ -83,37 +95,25 @@ Importantly, changing c does not affect:
 However, changing c does affect:
 - The y-coordinate of the vertex, which becomes c - b²/(4a)
 - The y-intercept, which is directly at (0, c)
-- The x-intercepts (roots), because solving ax² + bx + c = 0 depends on c
-
-## Question 3
-For the function h(x) = 3x² + 12x + 7, find the coordinates of the vertex, determine the axis of symmetry, calculate any x-intercepts, and state the range of the function.
-
-**Answer:**
-For h(x) = 3x² + 12x + 7, where a = 3, b = 12, and c = 7:
+- The x-intercepts (roots), because solving ax² + bx + c = 0 depends on c`
+    },
+    {
+      id: 'q3',
+      question: 'For the function h(x) = 3x² + 12x + 7, find the coordinates of the vertex.',
+      correctAnswer: '(-2, -5)',
+      explanation: `For h(x) = 3x² + 12x + 7, where a = 3, b = 12, and c = 7:
 
 a) Vertex coordinates:
 - x-coordinate: x = -b/(2a) = -12/(2×3) = -12/6 = -2
 - y-coordinate: h(-2) = 3(-2)² + 12(-2) + 7 = 3(4) - 24 + 7 = 12 - 24 + 7 = -5
-- Therefore, the vertex is at (-2, -5)
+- Therefore, the vertex is at (-2, -5)`
+    }
+  ];
 
-b) Axis of symmetry:
-- The axis of symmetry passes through the vertex, so it's the vertical line x = -2
-
-c) x-intercepts:
-- To find the x-intercepts, solve h(x) = 0, or 3x² + 12x + 7 = 0
-- Using the discriminant: b² - 4ac = 12² - 4(3)(7) = 144 - 84 = 60
-- Since the discriminant is positive, there are two real x-intercepts
-- Using the quadratic formula: x = (-b ± √(b² - 4ac))/(2a) = (-12 ± √60)/(2×3)
-- x = (-12 ± √60)/6 = -2 ± √15/3
-- x ≈ -3.29 and x ≈ -0.71
-
-d) Range:
-- Since a = 3 is positive, the parabola opens upward
-- The minimum value occurs at the vertex, which is -5
-- Therefore, the range is [-5, ∞)
-
-## Questions 4-5 and additional examples are available in the complete practice set.
-`;
+  const checkAnswer = (questionId: string, userAnswer: string, correctAnswer: string) => {
+    // Very simple check - could be made more sophisticated
+    return userAnswer.toLowerCase().includes(correctAnswer.toLowerCase());
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -129,7 +129,7 @@ d) Range:
   };
 
   return (
-    <div className="container max-w-6xl mx-auto pt-24 pb-12 px-4 min-h-screen">
+    <div className="container max-w-6xl mx-auto pt-24 pb-12 px-4 min-h-screen bg-white">
       <AnimatePresence mode="wait">
         {showPrompt ? (
           <motion.div 
@@ -139,20 +139,20 @@ d) Range:
             transition={{ duration: 0.3 }}
             className="max-w-2xl mx-auto mt-12"
           >
-            <h1 className="text-3xl font-bold text-center mb-8">
-              Quadratic Functions Explorer
+            <h1 className="text-3xl font-bold text-center mb-8 text-[#1A1A2E]">
+              Concept Explorer
             </h1>
             
-            <Card className="shadow-lg">
+            <Card className="shadow-sm rounded-lg overflow-hidden border-0">
               <CardContent className="p-6">
                 <form onSubmit={handleSubmit} className="space-y-4">
-                  <label className="block text-lg font-medium">
-                    Enter a specific quadratic function topic you'd like to explore:
+                  <label className="block text-lg font-medium text-[#333333]">
+                    Enter a topic or concept you'd like to explore:
                   </label>
                   
                   <Textarea
-                    placeholder="E.g., 'I want to understand how to find the vertex of a quadratic function' or 'Explain the relationship between the discriminant and the number of roots'"
-                    className="min-h-[120px]"
+                    placeholder="E.g., 'I want to understand quadratic functions' or 'Explain the principles of quantum mechanics'"
+                    className="min-h-[120px] border-gray-200"
                     value={prompt}
                     onChange={(e) => setPrompt(e.target.value)}
                   />
@@ -163,7 +163,7 @@ d) Range:
                       disabled={isLoading}
                       className="w-full bg-blue-600 hover:bg-blue-700"
                     >
-                      {isLoading ? 'Processing...' : 'Explore Quadratic Functions'}
+                      {isLoading ? 'Processing...' : 'Explore Concept'}
                     </Button>
                   </div>
                 </form>
@@ -177,7 +177,7 @@ d) Range:
             transition={{ duration: 0.5 }}
             className="space-y-6"
           >
-            <h1 className="text-3xl font-bold text-center mb-8">
+            <h1 className="text-3xl font-bold text-center mb-8 text-[#1A1A2E]">
               Quadratic Functions in A-Level Mathematics
             </h1>
             
@@ -186,21 +186,29 @@ d) Range:
                 title="Overview of Quadratic Functions" 
                 content={overviewContent} 
                 delay={0.2}
+                bgColor="#E8ECF7"
+                titleColor="#2563EB"
               />
               
               <ContentCard 
                 title="Learning Outcomes and Relevance in A-Levels" 
                 content={learningOutcomesContent} 
                 delay={0.4}
+                bgColor="#F2FCE2"
+                titleColor="#16A34A"
               />
               
-              <ContentCard 
-                title="Practice Exam Questions" 
-                content={practiceQuestionsContent} 
+              <QuestionsCard 
+                questions={questions}
+                userAnswers={userAnswers}
+                setUserAnswers={setUserAnswers}
+                showAnswers={showAnswers}
+                setShowAnswers={setShowAnswers}
+                checkAnswer={checkAnswer}
                 delay={0.6}
               />
               
-              <InteractiveCard delay={0.8} />
+              <VisualizationCard delay={0.8} />
             </div>
           </motion.div>
         )}
@@ -213,9 +221,11 @@ interface ContentCardProps {
   title: string;
   content: string;
   delay: number;
+  bgColor: string;
+  titleColor: string;
 }
 
-const ContentCard: React.FC<ContentCardProps> = ({ title, content, delay }) => {
+const ContentCard: React.FC<ContentCardProps> = ({ title, content, delay, bgColor, titleColor }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -225,11 +235,18 @@ const ContentCard: React.FC<ContentCardProps> = ({ title, content, delay }) => {
       transition={{ duration: 0.5, delay }}
       className="h-full"
     >
-      <Card className="overflow-hidden h-full shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col">
+      <Card 
+        className={cn(
+          "overflow-hidden h-full shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col rounded-lg border-0",
+          !isExpanded && `bg-[${bgColor}]`
+        )}
+        style={{ backgroundColor: !isExpanded ? bgColor : undefined }}
+      >
         <CardContent className="p-0 flex flex-col h-full">
           {isExpanded ? (
             <div className="p-6 overflow-auto flex-grow">
-              <MarkdownRenderer markdown={content} />
+              <h2 className="text-2xl font-bold mb-4 text-[#1A1A2E]">{title}</h2>
+              <TypewriterText markdown={content} speed={20} />
               <div className="mt-4 flex justify-center">
                 <Button variant="outline" onClick={() => setIsExpanded(false)}>
                   Close
@@ -243,8 +260,13 @@ const ContentCard: React.FC<ContentCardProps> = ({ title, content, delay }) => {
               whileHover={{ scale: 1.03 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              <h2 className="text-2xl font-bold mb-4">{title}</h2>
-              <p className="text-muted-foreground">Click to expand</p>
+              <h2 
+                className="text-2xl font-bold mb-4" 
+                style={{ color: titleColor }}
+              >
+                {title}
+              </h2>
+              <p className="text-[#333333]">Click to expand</p>
             </motion.div>
           )}
         </CardContent>
@@ -253,7 +275,134 @@ const ContentCard: React.FC<ContentCardProps> = ({ title, content, delay }) => {
   );
 };
 
-const InteractiveCard: React.FC<{ delay: number }> = ({ delay }) => {
+interface QuestionsCardProps {
+  questions: Array<{
+    id: string;
+    question: string;
+    correctAnswer: string;
+    explanation: string;
+  }>;
+  userAnswers: Record<string, string>;
+  setUserAnswers: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  showAnswers: Record<string, boolean>;
+  setShowAnswers: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+  checkAnswer: (questionId: string, userAnswer: string, correctAnswer: string) => boolean;
+  delay: number;
+}
+
+const QuestionsCard: React.FC<QuestionsCardProps> = ({ 
+  questions, 
+  userAnswers, 
+  setUserAnswers,
+  showAnswers,
+  setShowAnswers,
+  checkAnswer,
+  delay 
+}) => {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleAnswerChange = (questionId: string, value: string) => {
+    setUserAnswers(prev => ({
+      ...prev,
+      [questionId]: value
+    }));
+  };
+
+  const toggleShowAnswer = (questionId: string) => {
+    setShowAnswers(prev => ({
+      ...prev,
+      [questionId]: !prev[questionId]
+    }));
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay }}
+      className="h-full"
+    >
+      <Card 
+        className="overflow-hidden h-full shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col rounded-lg border-0"
+        style={{ backgroundColor: !isExpanded ? "#FEF9E7" : undefined }}
+      >
+        <CardContent className="p-0 flex flex-col h-full">
+          {isExpanded ? (
+            <div className="p-6 overflow-auto flex-grow">
+              <h2 className="text-2xl font-bold mb-4 text-[#1A1A2E]">Practice Exam Questions</h2>
+              <div className="space-y-6">
+                {questions.map((q) => (
+                  <div key={q.id} className="border border-gray-200 rounded-lg p-4 bg-white">
+                    <h3 className="text-lg font-medium mb-3 text-[#1A1A2E]">{q.question}</h3>
+                    <div className="flex flex-col gap-3">
+                      <Input
+                        placeholder="Enter your answer here"
+                        value={userAnswers[q.id] || ''}
+                        onChange={(e) => handleAnswerChange(q.id, e.target.value)}
+                        className="border-gray-200"
+                      />
+                      
+                      <div className="flex justify-between items-center">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => toggleShowAnswer(q.id)}
+                        >
+                          {showAnswers[q.id] ? "Hide Solution" : "Check Answer"}
+                        </Button>
+                        
+                        {userAnswers[q.id] && (
+                          <div className="flex items-center">
+                            {checkAnswer(q.id, userAnswers[q.id], q.correctAnswer) ? (
+                              <div className="flex items-center text-green-500">
+                                <Check className="w-5 h-5 mr-1" />
+                                <span>Correct!</span>
+                              </div>
+                            ) : (
+                              <div className="flex items-center text-red-500">
+                                <X className="w-5 h-5 mr-1" />
+                                <span>Try again</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                      
+                      {showAnswers[q.id] && (
+                        <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                          <TypewriterText markdown={q.explanation} speed={20} />
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-4 flex justify-center">
+                <Button variant="outline" onClick={() => setIsExpanded(false)}>
+                  Close
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <motion.div
+              className="p-6 flex flex-col items-center justify-center h-full text-center cursor-pointer"
+              onClick={() => setIsExpanded(true)}
+              whileHover={{ scale: 1.03 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            >
+              <h2 className="text-2xl font-bold mb-4 text-[#F59E0B]">
+                Practice Exam Questions
+              </h2>
+              <p className="text-[#333333]">Click to expand</p>
+            </motion.div>
+          )}
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+};
+
+const VisualizationCard: React.FC<{ delay: number }> = ({ delay }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
@@ -263,16 +412,19 @@ const InteractiveCard: React.FC<{ delay: number }> = ({ delay }) => {
       transition={{ duration: 0.5, delay }}
       className="h-full"
     >
-      <Card className="overflow-hidden h-full shadow-md hover:shadow-lg transition-shadow duration-300 flex flex-col">
+      <Card 
+        className="overflow-hidden h-full shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col rounded-lg border-0"
+        style={{ backgroundColor: !isExpanded ? "#E5DEFF" : undefined }}
+      >
         <CardContent className="p-0 flex flex-col h-full">
           {isExpanded ? (
             <div className="p-6 overflow-auto flex-grow">
-              <h2 className="text-2xl font-bold mb-4">Interactive Quadratic Function Visualisation</h2>
-              <p className="mb-4">
-                Adjust the parameters below to see how they affect the quadratic function graph.
-                Try changing the values of a, b, and c to understand their impact on the shape and position of the parabola.
+              <h2 className="text-2xl font-bold mb-4 text-[#1A1A2E]">Interactive Visualisation</h2>
+              <p className="mb-4 text-[#333333]">
+                Explore how quadratic functions work by adjusting the parameters below. 
+                See how changing the values affects the shape and position of the parabola.
               </p>
-              <InteractiveFunctionGraph />
+              <InteractiveQuadraticFunctions />
               <div className="mt-4 flex justify-center">
                 <Button variant="outline" onClick={() => setIsExpanded(false)}>
                   Close
@@ -286,8 +438,10 @@ const InteractiveCard: React.FC<{ delay: number }> = ({ delay }) => {
               whileHover={{ scale: 1.03 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              <h2 className="text-2xl font-bold mb-4">Interactive Quadratic Function Visualisation</h2>
-              <p className="text-muted-foreground">Click to explore the interactive graph</p>
+              <h2 className="text-2xl font-bold mb-4 text-[#9333EA]">
+                Interactive Visualisation
+              </h2>
+              <p className="text-[#333333]">Click to explore the interactive elements</p>
             </motion.div>
           )}
         </CardContent>
@@ -296,4 +450,78 @@ const InteractiveCard: React.FC<{ delay: number }> = ({ delay }) => {
   );
 };
 
-export default QuadraticExplorer;
+// Update the TypewriterText component to support markdown rendering
+<lov-write file_path="src/components/TypewriterText.tsx">
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { MarkdownRenderer } from "@/components/study/MarkdownRenderer";
+
+interface TypewriterTextProps {
+  text?: string;
+  markdown?: string;
+  speed?: number; // Words per second
+}
+
+const TypewriterText: React.FC<TypewriterTextProps> = ({ 
+  text, 
+  markdown,
+  speed = 15 // Default speed
+}) => {
+  const content = markdown || text || '';
+  const [displayedText, setDisplayedText] = useState('');
+  const [isComplete, setIsComplete] = useState(false);
+  const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const wordsRef = useRef<string[]>([]);
+  const currentWordIndexRef = useRef<number>(0);
+  const isInitialRenderRef = useRef<boolean>(true);
+  
+  const typeNextWord = useCallback(() => {
+    if (currentWordIndexRef.current < wordsRef.current.length) {
+      const nextWord = wordsRef.current[currentWordIndexRef.current];
+      setDisplayedText(prev => prev + (currentWordIndexRef.current > 0 ? ' ' : '') + nextWord);
+      currentWordIndexRef.current++;
+      
+      typingTimerRef.current = setTimeout(typeNextWord, 1000 / speed);
+    } else {
+      setIsComplete(true);
+    }
+  }, [speed]);
+  
+  useEffect(() => {
+    setDisplayedText('');
+    setIsComplete(false);
+    currentWordIndexRef.current = 0;
+    
+    if (!content) return;
+
+    wordsRef.current = content.split(' ');
+    
+    if (typingTimerRef.current) {
+      clearTimeout(typingTimerRef.current);
+      typingTimerRef.current = null;
+    }
+    
+    typeNextWord();
+    
+    return () => {
+      if (typingTimerRef.current) {
+        clearTimeout(typingTimerRef.current);
+        typingTimerRef.current = null;
+      }
+    };
+  }, [content, typeNextWord]);
+  
+  return (
+    <div className="relative">
+      {markdown ? (
+        <MarkdownRenderer markdown={displayedText} />
+      ) : (
+        <p>{displayedText}</p>
+      )}
+      {!isComplete && (
+        <div className="inline-block w-2 h-4 ml-1 bg-blue-500 animate-pulse" />
+      )}
+    </div>
+  );
+};
+
+export default React.memo(TypewriterText);
