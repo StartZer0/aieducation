@@ -11,6 +11,19 @@ import TypewriterText from '@/components/TypewriterText';
 import { AnimatedContent } from '@/components/study/AnimatedContent';
 import { MarkdownRenderer } from '@/components/study/MarkdownRenderer';
 
+interface QuestionsSectionProps {
+  questions: Array<{
+    id: string;
+    question: string;
+    correctAnswer: string;
+    explanation: string;
+  }>;
+  userAnswers: Record<string, string>;
+  setUserAnswers: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  showAnswers: Record<string, boolean>;
+  setShowAnswers: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
+}
+
 const AIExplainer = () => {
   const [showPrompt, setShowPrompt] = useState(true);
   const [prompt, setPrompt] = useState('');
@@ -741,7 +754,7 @@ const PlaceholderCard: React.FC<PlaceholderCardProps> = ({
   };
 
   useEffect(() => {
-    if (!isLoading && loadingStates => loadingStates[title.toLowerCase().split(' ')[0]] === true) {
+    if (!isLoading && loadingStates[title.toLowerCase().split(' ')[0]] === true) {
       setIsExpanded(true);
     }
   }, [isLoading, title]);
