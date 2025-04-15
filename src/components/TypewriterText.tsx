@@ -63,13 +63,34 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   
   // Function to highlight content for markdown
   const highlightContent = (text: string): string => {
-    let processedText = text;
+    // First, temporarily replace any existing HTML to avoid duplicate processing
+    const tempMarker = "TEMP_MARK_" + Math.random().toString(36).substring(2, 10);
+    const htmlTagPattern = /<[^>]*>/g;
+    
+    // Map to store original HTML tags
+    const htmlTagsMap: {[key: string]: string} = {};
+    let counter = 0;
+    
+    // Replace HTML tags with temporary markers
+    const textWithoutHtml = text.replace(htmlTagPattern, (match) => {
+      const marker = `${tempMarker}_${counter++}`;
+      htmlTagsMap[marker] = match;
+      return marker;
+    });
+    
+    // Now process for highlighting
+    let processedText = textWithoutHtml;
     
     // Replace mathematical terms with highlighted markdown
     Object.entries(mathTerms).forEach(([term, color]) => {
       const escapedTerm = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       const regex = new RegExp(`\\b${escapedTerm}\\b`, 'gi');
       processedText = processedText.replace(regex, `<span style="background-color:${color};color:white;padding:0 4px;border-radius:4px;">$&</span>`);
+    });
+    
+    // Restore original HTML tags
+    Object.entries(htmlTagsMap).forEach(([marker, originalHtml]) => {
+      processedText = processedText.replace(marker, originalHtml);
     });
     
     return processedText;
@@ -513,7 +534,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   return (
     <div className="relative">
       {markdown ? (
-        <MarkdownRenderer markdown={highlightTerms ? highlightContent(displayedText) : displayedText} />
+        <MarkdownRenderer markdown={displayedText} />
       ) : (
         <>
           <div className="prose max-w-none">
