@@ -296,7 +296,7 @@ This is the minimum point of the parabola since a > 0.`
               />
               
               <ContentCard 
-                title="Curriculum Applications" 
+                title="Learning Outcomes and Relevance" 
                 content={learningOutcomesContent}
                 icon={<GraduationCap className="w-6 h-6" />} 
                 delay={0.4}
