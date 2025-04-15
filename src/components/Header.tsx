@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   Menu, X, Book, GraduationCap, BarChart, Calendar, 
   MessageCircle, School, FileText, Play, BookOpen, FileQuestion,
-  User, ChevronLeft
+  User, ChevronLeft, Home
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -35,7 +35,7 @@ const Header = () => {
   }, [location.pathname]);
 
   const navLinks = [
-    { path: '/', label: 'Home', icon: <Book className="w-5 h-5 mr-2" />, show: true },
+    { path: '/', label: 'Home', icon: <Home className="w-5 h-5 mr-2" />, show: true },
     { path: '/about-me', label: 'About Me', icon: <User className="w-5 h-5 mr-2" />, show: true },
     { path: '/dashboard', label: 'My Subjects', icon: <GraduationCap className="w-5 h-5 mr-2" />, show: true },
     { path: '/analytics', label: 'Learning Analytics', icon: <BarChart className="w-5 h-5 mr-2" />, show: true },
@@ -70,22 +70,10 @@ const Header = () => {
           <span className="text-xl font-bold text-gradient">AI+ Education</span>
         </Link>
         
-        <div className="hidden md:flex items-center space-x-3 mx-auto">
-          {isLoggedIn && (
-            mainActions.map((action) => (
-              <Button
-                key={action.label}
-                variant={action.variant}
-                asChild
-                className="shadow-sm hover:shadow-md transition-all"
-              >
-                <Link to={action.path} className="flex items-center gap-2">
-                  {action.icon}
-                  <span>{action.label}</span>
-                </Link>
-              </Button>
-            ))
-          )}
+        {/* Add current page reference */}
+        <div className="hidden md:flex items-center space-x-2 mx-auto text-sm text-muted-foreground">
+          <Home className="w-4 h-4" />
+          <span>Home</span>
         </div>
         
         <div className="relative flex items-center">
