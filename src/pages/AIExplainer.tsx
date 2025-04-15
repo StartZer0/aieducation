@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -40,6 +41,7 @@ interface PlaceholderCardProps {
   useAnimatedContent?: boolean;
   hasCustomContent?: boolean;
   loadingStates: Record<string, boolean>;
+  cardType: 'overview' | 'learningOutcomes' | 'visualization' | 'practiceQuestions';
 }
 
 const AIExplainer = () => {
@@ -58,6 +60,13 @@ const AIExplainer = () => {
   });
   
   const [loadingStates, setLoadingStates] = useState({
+    overview: false,
+    learningOutcomes: false,
+    visualization: false,
+    practiceQuestions: false
+  });
+  
+  const [expandedCards, setExpandedCards] = useState({
     overview: false,
     learningOutcomes: false,
     visualization: false,
@@ -586,16 +595,22 @@ This is the minimum point of the parabola since a > 0.`
   };
 
   const handleCardClick = (cardType: 'overview' | 'learningOutcomes' | 'visualization' | 'practiceQuestions') => {
-    setLoadingStates({
-      ...loadingStates,
+    // Set loading state
+    setLoadingStates(prev => ({
+      ...prev,
       [cardType]: true
-    });
+    }));
 
+    // After 2 seconds, finish loading and expand the card
     setTimeout(() => {
-      setLoadingStates({
-        ...loadingStates,
+      setLoadingStates(prev => ({
+        ...prev,
         [cardType]: false
-      });
+      }));
+      setExpandedCards(prev => ({
+        ...prev,
+        [cardType]: true
+      }));
     }, 2000);
   };
 
@@ -675,6 +690,14 @@ This is the minimum point of the parabola since a > 0.`
                 useAnimatedContent={false}
                 isFormatted={true}
                 loadingStates={loadingStates}
+                cardType="overview"
+                isExpanded={expandedCards.overview}
+                setIsExpanded={(expanded) => {
+                  setExpandedCards(prev => ({
+                    ...prev,
+                    overview: expanded
+                  }));
+                }}
               />
               
               <PlaceholderCard
@@ -690,6 +713,14 @@ This is the minimum point of the parabola since a > 0.`
                 isHtml={true}
                 useAnimatedContent={true}
                 loadingStates={loadingStates}
+                cardType="learningOutcomes"
+                isExpanded={expandedCards.learningOutcomes}
+                setIsExpanded={(expanded) => {
+                  setExpandedCards(prev => ({
+                    ...prev,
+                    learningOutcomes: expanded
+                  }));
+                }}
               />
               
               <PlaceholderCard
@@ -704,6 +735,14 @@ This is the minimum point of the parabola since a > 0.`
                 titleColor="#9333EA"
                 hasCustomContent={true}
                 loadingStates={loadingStates}
+                cardType="visualization"
+                isExpanded={expandedCards.visualization}
+                setIsExpanded={(expanded) => {
+                  setExpandedCards(prev => ({
+                    ...prev,
+                    visualization: expanded
+                  }));
+                }}
               />
               
               <PlaceholderCard
@@ -725,6 +764,14 @@ This is the minimum point of the parabola since a > 0.`
                 titleColor="#F59E0B"
                 hasCustomContent={true}
                 loadingStates={loadingStates}
+                cardType="practiceQuestions"
+                isExpanded={expandedCards.practiceQuestions}
+                setIsExpanded={(expanded) => {
+                  setExpandedCards(prev => ({
+                    ...prev,
+                    practiceQuestions: expanded
+                  }));
+                }}
               />
             </div>
           </motion.div>
@@ -734,7 +781,10 @@ This is the minimum point of the parabola since a > 0.`
   );
 };
 
-const PlaceholderCard: React.FC<PlaceholderCardProps> = ({ 
+const PlaceholderCard: React.FC<PlaceholderCardProps & { 
+  isExpanded: boolean; 
+  setIsExpanded: (expanded: boolean) => void;
+}> = ({ 
   title, 
   onClick, 
   isLoading,
@@ -749,21 +799,16 @@ const PlaceholderCard: React.FC<PlaceholderCardProps> = ({
   isHtml = false,
   useAnimatedContent = false,
   hasCustomContent = false,
-  loadingStates
+  loadingStates,
+  cardType,
+  isExpanded,
+  setIsExpanded
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
   const handleClick = () => {
     if (!isExpanded && !isLoading) {
       onClick();
     }
   };
-
-  useEffect(() => {
-    if (!isLoading && loadingStates[title.toLowerCase().split(' ')[0]] === true) {
-      setIsExpanded(true);
-    }
-  }, [isLoading, title, loadingStates]);
 
   const handleClose = () => {
     setIsExpanded(false);
