@@ -19,6 +19,7 @@ import AboutMe from "./pages/Architecture";
 import GenericGPT from "./pages/GenericGPT";
 import ContentComparison from "./pages/ContentComparison";
 import ConceptExplorer from "./pages/ConceptExplorer";
+import AIExplainer from "./pages/AIExplainer";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -106,6 +107,12 @@ const App = () => (
             <Header />
             <main>
               <ConceptExplorer />
+            </main>
+          </>} />
+          <Route path="/ai-explainer" element={<>
+            <Header />
+            <main>
+              <AIExplainer />
             </main>
           </>} />
           {/* GenericGPT route without Header */}
