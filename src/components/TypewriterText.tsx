@@ -164,7 +164,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     });
   };
   
-  // Define the component inside the render function to avoid JSX namespace issues
+  // Define ParabolaVisual component
   function ParabolaVisual() {
     return (
       <motion.div 
@@ -241,7 +241,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0 }}
           >
-            f(x) = ax² + bx + c, a {'>'} 0
+            f(x) = ax² + bx + c, a &gt; 0
           </motion.div>
 
           <motion.div 
@@ -250,7 +250,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
             animate={{ opacity: 1 }}
             transition={{ delay: 1.0 }}
           >
-            f(x) = ax² + bx + c, a {'<'} 0
+            f(x) = ax² + bx + c, a &lt; 0
           </motion.div>
 
           {/* Axis of symmetry */}
@@ -443,7 +443,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
               </svg>
             </div>
             <div className="bg-blue-100 rounded p-2 text-xs text-center mt-2">
-              <span className="font-semibold">b² - 4ac {'>'} 0</span>
+              <span className="font-semibold">b² - 4ac &gt; 0</span>
               <br />Two distinct real roots
             </div>
           </motion.div>
@@ -492,7 +492,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
               </svg>
             </div>
             <div className="bg-red-100 rounded p-2 text-xs text-center mt-2">
-              <span className="font-semibold">b² - 4ac {'<'} 0</span>
+              <span className="font-semibold">b² - 4ac &lt; 0</span>
               <br />No real roots
             </div>
           </motion.div>
