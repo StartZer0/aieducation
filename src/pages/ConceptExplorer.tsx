@@ -178,12 +178,12 @@ a) Vertex coordinates:
             className="space-y-6"
           >
             <h1 className="text-3xl font-bold text-center mb-8 text-[#1A1A2E]">
-              Quadratic Functions in A-Level Mathematics
+              {prompt ? prompt : 'Concept Explorer'}
             </h1>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <ContentCard 
-                title="Overview of Quadratic Functions" 
+                title="Overview" 
                 content={overviewContent} 
                 delay={0.2}
                 bgColor="#E8ECF7"
@@ -191,7 +191,7 @@ a) Vertex coordinates:
               />
               
               <ContentCard 
-                title="Learning Outcomes and Relevance in A-Levels" 
+                title="Learning Outcomes and Relevance" 
                 content={learningOutcomesContent} 
                 delay={0.4}
                 bgColor="#F2FCE2"
@@ -329,7 +329,7 @@ const QuestionsCard: React.FC<QuestionsCardProps> = ({
         <CardContent className="p-0 flex flex-col h-full">
           {isExpanded ? (
             <div className="p-6 overflow-auto flex-grow">
-              <h2 className="text-2xl font-bold mb-4 text-[#1A1A2E]">Practice Exam Questions</h2>
+              <h2 className="text-2xl font-bold mb-4 text-[#1A1A2E]">Practice Questions</h2>
               <div className="space-y-6">
                 {questions.map((q) => (
                   <div key={q.id} className="border border-gray-200 rounded-lg p-4 bg-white">
@@ -391,7 +391,7 @@ const QuestionsCard: React.FC<QuestionsCardProps> = ({
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <h2 className="text-2xl font-bold mb-4 text-[#F59E0B]">
-                Practice Exam Questions
+                Practice Questions
               </h2>
               <p className="text-[#333333]">Click to expand</p>
             </motion.div>
@@ -419,10 +419,10 @@ const VisualizationCard: React.FC<{ delay: number }> = ({ delay }) => {
         <CardContent className="p-0 flex flex-col h-full">
           {isExpanded ? (
             <div className="p-6 overflow-auto flex-grow">
-              <h2 className="text-2xl font-bold mb-4 text-[#1A1A2E]">Interactive Visualisation</h2>
+              <h2 className="text-2xl font-bold mb-4 text-[#1A1A2E]">Interactive Visualization</h2>
               <p className="mb-4 text-[#333333]">
-                Explore how quadratic functions work by adjusting the parameters below. 
-                See how changing the values affects the shape and position of the parabola.
+                Explore how the concept works through interactive visualization.
+                See how changing parameters affects the behavior and properties.
               </p>
               <InteractiveQuadraticFunctions />
               <div className="mt-4 flex justify-center">
@@ -439,7 +439,7 @@ const VisualizationCard: React.FC<{ delay: number }> = ({ delay }) => {
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <h2 className="text-2xl font-bold mb-4 text-[#9333EA]">
-                Interactive Visualisation
+                Interactive Visualization
               </h2>
               <p className="text-[#333333]">Click to explore the interactive elements</p>
             </motion.div>
