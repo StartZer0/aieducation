@@ -14,3 +14,18 @@
 .energy-bar {
   transition: width 0.3s ease;
 }
+
+.velocity-vector::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: -3px;
+  border-top: 4px solid transparent;
+  border-bottom: 4px solid transparent;
+  border-left: 6px solid #ef4444;
+}
+
+.energy-bar-container {
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
