@@ -1,5 +1,6 @@
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useBouncingBallAnimation } from './hooks/useBouncingBallAnimation';
 
 interface Problem3Props {
   initialHeight: number;
@@ -23,21 +24,13 @@ const Problem3BouncingBall: React.FC<Problem3Props> = ({
   setInitialHeight,
   setReboundHeight,
   setMass,
-  ballPosition,
   setBallPosition,
-  ballDirection,
   setBallDirection,
-  animationId,
-  setAnimationId
 }) => {
   // Constants
   const GRAVITY = 9.81;
   
-  // Animation state
-  const [isAnimating, setIsAnimating] = useState(false);
-  const animationFrameRef = useRef<number | null>(null);
-
-  // Refs
+  // Refs for elements
   const visualization3Ref = useRef<HTMLDivElement>(null);
   const ball3Ref = useRef<HTMLDivElement>(null);
   const table3Ref = useRef<HTMLDivElement>(null);
@@ -54,197 +47,44 @@ const Problem3BouncingBall: React.FC<Problem3Props> = ({
   const energyGained3cRef = useRef<HTMLSpanElement>(null);
   const reboundVelocity3Ref = useRef<HTMLSpanElement>(null);
 
-  // Initialize visualization
-  const initVisualization = useCallback(() => {
-    if (!visualization3Ref.current || !ball3Ref.current || !table3Ref.current || 
-        !heightMarker3Ref.current || !heightLabel3Ref.current || !velocityVector3Ref.current || 
-        !potentialEnergy3Ref.current || !kineticEnergy3Ref.current || 
-        !lostEnergy3Ref.current || !totalEnergy3Ref.current) return;
-    
-    const visHeight = visualization3Ref.current.clientHeight;
-    const visWidth = visualization3Ref.current.clientWidth;
-    
-    // Position elements
-    const tableY = visHeight - 50;
-    table3Ref.current.style.top = tableY + 'px';
-    
-    // Initial ball position
-    const pixelsPerMeter = (tableY - 50) / Math.max(initialHeight, reboundHeight);
-    const initialY = tableY - initialHeight * pixelsPerMeter;
-    
-    ball3Ref.current.style.top = initialY + 'px';
-    ball3Ref.current.style.left = (visWidth / 2 - 10) + 'px';
-    
-    // Height marker
-    heightMarker3Ref.current.style.left = (visWidth / 2 - 50) + 'px';
-    heightMarker3Ref.current.style.top = initialY + 'px';
-    heightMarker3Ref.current.style.height = (tableY - initialY) + 'px';
-    
-    // Height label
-    heightLabel3Ref.current.style.left = (visWidth / 2 - 90) + 'px';
-    heightLabel3Ref.current.style.top = (initialY + (tableY - initialY) / 2) + 'px';
-    heightLabel3Ref.current.textContent = `h = ${initialHeight.toFixed(1)} m`;
-    
-    // Velocity vector - initially hidden
-    velocityVector3Ref.current.style.opacity = '0';
-    
-    // Calculate energy values
-    const initialPE = mass * GRAVITY * initialHeight;
-    const impactKE = initialPE; // Conservation of energy
-    const reboundPE = mass * GRAVITY * reboundHeight;
-    const energyLoss = initialPE - reboundPE;
-    
-    // Calculate velocities
-    const impactVelocity = Math.sqrt(2 * GRAVITY * initialHeight);
-    const reboundVelocity = Math.sqrt(2 * GRAVITY * reboundHeight);
-    
-    // Update energy bars
-    totalEnergy3Ref.current.style.width = '100%';
-    potentialEnergy3Ref.current.style.width = '100%';
-    kineticEnergy3Ref.current.style.width = '0%';
-    lostEnergy3Ref.current.style.width = '0%';
-    
-    // Update results
-    if (energyLost3aRef.current) energyLost3aRef.current.textContent = (initialPE - reboundPE).toFixed(4);
-    if (kineticBeforeImpact3Ref.current) kineticBeforeImpact3Ref.current.textContent = impactKE.toFixed(4);
-    if (velocityBeforeImpact3Ref.current) velocityBeforeImpact3Ref.current.textContent = impactVelocity.toFixed(2);
-    if (energyGained3cRef.current) energyGained3cRef.current.textContent = reboundPE.toFixed(4);
-    if (reboundVelocity3Ref.current) reboundVelocity3Ref.current.textContent = reboundVelocity.toFixed(2);
-    
-    setBallPosition(0);
-    setBallDirection(1);
-  }, [initialHeight, reboundHeight, mass, setBallPosition, setBallDirection, GRAVITY]);
+  // Use the custom hook for animation
+  const {
+    ballPosition,
+    ballDirection,
+    isAnimating,
+    toggleAnimation,
+    resetAnimation,
+    initVisualization,
+    cleanup
+  } = useBouncingBallAnimation({
+    initialHeight,
+    reboundHeight,
+    mass,
+    gravity: GRAVITY,
+    ballRef: ball3Ref,
+    tableRef: table3Ref,
+    heightMarkerRef: heightMarker3Ref,
+    heightLabelRef: heightLabel3Ref,
+    velocityVectorRef: velocityVector3Ref,
+    potentialEnergyRef: potentialEnergy3Ref,
+    kineticEnergyRef: kineticEnergy3Ref,
+    lostEnergyRef: lostEnergy3Ref,
+    visualizationRef: visualization3Ref,
+    energyLostRef: energyLost3aRef,
+    kineticBeforeImpactRef: kineticBeforeImpact3Ref,
+    velocityBeforeImpactRef: velocityBeforeImpact3Ref,
+    energyGainedRef: energyGained3cRef,
+    reboundVelocityRef: reboundVelocity3Ref
+  });
 
-  // Animate ball
-  const animateBall = useCallback(() => {
-    if (!ball3Ref.current || !velocityVector3Ref.current || !potentialEnergy3Ref.current || 
-        !kineticEnergy3Ref.current || !lostEnergy3Ref.current || !visualization3Ref.current || 
-        !heightMarker3Ref.current || !heightLabel3Ref.current) {
-      return;
-    }
-    
-    if (ballPosition >= 3) {
-      // Animation complete
-      cancelAnimationFrame(animationFrameRef.current!);
-      animationFrameRef.current = null;
-      setIsAnimating(false);
-      return;
-    }
-    
-    // Next frame - using a small fixed increment for smooth animation
-    const newPos = ballPosition + 0.01;
-    
-    // Handle direction changes
-    let newDirection = ballDirection;
-    if (newPos >= 1 && newPos < 1.05 && ballDirection === 1) {
-      // Impact
-      newDirection = -1; // Change direction to up
-    } else if (newPos >= 2 && ballDirection === -1) {
-      // Peak of rebound
-      newDirection = 1; // Change direction to down
-    }
-    
-    // Calculate current height
-    let currentHeight;
-    if (newPos < 1) {
-      // Initial fall
-      currentHeight = initialHeight * (1 - newPos);
-    } else if (newPos < 2) {
-      // Rebound up
-      currentHeight = reboundHeight * (newPos - 1);
-    } else {
-      // Rebound down
-      currentHeight = reboundHeight * (3 - newPos);
-    }
-    
-    // Calculate visual position
-    const visHeight = visualization3Ref.current.clientHeight;
-    const tableY = visHeight - 50;
-    const pixelsPerMeter = (tableY - 50) / Math.max(initialHeight, reboundHeight);
-    const ballY = tableY - currentHeight * pixelsPerMeter;
-    
-    // Update ball position
-    ball3Ref.current.style.top = ballY + 'px';
-    
-    // Update height marker
-    heightMarker3Ref.current.style.top = ballY + 'px';
-    heightMarker3Ref.current.style.height = (tableY - ballY) + 'px';
-    heightLabel3Ref.current.style.top = (ballY + (tableY - ballY) / 2) + 'px';
-    heightLabel3Ref.current.textContent = `h = ${currentHeight.toFixed(1)} m`;
-    
-    // Calculate current energy values
-    const initialPE = mass * GRAVITY * initialHeight;
-    const currentPE = mass * GRAVITY * currentHeight;
-    
-    // Energy values depend on which phase we're in
-    let energyLoss = 0;
-    let availableEnergy = initialPE;
-    
-    if (newPos >= 1) {
-      // After impact, some energy is lost
-      energyLoss = initialPE - mass * GRAVITY * reboundHeight;
-      availableEnergy = initialPE - energyLoss;
-    }
-    
-    const kinetic = availableEnergy - currentPE;
-    
-    // Calculate current velocity based on kinetic energy
-    const currentVelocity = Math.sqrt(2 * kinetic / mass) * (newDirection === 1 ? 1 : -1);
-    
-    // Update energy bars
-    potentialEnergy3Ref.current.style.width = (currentPE / initialPE * 100) + '%';
-    kineticEnergy3Ref.current.style.width = (kinetic / initialPE * 100) + '%';
-    lostEnergy3Ref.current.style.width = (energyLoss / initialPE * 100) + '%';
-    
-    // Update velocity vector
-    const absVelocity = Math.abs(currentVelocity);
-    const maxVelocity = Math.sqrt(2 * GRAVITY * initialHeight);
-    const vectorLength = (absVelocity / maxVelocity) * 40;
-    
-    if (absVelocity > 0.5) {
-      velocityVector3Ref.current.style.opacity = '1';
-      velocityVector3Ref.current.style.width = vectorLength + 'px';
-      velocityVector3Ref.current.style.left = ball3Ref.current.offsetLeft + 20 + 'px';
-      velocityVector3Ref.current.style.top = ballY + 'px';
-      velocityVector3Ref.current.style.transform = `rotate(${newDirection === 1 ? 90 : -90}deg)`;
-    } else {
-      velocityVector3Ref.current.style.opacity = '0';
-    }
-    
-    // Update state for next frame
-    setBallPosition(newPos);
-    setBallDirection(newDirection);
-    
-    // Continue animation
-    animationFrameRef.current = requestAnimationFrame(animateBall);
-  }, [ballPosition, ballDirection, initialHeight, reboundHeight, mass, setBallPosition, setBallDirection, GRAVITY]);
+  // Update parent component state
+  useEffect(() => {
+    setBallPosition(ballPosition);
+  }, [ballPosition, setBallPosition]);
 
-  // Start/pause simulation
-  const toggleAnimation = () => {
-    if (isAnimating) {
-      // Pause animation
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-        animationFrameRef.current = null;
-      }
-      setIsAnimating(false);
-    } else {
-      // Start or resume animation
-      setIsAnimating(true);
-      animationFrameRef.current = requestAnimationFrame(animateBall);
-    }
-  };
-
-  // Reset simulation
-  const resetSimulation = () => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
-    
-    setIsAnimating(false);
-    initVisualization();
-  };
+  useEffect(() => {
+    setBallDirection(ballDirection);
+  }, [ballDirection, setBallDirection]);
 
   // Event handlers for inputs
   const handleInitialHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -320,12 +160,8 @@ const Problem3BouncingBall: React.FC<Problem3Props> = ({
     initVisualization();
     
     // Cleanup animation on unmount
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [initVisualization]);
+    return cleanup;
+  }, [initVisualization, cleanup]);
 
   return (
     <div>
@@ -414,7 +250,7 @@ const Problem3BouncingBall: React.FC<Problem3Props> = ({
         </button>
         <button 
           className="px-3 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
-          onClick={resetSimulation}
+          onClick={resetAnimation}
         >
           Reset
         </button>
