@@ -17,6 +17,7 @@ import AITutor from "./pages/AITutor";
 import Analytics from "./pages/Analytics";
 import AboutMe from "./pages/Architecture";
 import GenericGPT from "./pages/GenericGPT";
+import ContentComparison from "./pages/ContentComparison";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -92,6 +93,12 @@ const App = () => (
             <Header />
             <main>
               <AboutMe />
+            </main>
+          </>} />
+          <Route path="/content-comparison" element={<>
+            <Header />
+            <main>
+              <ContentComparison />
             </main>
           </>} />
           {/* GenericGPT route without Header */}
