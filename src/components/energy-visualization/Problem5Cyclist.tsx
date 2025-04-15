@@ -5,6 +5,9 @@ import { Slider } from '@/components/ui/slider';
 import { useCyclistAnimation } from './hooks/useCyclistAnimation';
 import { Bike } from 'lucide-react';
 
+// Define the gravity constant
+const GRAVITY = 9.81; // m/s²
+
 interface Problem5CyclistProps {
   mass: number;
   height: number;
