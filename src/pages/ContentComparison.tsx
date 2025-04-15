@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -213,7 +212,6 @@ You can interact with the sliders to explore how changing mass, force, and time 
       </h2>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* LLM Generated Content */}
         <Card className="h-[800px] overflow-hidden shadow-lg">
           <CardHeader className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
             <CardTitle className="text-center">LLM Generated Content</CardTitle>
@@ -223,7 +221,6 @@ You can interact with the sliders to explore how changing mass, force, and time 
           </CardContent>
         </Card>
         
-        {/* RAG System Content */}
         <Card className="h-[800px] overflow-hidden shadow-lg">
           <CardHeader className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
             <CardTitle className="text-center flex items-center justify-center">
@@ -242,13 +239,22 @@ You can interact with the sliders to explore how changing mass, force, and time 
             </Tabs>
           </CardHeader>
           <CardContent className="p-6 h-[680px] overflow-auto">
-            <TabsContent value="easy" forceMount={activeTab === "easy" ? true : false}>
+            <TabsContent 
+              value="easy" 
+              forceMount={activeTab === "easy" as const ? true : undefined}
+            >
               <TypewriterText text={easyModeContent} speed={0.33} />
             </TabsContent>
-            <TabsContent value="medium" forceMount={activeTab === "medium" ? true : false}>
+            <TabsContent 
+              value="medium" 
+              forceMount={activeTab === "medium" as const ? true : undefined}
+            >
               <TypewriterText text={mediumModeContent} speed={0.33} />
             </TabsContent>
-            <TabsContent value="advanced" forceMount={activeTab === "advanced" ? true : false}>
+            <TabsContent 
+              value="advanced" 
+              forceMount={activeTab === "advanced" as const ? true : undefined}
+            >
               <TypewriterText text={advancedModeContent} speed={0.33} />
               <div className="mt-6">
                 <KineticEnergyVisualization />
