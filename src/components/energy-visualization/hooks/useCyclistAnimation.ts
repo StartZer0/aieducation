@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-// Gravity constant
+// Define the gravity constant
 const GRAVITY = 9.81; // m/s²
 
 interface CyclistAnimationProps {
