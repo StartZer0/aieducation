@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -27,7 +26,6 @@ const AIExplainer = () => {
     q3: false
   });
   
-  // New state to track loading state for each card
   const [loadingStates, setLoadingStates] = useState({
     overview: false,
     learningOutcomes: false,
@@ -208,8 +206,7 @@ The expression b² - 4ac, known as the **discriminant**, reveals important infor
 </div>
 `;
 
-  // First instance of learningOutcomesContent - simplified version
-  const briefLearningOutcomesContent = `
+  const simpleLearningOutcomesContent = `
 <div class="flex flex-col space-y-5">
   <div class="text-center mb-4">
     <h2 class="text-xl font-bold text-gray-800">Learning Outcomes and Relevance in A-Levels</h2>
@@ -277,8 +274,7 @@ The expression b² - 4ac, known as the **discriminant**, reveals important infor
 </div>
 `;
 
-  // First instance of fullLearningOutcomesContent - comprehensive version
-  const detailedLearningOutcomesContent = `
+  const detailedOutcomesContent = `
 <h1>Learning Outcomes and Relevance in A-Levels</h1>
     
 <div class="concept-box">
@@ -558,15 +554,12 @@ This is the minimum point of the parabola since a > 0.`
     }, 1500);
   };
 
-  // Function to handle clicking on a card
   const handleCardClick = (cardType: 'overview' | 'learningOutcomes' | 'visualization' | 'practiceQuestions') => {
-    // Set the specific card to loading state
     setLoadingStates({
       ...loadingStates,
       [cardType]: true
     });
 
-    // After 2 seconds, toggle the expanded state and remove loading
     setTimeout(() => {
       setLoadingStates({
         ...loadingStates,
@@ -637,9 +630,7 @@ This is the minimum point of the parabola since a > 0.`
               </div>
             </div>
             
-            {/* Modified layout to match the screenshot */}
             <div className="grid grid-cols-1 gap-6">
-              {/* Overview Card */}
               <PlaceholderCard
                 title="Overview of Quadratic Functions"
                 onClick={() => handleCardClick('overview')}
@@ -654,12 +645,11 @@ This is the minimum point of the parabola since a > 0.`
                 isFormatted={true}
               />
               
-              {/* Learning Outcomes Card */}
               <PlaceholderCard
                 title="Learning Outcomes and Relevance in A-Levels"
                 onClick={() => handleCardClick('learningOutcomes')}
                 isLoading={loadingStates.learningOutcomes}
-                content={detailedLearningOutcomesContent}
+                content={detailedOutcomesContent}
                 icon={<GraduationCap className="w-6 h-6" />} 
                 delay={0.4}
                 bgColor="#F2FCE2"
@@ -669,7 +659,6 @@ This is the minimum point of the parabola since a > 0.`
                 useAnimatedContent={true}
               />
               
-              {/* Interactive Visualization Card */}
               <PlaceholderCard
                 title="Interactive Quadratic Function Visualisation"
                 onClick={() => handleCardClick('visualization')}
@@ -683,7 +672,6 @@ This is the minimum point of the parabola since a > 0.`
                 hasCustomContent={true}
               />
               
-              {/* Practice Questions Card */}
               <PlaceholderCard
                 title="Practice Exam Questions"
                 onClick={() => handleCardClick('practiceQuestions')}
@@ -749,18 +737,15 @@ const PlaceholderCard: React.FC<PlaceholderCardProps> = ({
   const handleClick = () => {
     if (!isExpanded && !isLoading) {
       onClick();
-      // Expansion will be handled after loading is complete
     }
   };
 
-  // Effect to expand the card after loading state is complete
   useEffect(() => {
-    if (!isLoading && !isExpanded) {
+    if (!isLoading && loadingStates => loadingStates[title.toLowerCase().split(' ')[0]] === true) {
       setIsExpanded(true);
     }
-  }, [isLoading, isExpanded]);
+  }, [isLoading, title]);
 
-  // Handle closing the card
   const handleClose = () => {
     setIsExpanded(false);
   };
@@ -874,20 +859,6 @@ const PlaceholderCard: React.FC<PlaceholderCardProps> = ({
     </motion.div>
   );
 };
-
-// Questions section component
-interface QuestionsSectionProps {
-  questions: Array<{
-    id: string;
-    question: string;
-    correctAnswer: string;
-    explanation: string;
-  }>;
-  userAnswers: Record<string, string>;
-  setUserAnswers: React.Dispatch<React.SetStateAction<Record<string, string>>>;
-  showAnswers: Record<string, boolean>;
-  setShowAnswers: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
-}
 
 const QuestionsSection: React.FC<QuestionsSectionProps> = ({
   questions,

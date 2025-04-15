@@ -4,7 +4,7 @@ import { MarkdownRenderer } from "./MarkdownRenderer";
 import { Loader2, Bot } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { AnimatedContent } from "./AnimatedContent"; // Make sure we're importing AnimatedContent
+import { AnimatedContent } from "./AnimatedContent";
 
 interface AIGeneratedContentProps {
   content: string | null;
