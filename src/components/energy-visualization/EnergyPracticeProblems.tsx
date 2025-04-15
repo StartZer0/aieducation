@@ -5,6 +5,7 @@ import './energy-visualization.css';
 import Problem1HighDiver from './Problem1HighDiver';
 import Problem2UpwardProjection from './Problem2UpwardProjection';
 import Problem3BouncingBall from './Problem3BouncingBall';
+import Problem4FairgroundVehicle from './Problem4FairgroundVehicle';
 
 const EnergyPracticeProblems: React.FC = () => {
   // Tabs state
@@ -32,6 +33,15 @@ const EnergyPracticeProblems: React.FC = () => {
   const [ballPosition3, setBallPosition3] = useState<number>(0);
   const [ballDirection3, setBallDirection3] = useState<number>(1);
   const [animationId3, setAnimationId3] = useState<number | null>(null);
+  
+  // Problem 4 states
+  const [mass4, setMass4] = useState<number>(1200);
+  const [initialSpeed4, setInitialSpeed4] = useState<number>(2);
+  const [height4, setHeight4] = useState<number>(50);
+  const [distance4, setDistance4] = useState<number>(75);
+  const [finalSpeed4, setFinalSpeed4] = useState<number>(28);
+  const [vehiclePosition4, setVehiclePosition4] = useState<number>(0);
+  const [animationId4, setAnimationId4] = useState<number | null>(null);
 
   // Tab switching functionality
   const handleTabClick = (tab: string) => {
@@ -44,8 +54,9 @@ const EnergyPracticeProblems: React.FC = () => {
       if (animationId1) cancelAnimationFrame(animationId1);
       if (animationId2) cancelAnimationFrame(animationId2);
       if (animationId3) cancelAnimationFrame(animationId3);
+      if (animationId4) cancelAnimationFrame(animationId4);
     };
-  }, [animationId1, animationId2, animationId3]);
+  }, [animationId1, animationId2, animationId3, animationId4]);
   
   return (
     <Card className="w-full shadow-sm">
@@ -55,7 +66,7 @@ const EnergyPracticeProblems: React.FC = () => {
             <h1 className="text-xl font-bold">Kinetic & Potential Energy Practice Problems</h1>
           </header>
           
-          <div className="tabs flex bg-blue-700">
+          <div className="tabs flex bg-blue-700 flex-wrap">
             <div 
               className={`flex-1 p-3 text-white text-center cursor-pointer border-b-3 transition-all ${activeTab === "problem1" ? "bg-blue-800 border-b-2 border-blue-400" : ""}`}
               onClick={() => handleTabClick("problem1")}
@@ -73,6 +84,12 @@ const EnergyPracticeProblems: React.FC = () => {
               onClick={() => handleTabClick("problem3")}
             >
               Problem 3: Bouncing Ball
+            </div>
+            <div 
+              className={`flex-1 p-3 text-white text-center cursor-pointer border-b-3 transition-all ${activeTab === "problem4" ? "bg-blue-800 border-b-2 border-blue-400" : ""}`}
+              onClick={() => handleTabClick("problem4")}
+            >
+              Problem 4: Fairground Vehicle
             </div>
           </div>
           
@@ -125,6 +142,26 @@ const EnergyPracticeProblems: React.FC = () => {
               setBallDirection={setBallDirection3}
               animationId={animationId3}
               setAnimationId={setAnimationId3}
+            />
+          </div>
+          
+          {/* Problem 4: Fairground Vehicle */}
+          <div className={`p-4 ${activeTab === "problem4" ? "block" : "hidden"}`}>
+            <Problem4FairgroundVehicle 
+              mass={mass4}
+              initialSpeed={initialSpeed4}
+              height={height4}
+              distance={distance4}
+              finalSpeed={finalSpeed4}
+              setMass={setMass4}
+              setInitialSpeed={setInitialSpeed4}
+              setHeight={setHeight4}
+              setDistance={setDistance4}
+              setFinalSpeed={setFinalSpeed4}
+              vehiclePosition={vehiclePosition4}
+              setVehiclePosition={setVehiclePosition4}
+              animationId={animationId4}
+              setAnimationId={setAnimationId4}
             />
           </div>
         </div>
