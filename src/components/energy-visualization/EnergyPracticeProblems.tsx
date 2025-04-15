@@ -6,6 +6,7 @@ import Problem1HighDiver from './Problem1HighDiver';
 import Problem2UpwardProjection from './Problem2UpwardProjection';
 import Problem3BouncingBall from './Problem3BouncingBall';
 import Problem4FairgroundVehicle from './Problem4FairgroundVehicle';
+import Problem5Cyclist from './Problem5Cyclist';
 
 const EnergyPracticeProblems: React.FC = () => {
   // Tabs state
@@ -42,6 +43,14 @@ const EnergyPracticeProblems: React.FC = () => {
   const [finalSpeed4, setFinalSpeed4] = useState<number>(28);
   const [vehiclePosition4, setVehiclePosition4] = useState<number>(0);
   const [animationId4, setAnimationId4] = useState<number | null>(null);
+  
+  // Problem 5 states - Cyclist
+  const [mass5, setMass5] = useState<number>(80);
+  const [height5, setHeight5] = useState<number>(20);
+  const [distance5, setDistance5] = useState<number>(500);
+  const [finalSpeed5, setFinalSpeed5] = useState<number>(12);
+  const [cyclistPosition5, setCyclistPosition5] = useState<number>(0);
+  const [animationId5, setAnimationId5] = useState<number | null>(null);
 
   // Tab switching functionality
   const handleTabClick = (tab: string) => {
@@ -55,8 +64,9 @@ const EnergyPracticeProblems: React.FC = () => {
       if (animationId2) cancelAnimationFrame(animationId2);
       if (animationId3) cancelAnimationFrame(animationId3);
       if (animationId4) cancelAnimationFrame(animationId4);
+      if (animationId5) cancelAnimationFrame(animationId5);
     };
-  }, [animationId1, animationId2, animationId3, animationId4]);
+  }, [animationId1, animationId2, animationId3, animationId4, animationId5]);
   
   return (
     <Card className="w-full shadow-sm">
@@ -90,6 +100,12 @@ const EnergyPracticeProblems: React.FC = () => {
               onClick={() => handleTabClick("problem4")}
             >
               Problem 4: Fairground Vehicle
+            </div>
+            <div 
+              className={`flex-1 p-3 text-white text-center cursor-pointer border-b-3 transition-all ${activeTab === "problem5" ? "bg-blue-800 border-b-2 border-blue-400" : ""}`}
+              onClick={() => handleTabClick("problem5")}
+            >
+              Problem 5: Cyclist
             </div>
           </div>
           
@@ -162,6 +178,24 @@ const EnergyPracticeProblems: React.FC = () => {
               setVehiclePosition={setVehiclePosition4}
               animationId={animationId4}
               setAnimationId={setAnimationId4}
+            />
+          </div>
+          
+          {/* Problem 5: Cyclist */}
+          <div className={`p-4 ${activeTab === "problem5" ? "block" : "hidden"}`}>
+            <Problem5Cyclist 
+              mass={mass5}
+              height={height5}
+              distance={distance5}
+              finalSpeed={finalSpeed5}
+              setMass={setMass5}
+              setHeight={setHeight5}
+              setDistance={setDistance5}
+              setFinalSpeed={setFinalSpeed5}
+              cyclistPosition={cyclistPosition5}
+              setCyclistPosition={setCyclistPosition5}
+              animationId={animationId5}
+              setAnimationId={setAnimationId5}
             />
           </div>
         </div>
