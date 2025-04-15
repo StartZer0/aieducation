@@ -176,11 +176,10 @@ export const KineticEnergyVisualization: React.FC = () => {
   
   // Toggle animation
   const toggleAnimation = useCallback(() => {
-    const nextIsPlaying = !isPlayingRef.current;
-    isPlayingRef.current = nextIsPlaying;
-    setIsPlaying(nextIsPlaying);
+    isPlayingRef.current = !isPlayingRef.current;
+    setIsPlaying(isPlayingRef.current);
     
-    if (nextIsPlaying) {
+    if (isPlayingRef.current) {
       // Start animation
       startTimeRef.current = null;
       if (animationRef.current !== null) {
@@ -364,3 +363,4 @@ export const KineticEnergyVisualization: React.FC = () => {
     </Card>
   );
 };
+
