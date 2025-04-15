@@ -32,6 +32,28 @@ export const useCyclistAnimation = ({
   const workAgainstFriction = potentialEnergyLoss - finalKineticEnergy;
   const avgResistiveForce = workAgainstFriction / distance;
 
+  // Calculate current values based on position
+  const getCurrentValues = useCallback((position: number) => {
+    // Calculate potential energy lost so far
+    const currentPotentialEnergyLoss = mass * GRAVITY * height * position;
+    
+    // Calculate work against friction so far
+    const currentWorkAgainstFriction = workAgainstFriction * position;
+    
+    // Calculate available energy for kinetic energy
+    const currentAvailableEnergy = currentPotentialEnergyLoss - currentWorkAgainstFriction;
+    
+    // Calculate current velocity
+    const currentVelocity = Math.sqrt(2 * currentAvailableEnergy / mass);
+    
+    return {
+      potentialEnergyLost: currentPotentialEnergyLoss,
+      workAgainstFriction: currentWorkAgainstFriction,
+      kineticEnergy: currentAvailableEnergy,
+      velocity: currentVelocity
+    };
+  }, [mass, height, workAgainstFriction]);
+
   const animateCyclist = useCallback((timestamp: number) => {
     // Initialize timestamp on first frame
     if (!lastTimestampRef.current) {
@@ -48,14 +70,16 @@ export const useCyclistAnimation = ({
     let currentPos = positionRef.current;
 
     // Calculate new position based on delta time
-    const speedFactor = 0.4; // Control animation speed
+    // Adjust speed factor for smoother animation
+    const speedFactor = 0.3; // Slower for smoother animation
     const newPos = Math.min(currentPos + speedFactor * deltaTime, 1); // Cap at 1
     
     // Update ref with new value
     positionRef.current = newPos;
 
-    // Update state for UI updates (less frequently than animation frames)
-    if (Math.abs(newPos - cyclistPosition) > 0.01) {
+    // Update state for UI updates (more frequently for smoother animation)
+    // Reduced threshold to 0.005 for more frequent updates
+    if (Math.abs(newPos - cyclistPosition) > 0.005 || newPos === 1) {
       setCyclistPosition(newPos);
     }
 
@@ -66,6 +90,7 @@ export const useCyclistAnimation = ({
       setIsAnimating(false);
       animationFrameRef.current = null;
       lastTimestampRef.current = null;
+      setCyclistPosition(1); // Ensure we reach exactly 1
     }
   }, [cyclistPosition, setCyclistPosition]);
 
@@ -117,6 +142,7 @@ export const useCyclistAnimation = ({
     finalKineticEnergy,
     workAgainstFriction,
     avgResistiveForce,
+    getCurrentValues,
     toggleAnimation,
     resetAnimation
   };

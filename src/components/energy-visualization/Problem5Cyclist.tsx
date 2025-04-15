@@ -1,5 +1,5 @@
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { useCyclistAnimation } from './hooks/useCyclistAnimation';
@@ -37,12 +37,19 @@ const Problem5Cyclist: React.FC<Problem5CyclistProps> = ({
   animationId,
   setAnimationId
 }) => {
+  // State for current dynamic values
+  const [currentKineticEnergy, setCurrentKineticEnergy] = useState<number>(0);
+  const [currentPotentialEnergyLost, setCurrentPotentialEnergyLost] = useState<number>(0);
+  const [currentWorkAgainstFriction, setCurrentWorkAgainstFriction] = useState<number>(0);
+  const [currentVelocity, setCurrentVelocity] = useState<number>(0);
+
   const {
     isAnimating,
     potentialEnergyLoss,
     finalKineticEnergy,
     workAgainstFriction,
     avgResistiveForce,
+    getCurrentValues,
     toggleAnimation,
     resetAnimation
   } = useCyclistAnimation({
@@ -59,6 +66,17 @@ const Problem5Cyclist: React.FC<Problem5CyclistProps> = ({
   const heightMarkerRef = useRef<HTMLDivElement>(null);
   const heightLabelRef = useRef<HTMLDivElement>(null);
   const velocityVectorRef = useRef<HTMLDivElement>(null);
+
+  // Update current values when position changes
+  useEffect(() => {
+    if (cyclistPosition >= 0) {
+      const values = getCurrentValues(cyclistPosition);
+      setCurrentKineticEnergy(values.kineticEnergy);
+      setCurrentPotentialEnergyLost(values.potentialEnergyLost);
+      setCurrentWorkAgainstFriction(values.workAgainstFriction);
+      setCurrentVelocity(values.velocity);
+    }
+  }, [cyclistPosition, getCurrentValues]);
 
   // Update the visualization based on cyclist position
   useEffect(() => {
@@ -86,14 +104,6 @@ const Problem5Cyclist: React.FC<Problem5CyclistProps> = ({
     heightLabelRef.current.style.bottom = `${currentHeight / 2}px`;
     heightLabelRef.current.textContent = `h = ${currentHeight.toFixed(1)} m`;
 
-    // Calculate current velocity for velocity vector
-    const totalEnergy = mass * GRAVITY * height;
-    const workAgainstFriction = (mass * GRAVITY * height - 0.5 * mass * finalSpeed * finalSpeed) * cyclistPosition;
-    const potentialEnergyLoss = mass * GRAVITY * height * cyclistPosition;
-    const availableEnergy = potentialEnergyLoss - workAgainstFriction;
-    const currentKineticEnergy = availableEnergy;
-    const currentVelocity = Math.sqrt(2 * currentKineticEnergy / mass);
-
     // Update velocity vector
     velocityVectorRef.current.style.opacity = '1';
     const vectorLength = (currentVelocity / finalSpeed) * 50;
@@ -101,7 +111,7 @@ const Problem5Cyclist: React.FC<Problem5CyclistProps> = ({
     velocityVectorRef.current.style.left = `${currentX + 15}px`;
     velocityVectorRef.current.style.bottom = `${currentHeight + 15}px`;
     
-  }, [cyclistPosition, height, mass, finalSpeed]);
+  }, [cyclistPosition, height, mass, finalSpeed, currentVelocity]);
 
   return (
     <div>
@@ -126,7 +136,7 @@ const Problem5Cyclist: React.FC<Problem5CyclistProps> = ({
                clipPath: `polygon(0 100%, 0 ${100 - (height / 4)}%, 100% 100%)`, 
                background: 'linear-gradient(135deg, #8e44ad33, #9b59b633)'
              }}></div>
-        <div ref={cyclistRef} className="absolute bottom-0 left-[50px] transition-all duration-300">
+        <div ref={cyclistRef} className="absolute bottom-0 left-[50px]">
           <Bike className="h-8 w-8 text-blue-600" />
         </div>
         <div ref={heightMarkerRef} className="height-marker absolute left-[30px] bottom-[10px] border-l border-dashed border-gray-400 h-0"></div>
@@ -138,21 +148,21 @@ const Problem5Cyclist: React.FC<Problem5CyclistProps> = ({
             <div className="text-xs mb-1">Potential Energy</div>
             <div className="h-6 bg-gray-200 rounded-sm overflow-hidden">
               <div className="h-full bg-green-500 transition-width" 
-                   style={{ width: `${(1 - cyclistPosition) * 100}%` }}></div>
+                   style={{ width: `${((potentialEnergyLoss - currentPotentialEnergyLost) / potentialEnergyLoss) * 100}%` }}></div>
             </div>
           </div>
           <div className="mb-1">
             <div className="text-xs mb-1">Kinetic Energy</div>
             <div className="h-6 bg-gray-200 rounded-sm overflow-hidden">
               <div className="h-full bg-red-500 transition-width" 
-                   style={{ width: `${(finalKineticEnergy / potentialEnergyLoss) * 100 * cyclistPosition}%` }}></div>
+                   style={{ width: `${(currentKineticEnergy / potentialEnergyLoss) * 100}%` }}></div>
             </div>
           </div>
           <div className="mb-1">
             <div className="text-xs mb-1">Energy Lost to Friction</div>
             <div className="h-6 bg-gray-200 rounded-sm overflow-hidden">
               <div className="h-full bg-yellow-500 transition-width" 
-                   style={{ width: `${(workAgainstFriction / potentialEnergyLoss) * 100 * cyclistPosition}%` }}></div>
+                   style={{ width: `${(currentWorkAgainstFriction / potentialEnergyLoss) * 100}%` }}></div>
             </div>
           </div>
           <div className="mb-1">
@@ -160,6 +170,9 @@ const Problem5Cyclist: React.FC<Problem5CyclistProps> = ({
             <div className="h-6 bg-gray-200 rounded-sm overflow-hidden">
               <div className="h-full bg-purple-500 transition-width" style={{ width: '100%' }}></div>
             </div>
+          </div>
+          <div className="mt-3 text-xs">
+            <p>Current velocity: {currentVelocity.toFixed(1)} m/s</p>
           </div>
         </div>
       </div>
