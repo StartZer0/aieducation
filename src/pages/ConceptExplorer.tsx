@@ -231,15 +231,6 @@ This is the minimum point of the parabola since a > 0.`
                   Source: Pearson A-Level Pure Mathematics 2, Summer 2022/23 Pure Mathematics 2 Exam
                 </span>
               </div>
-              
-              <div className="bg-white rounded-lg p-4 mt-4">
-                <h2 className="text-lg font-semibold mb-3">Exam Learning Objective in Unit 2.4 Algebra:</h2>
-                <ol className="list-decimal list-inside space-y-2 pl-4">
-                  <li>Understand the properties of quadratic functions</li>
-                  <li>Graph and analyze quadratic equations</li>
-                  <li>Solve problems involving quadratic expressions</li>
-                </ol>
-              </div>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -416,7 +407,7 @@ const QuestionsCard: React.FC<QuestionsCardProps> = ({
               </h2>
               <div className="space-y-6">
                 {questions.map((q, index) => (
-                  <div key={q.id} className="border border-gray-200 rounded-lg p-4 bg-amber-50">
+                  <div key={q.id} className="border border-amber-200 rounded-lg p-4 bg-amber-50">
                     <div className="flex items-start gap-3 mb-3">
                       <span className="bg-amber-100 text-amber-800 font-semibold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
                         {index + 1}

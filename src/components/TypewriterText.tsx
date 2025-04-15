@@ -68,19 +68,14 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     };
   }, [content, typeNextWord]);
   
-  // Function to highlight mathematical terms
+  // Function to highlight mathematical terms without creating span elements
   const highlightContent = (text: string) => {
     if (!highlightTerms) return text;
     
-    let highlightedText = text;
-    mathTerms.forEach(term => {
-      // Create a case-insensitive regular expression with word boundaries
-      const regex = new RegExp(`\\b(${term})\\b`, 'gi');
-      highlightedText = highlightedText.replace(
-        regex, 
-        '<span class="bg-blue-100 text-blue-800 px-1 py-0.5 rounded">$1</span>'
-      );
-    });
+    // For markdown, we'll use markdown syntax for highlighting
+    const highlightedText = text.replace(/\b(function|functions|quadratic|parabola|vertex|roots|equation|equations|coefficient|coefficients|axis of symmetry|discriminant|f\(x\)|a|b|c|x-intercepts|y-intercept|minimum|maximum|domain|range|degree|polynomial|vector|vectors|matrix|matrices|linear|algebra|dimensions|perpendicular|midpoint|origin|plane)\b/gi, 
+      (match) => `**${match}**`
+    );
     
     return highlightedText;
   };
@@ -90,7 +85,23 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
       {markdown ? (
         <MarkdownRenderer markdown={highlightTerms ? highlightContent(displayedText) : displayedText} />
       ) : (
-        <div dangerouslySetInnerHTML={{ __html: highlightTerms ? highlightContent(displayedText) : displayedText }} />
+        <div className="prose">
+          {displayedText.split(' ').map((word, index) => {
+            const isHighlighted = highlightTerms && 
+              mathTerms.some(term => new RegExp(`\\b${term}\\b`, 'i').test(word));
+            
+            return (
+              <React.Fragment key={index}>
+                {index > 0 && ' '}
+                <span 
+                  className={isHighlighted ? "animate-pulse bg-blue-100 text-blue-800 px-1 py-0.5 rounded" : ""}
+                >
+                  {word}
+                </span>
+              </React.Fragment>
+            );
+          })}
+        </div>
       )}
       {!isComplete && (
         <div className="inline-block w-2 h-4 ml-1 bg-blue-500 animate-pulse" />
