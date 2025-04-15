@@ -5,6 +5,7 @@ import { RAGContent } from "@/components/content-comparison/RAGContent";
 import { llmContent, easyModeContent, mediumModeContent, advancedModeContent } from "@/data/energy-content";
 import { KineticEnergyVisualization } from "@/components/KineticEnergyVisualization";
 import PendulumMotionVisualization from "@/components/PendulumMotionVisualization";
+import EnergyPracticeProblems from "@/components/energy-visualization/EnergyPracticeProblems";
 
 // Using memo to prevent unnecessary re-renders
 const ContentComparison = memo(function ContentComparison() {
@@ -43,6 +44,11 @@ const ContentComparison = memo(function ContentComparison() {
       <div className="mb-10">
         <h3 className="text-xl font-semibold mb-4">Pendulum Motion Visualization</h3>
         <PendulumMotionVisualization />
+      </div>
+      
+      <div className="mb-10">
+        <h3 className="text-xl font-semibold mb-4">Energy Practice Problems</h3>
+        <EnergyPracticeProblems />
       </div>
     </div>
   );

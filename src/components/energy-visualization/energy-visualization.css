@@ -1,0 +1,16 @@
+
+.transition-width {
+  transition: width 0.3s ease-out;
+}
+
+.tabs .tab {
+  transition: all 0.3s ease;
+}
+
+.visualization-container {
+  min-height: 400px;
+}
+
+.energy-bar {
+  transition: width 0.3s ease;
+}
