@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,7 @@ import { Check, X, BookOpen, GraduationCap, PenTool, LineChart } from 'lucide-re
 import { cn } from '@/lib/utils';
 import InteractiveQuadraticFunctions from '@/components/study/InteractiveQuadraticFunctions';
 import TypewriterText from '@/components/TypewriterText';
+import { AnimatedContent } from '@/components/study/AnimatedContent';
 
 const AIExplainer = () => {
   const [showPrompt, setShowPrompt] = useState(true);
@@ -309,13 +309,13 @@ This is the minimum point of the parabola since a > 0.`
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <ContentCard 
                 title="Overview" 
-                content={formattedOverviewContent}
+                content={overviewContent}
                 icon={<BookOpen className="w-6 h-6" />}
                 delay={0.2}
                 bgColor="#E5DEFF"
                 titleColor="#2563EB"
                 visualMode={true}
-                isFormatted={true}
+                useAnimatedContent={true}
               />
               
               <ContentCard 
@@ -356,6 +356,7 @@ interface ContentCardProps {
   titleColor: string;
   visualMode?: boolean;
   isFormatted?: boolean;
+  useAnimatedContent?: boolean;
 }
 
 const ContentCard: React.FC<ContentCardProps> = ({ 
@@ -366,7 +367,8 @@ const ContentCard: React.FC<ContentCardProps> = ({
   bgColor, 
   titleColor, 
   visualMode = false,
-  isFormatted = false
+  isFormatted = false,
+  useAnimatedContent = false
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -397,6 +399,15 @@ const ContentCard: React.FC<ContentCardProps> = ({
                   className="prose max-w-none"
                   dangerouslySetInnerHTML={{ __html: content }}
                 />
+              ) : useAnimatedContent ? (
+                <div className="prose max-w-none">
+                  <AnimatedContent
+                    content={content}
+                    speed={20}
+                    highlightTerms={true}
+                    visualMode={visualMode}
+                  />
+                </div>
               ) : (
                 <div className="prose max-w-none">
                   <TypewriterText
