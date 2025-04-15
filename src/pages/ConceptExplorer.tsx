@@ -24,24 +24,6 @@ const ConceptExplorer = () => {
     q3: false
   });
 
-  const overviewContent = `
-# Overview of Quadratic Functions
-
-A **quadratic function** is a polynomial function of degree 2, expressed in the standard form f(x) = ax² + bx + c, where a, b, and c are constants, and a must not equal zero. 
-
-The graph of every quadratic function forms a distinctive curve called a **parabola**. When the coefficient a is positive, the parabola opens upward creating a U-shape, and the function has a minimum value. Conversely, when a is negative, the parabola opens downward in an inverted U-shape, and the function reaches a maximum value at its highest point. 
-
-The steepness of the parabola is determined by the absolute value of a. A larger value of |a| creates a narrower, more tightly curved parabola, while a smaller value produces a wider, more gently curved shape. This relationship is important when analyzing how quickly a quadratic function increases or decreases. 
-
-Every parabola has a turning point called the **vertex**, which represents either the minimum or maximum value of the function. For a quadratic in standard form, the vertex occurs at the point (-b/2a, f(-b/2a)). This can also be calculated using the formula (-b/2a, c-b²/4a). The vertex is a crucial feature when sketching graphs or solving optimization problems. 
-
-Through the vertex runs a vertical line called the **axis of symmetry**, located at x = -b/2a. This line divides the parabola into two mirror-image halves, highlighting the perfect symmetry of quadratic functions. When we identify the axis of symmetry, we can use it to find corresponding points on either side of the parabola. 
-
-The **y-intercept** of a quadratic function occurs at the point (0, c), where the parabola crosses the y-axis. The **x-intercepts**, if they exist, are the points where the parabola crosses the x-axis. These can be found by solving the equation ax² + bx + c = 0 using the quadratic formula: x = (-b ± √(b² - 4ac))/2a. 
-
-The expression b² - 4ac, known as the **discriminant**, reveals important information about the nature of these x-intercepts. When the discriminant is positive, the quadratic equation has two distinct real roots, meaning the parabola crosses the x-axis at two different points. When the discriminant equals zero, there is exactly one real root (a repeated root), indicating that the parabola touches the x-axis at precisely one point. When the discriminant is negative, there are no real roots, signifying that the parabola never intersects the x-axis.
-`;
-
   const formattedOverviewContent = `
 <div class="flex flex-col space-y-5">
   <div class="bg-white rounded-lg p-4 shadow-sm">
@@ -50,7 +32,7 @@ The expression b² - 4ac, known as the **discriminant**, reveals important infor
   </div>
 
   <div class="bg-white rounded-lg p-4 shadow-sm">
-    <p class="font-medium mb-2">Exam Learning Objective in Unit 2.3 Quadratic Functions:</p>
+    <p class="font-medium mb-2">Curriculum Topics in Unit 2.3 Quadratic Functions:</p>
     <ol class="list-decimal list-inside pl-2 space-y-1">
       <li>Recognize and interpret quadratic functions in standard form</li>
       <li>Identify and sketch key features such as vertex, axis of symmetry, and intercepts</li>
@@ -93,13 +75,9 @@ The expression b² - 4ac, known as the **discriminant**, reveals important infor
 
   const learningOutcomesContent = `
 <div class="flex flex-col space-y-5">
-  <div class="text-center mb-4">
-    <h2 class="text-xl font-bold text-gray-800">Learning Outcomes and Relevance in A-Levels</h2>
-  </div>
-
   <div class="bg-white rounded-lg p-4 shadow-sm">
     <p class="font-medium mb-1">Source:</p>
-    <p>UK A-Level Mathematics Curriculum — Pure Mathematics Strand</p>
+    <p>KS4 Mathematics Curriculum – Term 2 Algebra Module</p>
   </div>
 
   <div class="bg-white rounded-lg p-4 shadow-sm">
@@ -318,7 +296,7 @@ This is the minimum point of the parabola since a > 0.`
               />
               
               <ContentCard 
-                title="Learning Outcomes and Relevance" 
+                title="Curriculum Applications" 
                 content={learningOutcomesContent}
                 icon={<GraduationCap className="w-6 h-6" />} 
                 delay={0.4}
