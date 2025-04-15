@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 
 interface TypewriterTextProps {
-  text: string;
+  text?: string; // Making this optional
   speed?: number;
   highlightTerms?: boolean;
   visualMode?: boolean;
@@ -20,7 +20,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const contentToDisplay = markdown || text;
+  const contentToDisplay = markdown || text || '';
 
   useEffect(() => {
     // If animation is disabled, display all text immediately
