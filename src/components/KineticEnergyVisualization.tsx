@@ -150,6 +150,8 @@ export const KineticEnergyVisualization: React.FC = () => {
   
   // Animation function
   const animate = useCallback((timestamp: number) => {
+    if (!isPlayingRef.current) return;
+    
     if (startTimeRef.current === null) {
       startTimeRef.current = timestamp;
     }
@@ -181,9 +183,10 @@ export const KineticEnergyVisualization: React.FC = () => {
     if (nextIsPlaying) {
       // Start animation
       startTimeRef.current = null;
-      if (animationRef.current === null) {
-        animationRef.current = requestAnimationFrame(animate);
+      if (animationRef.current !== null) {
+        cancelAnimationFrame(animationRef.current);
       }
+      animationRef.current = requestAnimationFrame(animate);
     } else {
       // Stop animation
       if (animationRef.current !== null) {

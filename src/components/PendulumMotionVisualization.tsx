@@ -37,6 +37,7 @@ const PendulumMotionVisualization: React.FC = () => {
   const angularVelocityRef = useRef(0); // Angular velocity in rad/s
   const lastTimestampRef = useRef<number | null>(null);
   const animationIdRef = useRef<number | null>(null);
+  const isRunningRef = useRef(false);
   const percentagesRef = useRef({
     potentialEnergyPercent: 0,
     kineticEnergyPercent: 0,
@@ -207,6 +208,8 @@ const PendulumMotionVisualization: React.FC = () => {
 
   // Animation function
   const animate = useCallback((timestamp: number) => {
+    if (!isRunningRef.current) return;
+    
     if (!lastTimestampRef.current) {
       lastTimestampRef.current = timestamp;
       animationIdRef.current = requestAnimationFrame(animate);
@@ -230,46 +233,41 @@ const PendulumMotionVisualization: React.FC = () => {
     }
     
     // Continue animation if still running
-    if (isRunning) {
+    if (isRunningRef.current) {
       animationIdRef.current = requestAnimationFrame(animate);
     }
-  }, [isRunning, length, damping, updatePendulum]);
+  }, [length, damping, updatePendulum]);
 
   // Toggle animation
   const toggleAnimation = useCallback(() => {
-    setIsRunning(prevState => {
-      const newRunningState = !prevState;
-      
-      if (newRunningState) {
-        // Start animation
-        lastTimestampRef.current = null;
-        if (!animationIdRef.current) {
-          animationIdRef.current = requestAnimationFrame(animate);
-        }
-      } else {
-        // Stop animation
-        if (animationIdRef.current) {
-          cancelAnimationFrame(animationIdRef.current);
-          animationIdRef.current = null;
-        }
+    isRunningRef.current = !isRunningRef.current;
+    setIsRunning(isRunningRef.current);
+    
+    if (isRunningRef.current) {
+      // Start animation
+      lastTimestampRef.current = null;
+      if (!animationIdRef.current) {
+        animationIdRef.current = requestAnimationFrame(animate);
       }
-      
-      return newRunningState;
-    });
-  }, [animate]);
-
-  // Handle reset
-  const handleReset = useCallback(() => {
-    if (isRunning) {
-      // Stop animation if running
-      setIsRunning(false);
+    } else {
+      // Stop animation
       if (animationIdRef.current) {
         cancelAnimationFrame(animationIdRef.current);
         animationIdRef.current = null;
       }
     }
+  }, [animate]);
+
+  // Handle reset
+  const handleReset = useCallback(() => {
+    isRunningRef.current = false;
+    setIsRunning(false);
+    if (animationIdRef.current) {
+      cancelAnimationFrame(animationIdRef.current);
+      animationIdRef.current = null;
+    }
     resetPendulum();
-  }, [isRunning, resetPendulum]);
+  }, [resetPendulum]);
 
   // Initialize visualization on component mount
   useEffect(() => {

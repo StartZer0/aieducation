@@ -9,7 +9,7 @@ interface TypewriterTextProps {
 
 const TypewriterText: React.FC<TypewriterTextProps> = ({ 
   text, 
-  speed = 12 // Updated default speed to 12 words per second
+  speed = 12 // Default speed to 12 words per second
 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [isComplete, setIsComplete] = useState(false);
@@ -43,16 +43,14 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     // Split text into words
     wordsRef.current = text.split(' ');
     
-    // Initial render check to prevent double initialization
-    if (isInitialRenderRef.current) {
-      isInitialRenderRef.current = false;
-      
-      // Start typing animation
-      typeNextWord();
-    } else {
-      // Start typing animation after text change
-      typeNextWord();
+    // Clear existing timeout if any
+    if (typingTimerRef.current) {
+      clearTimeout(typingTimerRef.current);
+      typingTimerRef.current = null;
     }
+    
+    // Start typing animation
+    typeNextWord();
     
     // Cleanup function
     return () => {
