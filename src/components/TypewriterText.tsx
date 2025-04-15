@@ -6,12 +6,14 @@ interface TypewriterTextProps {
   text?: string;
   markdown?: string;
   speed?: number; // Words per second
+  highlightTerms?: boolean;
 }
 
 const TypewriterText: React.FC<TypewriterTextProps> = ({ 
   text, 
   markdown,
-  speed = 15 // Default speed
+  speed = 15, // Default speed
+  highlightTerms = false
 }) => {
   const content = markdown || text || '';
   const [displayedText, setDisplayedText] = useState('');
@@ -19,7 +21,16 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
   const wordsRef = useRef<string[]>([]);
   const currentWordIndexRef = useRef<number>(0);
-  const isInitialRenderRef = useRef<boolean>(true);
+  
+  // Highlighted mathematical terms
+  const mathTerms = [
+    "function", "functions", "quadratic", "parabola", "vertex", "roots", 
+    "equation", "equations", "coefficient", "coefficients", "axis of symmetry",
+    "discriminant", "f\\(x\\)", "a", "b", "c", "x-intercepts", "y-intercept",
+    "minimum", "maximum", "domain", "range", "degree", "polynomial",
+    "vector", "vectors", "matrix", "matrices", "linear", "algebra",
+    "dimensions", "perpendicular", "midpoint", "origin", "plane"
+  ];
   
   const typeNextWord = useCallback(() => {
     if (currentWordIndexRef.current < wordsRef.current.length) {
@@ -57,12 +68,29 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     };
   }, [content, typeNextWord]);
   
+  // Function to highlight mathematical terms
+  const highlightContent = (text: string) => {
+    if (!highlightTerms) return text;
+    
+    let highlightedText = text;
+    mathTerms.forEach(term => {
+      // Create a case-insensitive regular expression with word boundaries
+      const regex = new RegExp(`\\b(${term})\\b`, 'gi');
+      highlightedText = highlightedText.replace(
+        regex, 
+        '<span class="bg-blue-100 text-blue-800 px-1 py-0.5 rounded">$1</span>'
+      );
+    });
+    
+    return highlightedText;
+  };
+  
   return (
     <div className="relative">
       {markdown ? (
-        <MarkdownRenderer markdown={displayedText} />
+        <MarkdownRenderer markdown={highlightTerms ? highlightContent(displayedText) : displayedText} />
       ) : (
-        <p>{displayedText}</p>
+        <div dangerouslySetInnerHTML={{ __html: highlightTerms ? highlightContent(displayedText) : displayedText }} />
       )}
       {!isComplete && (
         <div className="inline-block w-2 h-4 ml-1 bg-blue-500 animate-pulse" />
