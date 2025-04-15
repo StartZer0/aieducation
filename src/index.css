@@ -2,124 +2,174 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+ 
 @layer base {
   :root {
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
+
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
+ 
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
+ 
+    --primary: 222.2 47.4% 11.2%;
     --primary-foreground: 210 40% 98%;
+ 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222.2 47.4% 11.2%;
+ 
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
+ 
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
+ 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
+
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --ring: 222.2 84% 4.9%;
+ 
     --radius: 0.5rem;
-    --blue: 221.2 83.2% 53.3%;
   }
-
+ 
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
+ 
     --card: 222.2 84% 4.9%;
     --card-foreground: 210 40% 98%;
+ 
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
+ 
+    --primary: 210 40% 98%;
     --primary-foreground: 222.2 47.4% 11.2%;
+ 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
+ 
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
+ 
     --accent: 217.2 32.6% 17.5%;
     --accent-foreground: 210 40% 98%;
+ 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
+ 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
-    --blue: 217.2 91.2% 59.8%;
+    --ring: 212.7 26.8% 83.9%;
   }
 }
-
+ 
 @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
-    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-/* Highlight term styling */
-.highlight-term {
-  @apply py-0.5 px-1.5 rounded inline-flex items-center transition-colors cursor-pointer;
+/* Styles for the overview content in AIExplainer */
+.overview-content h1, 
+.overview-content h2, 
+.overview-content h3 {
+  color: #1A1A2E;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
 }
 
-/* Glass card styling for e-learning components */
-.glass-card {
-  @apply bg-white/50 dark:bg-black/20 backdrop-blur-sm 
-         border border-gray-200 dark:border-gray-800 
-         rounded-xl shadow-sm hover:shadow-md
-         transition-all duration-300;
+.overview-content h1 {
+  font-size: 2rem;
+  border-bottom: 2px solid #E8ECF7;
+  padding-bottom: 0.5rem;
 }
 
-.content-container {
-  @apply max-w-7xl mx-auto px-4 sm:px-6 md:px-8;
+.overview-content h2 {
+  font-size: 1.5rem;
+  border-left: 5px solid #4169E1;
+  padding-left: 0.5rem;
 }
 
-/* Animation utilities */
-.animate-fade-in {
-  animation: fadeIn 0.3s ease-in-out;
+.overview-content .concept-box {
+  background-color: #E8ECF7;
+  border-radius: 0.5rem;
+  padding: 1.25rem;
+  margin: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.overview-content .highlight {
+  font-weight: bold;
+  color: #4169E1;
 }
 
-@keyframes slideDown {
-  from { transform: translateY(-10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.overview-content .formula {
+  background-color: #f5f5f5;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-family: 'Courier New', Courier, monospace;
+  display: inline-block;
+  margin: 0 0.1rem;
 }
 
-@keyframes slideUp {
-  from { transform: translateY(10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.overview-content .visual-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: #FFFFFF;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin: 1rem 0;
 }
 
-/* Text gradient effect */
-.text-gradient {
-  @apply bg-gradient-to-r from-blue-600 to-teal-500 bg-clip-text text-transparent;
+.overview-content .key-point {
+  border-left: 4px solid #4CAF50;
+  padding-left: 0.75rem;
+  margin: 0.75rem 0;
+  background-color: rgba(76, 175, 80, 0.05);
+  padding: 0.5rem 0.75rem 0.5rem 1rem;
+  border-radius: 0 0.25rem 0.25rem 0;
 }
 
-/* Nested navigation styling */
-.topic-link {
-  @apply py-1.5 px-2 rounded-md transition-colors flex items-center;
+.overview-content .parameter-box {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem;
+  background-color: rgba(232, 236, 247, 0.5);
+  border-radius: 0.25rem;
 }
 
-/* Card hover effects */
-.hover-lift {
-  @apply transition-all duration-300 hover:translate-y-[-3px];
+.overview-content .parameter {
+  font-weight: bold;
+  width: 1.5rem;
+  text-align: right;
+  font-size: 1.1em;
+  color: #4169E1;
 }
 
-/* Pulse animation */
-@keyframes pulse-soft {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.8; }
+.overview-content .effect {
+  flex: 1;
 }
 
-.animate-pulse-soft {
-  animation: pulse-soft 3s ease-in-out infinite;
+.overview-content .grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+@media (max-width: 640px) {
+  .overview-content .grid-2 {
+    grid-template-columns: 1fr;
+  }
 }

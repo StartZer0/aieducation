@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 import InteractiveQuadraticFunctions from '@/components/study/InteractiveQuadraticFunctions';
 import TypewriterText from '@/components/TypewriterText';
 import { AnimatedContent } from '@/components/study/AnimatedContent';
+import { MarkdownRenderer } from '@/components/study/MarkdownRenderer';
 
 const AIExplainer = () => {
   const [showPrompt, setShowPrompt] = useState(true);
@@ -44,51 +45,157 @@ The expression b² - 4ac, known as the **discriminant**, reveals important infor
 `;
 
   const formattedOverviewContent = `
-<div class="flex flex-col space-y-5">
-  <div class="bg-white rounded-lg p-4 shadow-sm">
-    <p class="font-medium mb-1">Source:</p>
-    <p>KS4 Mathematics Curriculum – Term 2 Algebra Module</p>
-  </div>
-
-  <div class="bg-white rounded-lg p-4 shadow-sm">
-    <p class="font-medium mb-2">Exam Learning Objective in Unit 2.3 Quadratic Functions:</p>
-    <ol class="list-decimal list-inside pl-2 space-y-1">
-      <li>Recognize and interpret quadratic functions in standard form</li>
-      <li>Identify and sketch key features such as vertex, axis of symmetry, and intercepts</li>
-      <li>Solve quadratic equations using factorization and the quadratic formula</li>
-      <li>Analyze the effect of changing coefficients on the shape and position of the graph</li>
-    </ol>
-  </div>
-
-  <div class="bg-white rounded-lg p-4 shadow-sm">
-    <p class="font-medium mb-2">Practice Question Derived from Source</p>
-    <p class="mb-3">The function is defined as:</p>
-    <p class="bg-gray-50 px-4 py-2 rounded text-center font-medium mb-4">f(x) = -2x² + 8x - 5</p>
+<h1>Overview of Quadratic Functions</h1>
     
-    <div class="space-y-4">
-      <div>
-        <p class="mb-1"><span class="font-semibold">📌 (a)</span> Identify the vertex of the function.</p>
-        <p class="text-sm text-indigo-600">(2 marks)</p>
-      </div>
-      
-      <div>
-        <p class="mb-1"><span class="font-semibold">📌 (b)</span> State the axis of symmetry and determine whether the vertex is a maximum or minimum.</p>
-        <p class="text-sm text-indigo-600">(2 marks)</p>
-      </div>
-      
-      <div>
-        <p class="mb-1"><span class="font-semibold">📌 (c)</span> Find the x-intercepts of the function using the quadratic formula.</p>
-        <p class="text-sm text-indigo-600">(3 marks)</p>
-      </div>
-      
-      <div>
-        <p class="mb-1"><span class="font-semibold">📌 (d)</span> Sketch the graph, clearly showing the intercepts, axis of symmetry, and vertex.</p>
-        <p class="text-sm text-indigo-600">(3 marks)</p>
-      </div>
+<div class="concept-box">
+    <h2>Understanding Quadratic Functions</h2>
+    
+    <p>A <span class="highlight">quadratic function</span> is a polynomial function of degree 2, expressed in the standard form <span class="formula">f(x) = ax² + bx + c</span>, where a, b, and c are constants, and a must not equal zero. The graph of every quadratic function forms a distinctive curve called a <span class="highlight">parabola</span>. This mathematical relationship is fundamental to many advanced concepts and has numerous real-world applications.</p>
+    
+    <p>The behavior and shape of a quadratic function are determined by its coefficients. When the coefficient <span class="highlight">a is positive</span>, the parabola opens upward creating a U-shape, and the function has a minimum value. Conversely, when <span class="highlight">a is negative</span>, the parabola opens downward in an inverted U-shape, and the function reaches a maximum value at its highest point.</p>
+    
+    <div class="visual-container">
+        <div class="quadratic-graph">
+            <svg width="500" height="300" viewBox="0 0 500 300">
+                <!-- Coordinate system -->
+                <line x1="50" y1="150" x2="450" y2="150" stroke="#333" stroke-width="1.5"/>
+                <line x1="250" y1="20" x2="250" y2="280" stroke="#333" stroke-width="1.5"/>
+                
+                <!-- X-axis labels -->
+                <text x="450" y="170" fill="#333">x</text>
+                <text x="240" y="170" fill="#333">O</text>
+                
+                <!-- Y-axis label -->
+                <text x="235" y="25" fill="#333">y</text>
+                
+                <!-- Positive parabola -->
+                <path d="M 100,250 Q 250,50 400,250" stroke="#4169E1" stroke-width="3" fill="none"/>
+                <text x="350" y="230" fill="#4169E1">a > 0</text>
+                <text x="350" y="250" fill="#4169E1">(opens upward)</text>
+                
+                <!-- Vertex marker -->
+                <circle cx="250" cy="50" r="5" fill="#E74C3C"/>
+                <text x="260" y="45" fill="#E74C3C">Vertex (minimum)</text>
+                
+                <!-- Axis of symmetry -->
+                <line x1="250" y1="50" x2="250" y2="250" stroke="#4169E1" stroke-width="1.5" stroke-dasharray="5,5"/>
+                <text x="255" y="200" fill="#4169E1">Axis of Symmetry</text>
+                
+                <!-- Y-intercept -->
+                <circle cx="250" cy="150" r="5" fill="#FFA500"/>
+                <text x="260" y="145" fill="#FFA500">y-intercept (0, c)</text>
+            </svg>
+        </div>
     </div>
     
-    <p class="text-xs text-gray-500 mt-4 italic">(Generated from KS4 Mathematics Exam Materials, Algebra Track)</p>
-  </div>
+    <p>The steepness of the parabola is determined by the <span class="highlight">absolute value of a</span>. A larger value of |a| creates a narrower, more tightly curved parabola, while a smaller value produces a wider, more gently curved shape. This relationship is important when analyzing how quickly a quadratic function increases or decreases as x values change.</p>
+    
+    <div class="key-point">
+        <p>Every parabola has a turning point called the <span class="highlight">vertex</span>, which represents either the minimum value (when a > 0) or maximum value (when a < 0) of the function. For a quadratic in standard form, the vertex occurs at the point <span class="formula">(-b/2a, f(-b/2a))</span>. This can also be calculated using the formula <span class="formula">(-b/2a, c-b²/4a)</span>.</p>
+    </div>
+    
+    <p>Through the vertex runs a vertical line called the <span class="highlight">axis of symmetry</span>, located at <span class="formula">x = -b/2a</span>. This line divides the parabola into two mirror-image halves, highlighting the perfect symmetry of quadratic functions. When we identify the axis of symmetry, we can use it to find corresponding points on either side of the parabola, which can simplify graphing and analysis.</p>
+</div>
+
+<div class="concept-box">
+    <h2>Key Features and Analysis</h2>
+    
+    <p>The <span class="highlight">y-intercept</span> of a quadratic function occurs at the point <span class="formula">(0, c)</span>, where the parabola crosses the y-axis. This intercept is directly determined by the constant term c in the standard form equation and represents the function value when x = 0.</p>
+    
+    <p>The <span class="highlight">x-intercepts</span>, if they exist, are the points where the parabola crosses the x-axis. These can be found by solving the equation <span class="formula">ax² + bx + c = 0</span> using the quadratic formula: <span class="formula">x = (-b ± √(b² - 4ac))/2a</span>. These intercepts represent the roots or zeros of the quadratic function and are crucial for understanding the function's behavior.</p>
+    
+    <p>The expression <span class="highlight">b² - 4ac</span>, known as the <span class="highlight">discriminant</span>, reveals important information about the nature of these x-intercepts:</p>
+    
+    <ul>
+        <li>When the discriminant is <span class="highlight">positive</span>, the quadratic equation has <span class="highlight">two distinct real roots</span>, meaning the parabola crosses the x-axis at two different points.</li>
+        <li>When the discriminant <span class="highlight">equals zero</span>, there is <span class="highlight">exactly one real root</span> (a repeated root), indicating that the parabola touches the x-axis at precisely one point.</li>
+        <li>When the discriminant is <span class="highlight">negative</span>, there are <span class="highlight">no real roots</span>, signifying that the parabola never intersects the x-axis.</li>
+    </ul>
+    
+    <div class="visual-container">
+        <div class="quadratic-graph">
+            <svg width="500" height="280" viewBox="0 0 500 280">
+                <!-- Coordinate system -->
+                <line x1="50" y1="140" x2="450" y2="140" stroke="#333" stroke-width="1.5"/>
+                <line x1="250" y1="20" x2="250" y2="260" stroke="#333" stroke-width="1.5"/>
+                
+                <!-- Discriminant illustrations -->
+                <!-- Positive discriminant (two roots) -->
+                <path d="M 100,60 Q 250,220 400,60" stroke="#4CAF50" stroke-width="3" fill="none"/>
+                <circle cx="150" cy="140" r="5" fill="#4CAF50"/>
+                <circle cx="350" cy="140" r="5" fill="#4CAF50"/>
+                <text x="100" y="40" fill="#4CAF50">b² - 4ac > 0 (two roots)</text>
+                
+                <!-- Zero discriminant (one root) -->
+                <path d="M 130,200 Q 250,140 370,200" stroke="#FFA500" stroke-width="3" fill="none" stroke-dasharray="5,3"/>
+                <circle cx="250" cy="140" r="5" fill="#FFA500"/>
+                <text x="150" y="120" fill="#FFA500">b² - 4ac = 0 (one root)</text>
+                
+                <!-- Negative discriminant (no roots) -->
+                <path d="M 150,230 Q 250,180 350,230" stroke="#E74C3C" stroke-width="3" fill="none" stroke-dasharray="10,3"/>
+                <text x="150" y="250" fill="#E74C3C">b² - 4ac < 0 (no roots)</text>
+            </svg>
+        </div>
+    </div>
+</div>
+
+<div class="concept-box">
+    <h2>The Impact of Coefficients</h2>
+    
+    <p>Each coefficient in the standard form <span class="formula">f(x) = ax² + bx + c</span> plays a specific role in determining the shape and position of the parabola:</p>
+    
+    <div class="parameter-box">
+        <div class="parameter">a</div>
+        <div class="effect">
+            <p>Controls how steep or wide the parabola is. The <span class="highlight">sign of a</span> determines whether the parabola opens upward or downward, while the <span class="highlight">magnitude of a</span> affects the steepness. A larger |a| creates a narrower curve, while a smaller |a| creates a wider one.</p>
+        </div>
+    </div>
+    
+    <div class="parameter-box">
+        <div class="parameter">b</div>
+        <div class="effect">
+            <p>Influences the left-right position of the vertex. The coefficient b affects the horizontal shift of the parabola through its relationship with the x-coordinate of the vertex <span class="formula">(-b/2a)</span>. Changing b shifts the axis of symmetry and consequently the entire parabola horizontally.</p>
+        </div>
+    </div>
+    
+    <div class="parameter-box">
+        <div class="parameter">c</div>
+        <div class="effect">
+            <p>Determines the y-intercept (where the parabola crosses the y-axis at the point (0, c)). Changing c shifts the entire parabola up or down without affecting its shape or the x-coordinate of the vertex. This vertical shift changes where the parabola intersects the y-axis and may affect whether or where it crosses the x-axis.</p>
+        </div>
+    </div>
+    
+    <p>Understanding how these coefficients interact provides powerful insights into the behavior of quadratic functions. By analyzing these values, we can predict the shape, orientation, and key points of the parabola without having to plot multiple points.</p>
+    
+    <div class="key-point">
+        <p>When working with quadratic functions in different forms (standard, vertex, or factored), we can extract important information about the function's behavior. The vertex form <span class="formula">f(x) = a(x-h)² + k</span> directly reveals the vertex coordinates (h, k), while the factored form <span class="formula">f(x) = a(x-r₁)(x-r₂)</span> immediately shows the x-intercepts r₁ and r₂.</p>
+    </div>
+</div>
+
+<div class="concept-box">
+    <h2>Applications and Significance</h2>
+    
+    <p>Quadratic functions appear throughout mathematics and are essential for modeling many real-world phenomena. Their distinctive parabolic shape makes them ideal for describing situations involving:</p>
+    
+    <div class="grid-2">
+        <div>
+            <p><span class="highlight">📈 Projectile Motion:</span> Objects thrown or launched follow parabolic paths due to constant gravitational acceleration. The height of an object at time t can be modeled as <span class="formula">h(t) = h₀ + v₀t - ½gt²</span>.</p>
+        </div>
+        <div>
+            <p><span class="highlight">📡 Reflection Properties:</span> Parabolic shapes are used in satellite dishes, telescopes, and flashlights because they can focus parallel rays to a single point (or vice versa).</p>
+        </div>
+    </div>
+    
+    <div class="grid-2">
+        <div>
+            <p><span class="highlight">💰 Optimization Problems:</span> Quadratics help determine maximum profit, minimum cost, or optimal dimensions by finding the vertex of the relevant quadratic model.</p>
+        </div>
+        <div>
+            <p><span class="highlight">🏗️ Architecture and Engineering:</span> Arches, suspension bridges, and certain structural designs incorporate parabolic shapes for their strength and aesthetic properties.</p>
+        </div>
+    </div>
+    
+    <p>The ability to analyze and manipulate quadratic functions provides a foundation for understanding more complex mathematical relationships. As students progress in their mathematical education, the concepts and techniques used with quadratics extend to higher-degree polynomials, rational functions, and calculus applications.</p>
 </div>
 `;
 
@@ -315,7 +422,8 @@ This is the minimum point of the parabola since a > 0.`
                 bgColor="#E5DEFF"
                 titleColor="#2563EB"
                 visualMode={true}
-                useAnimatedContent={true}
+                useAnimatedContent={false}
+                isFormatted={true}
               />
               
               <ContentCard 
@@ -396,7 +504,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
               
               {isFormatted ? (
                 <div 
-                  className="prose max-w-none"
+                  className="prose max-w-none overview-content"
                   dangerouslySetInnerHTML={{ __html: content }}
                 />
               ) : useAnimatedContent ? (
