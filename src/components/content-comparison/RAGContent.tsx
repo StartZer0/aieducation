@@ -50,12 +50,12 @@ export function RAGContent({
             </TabsContent>
             <TabsContent value="advanced">
               {activeTab === "advanced" && (
-                <TypewriterText text={advancedModeContent} speed={0.33} />
-                {activeTab === "advanced" && (
+                <React.Fragment>
+                  <TypewriterText text={advancedModeContent} speed={0.33} />
                   <div className="mt-6">
                     <KineticEnergyVisualization />
                   </div>
-                )}
+                </React.Fragment>
               )}
             </TabsContent>
           </CardContent>
