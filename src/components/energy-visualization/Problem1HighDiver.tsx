@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useHighDiverAnimation } from './hooks/useHighDiverAnimation';
 
 interface Problem1Props {
   height: number;
@@ -17,18 +18,12 @@ const Problem1HighDiver: React.FC<Problem1Props> = ({
   mass,
   setHeight,
   setMass,
-  animationId,
-  setAnimationId,
   diverPosition,
   setDiverPosition
 }) => {
   // Constants
   const GRAVITY = 9.81;
   
-  // Animation state
-  const [isAnimating, setIsAnimating] = useState(false);
-  const animationFrameRef = useRef<number | null>(null);
-
   // Refs
   const visualization1Ref = useRef<HTMLDivElement>(null);
   const diver1Ref = useRef<HTMLDivElement>(null);
@@ -43,6 +38,23 @@ const Problem1HighDiver: React.FC<Problem1Props> = ({
   const velocity1Ref = useRef<HTMLSpanElement>(null);
   const initialEnergy1Ref = useRef<HTMLSpanElement>(null);
   const finalEnergy1Ref = useRef<HTMLSpanElement>(null);
+
+  // Use our custom animation hook
+  const { 
+    isAnimating, 
+    toggleAnimation, 
+    resetAnimation, 
+    cleanup 
+  } = useHighDiverAnimation({
+    height,
+    mass,
+    gravity: GRAVITY,
+    diverRef: diver1Ref,
+    velocityVectorRef: velocityVector1Ref,
+    potentialEnergyRef: potentialEnergy1Ref,
+    kineticEnergyRef: kineticEnergy1Ref,
+    visualizationRef: visualization1Ref
+  });
 
   // Initialize visualization
   const initVisualization = useCallback(() => {
@@ -98,92 +110,6 @@ const Problem1HighDiver: React.FC<Problem1Props> = ({
     setDiverPosition(0);
   }, [height, mass, setDiverPosition, GRAVITY]);
 
-  // Animate diver
-  const animateDiver = useCallback(() => {
-    if (!diver1Ref.current || !velocityVector1Ref.current || !potentialEnergy1Ref.current || 
-        !kineticEnergy1Ref.current || !visualization1Ref.current) {
-      return;
-    }
-    
-    if (diverPosition >= 1) {
-      // Animation complete
-      cancelAnimationFrame(animationFrameRef.current!);
-      animationFrameRef.current = null;
-      setIsAnimating(false);
-      return;
-    }
-    
-    // Next frame - using a fixed small increment for smooth animation
-    const newPos = diverPosition + 0.005;
-    
-    // Calculate current position
-    const visHeight = visualization1Ref.current.clientHeight;
-    const platformTop = 50;
-    const waterTop = visHeight - 80;
-    const diverTop = platformTop + newPos * (waterTop - platformTop);
-    
-    // Update diver position
-    diver1Ref.current.style.top = diverTop + 'px';
-    
-    // Calculate current energy values
-    const currentHeight = height * (1 - newPos);
-    const potential = mass * GRAVITY * currentHeight;
-    const total = mass * GRAVITY * height;
-    const kinetic = total - potential;
-    
-    // Calculate current velocity
-    const currentVelocity = Math.sqrt(2 * GRAVITY * (height - currentHeight));
-    
-    // Update energy bars
-    potentialEnergy1Ref.current.style.width = (potential / total * 100) + '%';
-    kineticEnergy1Ref.current.style.width = (kinetic / total * 100) + '%';
-    
-    // Update velocity vector
-    if (newPos > 0.1) {
-      const maxVelocity = Math.sqrt(2 * GRAVITY * height);
-      const vectorLength = (currentVelocity / maxVelocity) * 50;
-      
-      velocityVector1Ref.current.style.opacity = '1';
-      velocityVector1Ref.current.style.width = vectorLength + 'px';
-      velocityVector1Ref.current.style.left = (diver1Ref.current.offsetLeft + 20) + 'px';
-      velocityVector1Ref.current.style.top = (diverTop + 20) + 'px';
-      velocityVector1Ref.current.style.transform = 'rotate(90deg)';
-    }
-    
-    // Update position state for next frame
-    setDiverPosition(newPos);
-    
-    // Continue animation
-    animationFrameRef.current = requestAnimationFrame(animateDiver);
-  }, [diverPosition, height, mass, setDiverPosition, GRAVITY]);
-
-  // Start/pause simulation
-  const toggleAnimation = () => {
-    if (isAnimating) {
-      // Pause animation
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-        animationFrameRef.current = null;
-      }
-      setIsAnimating(false);
-    } else {
-      // Start or resume animation
-      setIsAnimating(true);
-      animationFrameRef.current = requestAnimationFrame(animateDiver);
-    }
-  };
-
-  // Reset simulation
-  const resetSimulation = () => {
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-      animationFrameRef.current = null;
-    }
-    
-    setIsAnimating(false);
-    initVisualization();
-  };
-
   // Event handlers for inputs
   const handleHeightChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newHeight = parseFloat(e.target.value);
@@ -214,17 +140,19 @@ const Problem1HighDiver: React.FC<Problem1Props> = ({
     if (finalEnergy1Ref.current) finalEnergy1Ref.current.textContent = potential.toFixed(2);
   };
 
+  // Handle reset for the simulation
+  const handleReset = () => {
+    resetAnimation();
+    initVisualization();
+  };
+
   // Initialize visualization on mount
   useEffect(() => {
     initVisualization();
     
     // Cleanup animation on unmount
-    return () => {
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [initVisualization]);
+    return cleanup;
+  }, [initVisualization, cleanup]);
 
   return (
     <div>
@@ -293,7 +221,7 @@ const Problem1HighDiver: React.FC<Problem1Props> = ({
         </button>
         <button 
           className="px-3 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition"
-          onClick={resetSimulation}
+          onClick={handleReset}
         >
           Reset
         </button>
