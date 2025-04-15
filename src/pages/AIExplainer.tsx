@@ -309,7 +309,7 @@ This is the minimum point of the parabola since a > 0.`
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <ContentCard 
                 title="Overview" 
-                content={overviewContent}
+                content={formattedOverviewContent} 
                 icon={<BookOpen className="w-6 h-6" />}
                 delay={0.2}
                 bgColor="#E5DEFF"
