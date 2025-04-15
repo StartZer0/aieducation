@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { 
   Menu, X, Book, GraduationCap, BarChart, Calendar, 
   MessageCircle, School, FileText, Play, BookOpen, FileQuestion,
-  User, ChevronLeft, Home
+  User, ChevronLeft, Home, BookOpenCheck
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -43,6 +43,7 @@ const Header = () => {
     { path: '/ai-tutor', label: 'AI Tutor', icon: <MessageCircle className="w-5 h-5 mr-2" />, show: true },
     { path: '/explain-to-me', label: 'Exam Paper Solver', icon: <School className="w-5 h-5 mr-2" />, show: true },
     { path: '/essay-analysis', label: 'Essay Feedback', icon: <FileText className="w-5 h-5 mr-2" />, show: true },
+    { path: '/content-comparison', label: 'Content Comparison', icon: <BookOpenCheck className="w-5 h-5 mr-2" />, show: true },
     { path: '/test-chats', label: 'Learning Examples', icon: <Book className="w-5 h-5 mr-2" />, show: false },
     { path: '/test-chats2', label: 'Advanced Examples', icon: <Book className="w-5 h-5 mr-2" />, show: false },
   ];
@@ -70,7 +71,6 @@ const Header = () => {
           <span className="text-xl font-bold text-gradient">AI+ Education</span>
         </Link>
         
-        {/* Add current page reference */}
         <div className="hidden md:flex items-center space-x-2 mx-auto text-sm text-muted-foreground">
           <Home className="w-4 h-4" />
           <span>Home</span>

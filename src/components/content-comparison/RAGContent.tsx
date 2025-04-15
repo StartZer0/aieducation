@@ -24,7 +24,7 @@ export const RAGContent = memo(function RAGContent({
     <Card className="h-[800px] overflow-hidden shadow-lg">
       <CardHeader className="bg-gradient-to-r from-purple-500 to-purple-600 text-white">
         <CardTitle className="text-center flex items-center justify-center">
-          <span>RAG System (A-Level Curriculum)</span>
+          <span>Advanced Learning Content System</span>
         </CardTitle>
         <Tabs
           value={activeTab}
@@ -40,13 +40,13 @@ export const RAGContent = memo(function RAGContent({
       </CardHeader>
       <CardContent className="p-6 h-[680px] overflow-auto">
         {activeTab === "easy" && (
-          <TypewriterText text={easyModeContent} />
+          <TypewriterText text={easyModeContent} speed={15} />
         )}
         {activeTab === "medium" && (
-          <TypewriterText text={mediumModeContent} />
+          <TypewriterText text={mediumModeContent} speed={15} />
         )}
         {activeTab === "advanced" && (
-          <TypewriterText text={advancedModeContent} />
+          <TypewriterText text={advancedModeContent} speed={15} />
         )}
       </CardContent>
     </Card>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { MarkdownRenderer } from "@/components/study/MarkdownRenderer";
 
@@ -9,7 +8,7 @@ interface TypewriterTextProps {
 
 const TypewriterText: React.FC<TypewriterTextProps> = ({ 
   text, 
-  speed = 12 // Default speed to 12 words per second
+  speed = 15 // Default speed to 15 words per second (increased from 12)
 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [isComplete, setIsComplete] = useState(false);
@@ -18,14 +17,12 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   const currentWordIndexRef = useRef<number>(0);
   const isInitialRenderRef = useRef<boolean>(true);
   
-  // Using useCallback to prevent recreation of this function on each render
   const typeNextWord = useCallback(() => {
     if (currentWordIndexRef.current < wordsRef.current.length) {
       const nextWord = wordsRef.current[currentWordIndexRef.current];
       setDisplayedText(prev => prev + (currentWordIndexRef.current > 0 ? ' ' : '') + nextWord);
       currentWordIndexRef.current++;
       
-      // Schedule the next word
       typingTimerRef.current = setTimeout(typeNextWord, 1000 / speed);
     } else {
       setIsComplete(true);
@@ -33,26 +30,21 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   }, [speed]);
   
   useEffect(() => {
-    // Reset state when text changes
     setDisplayedText('');
     setIsComplete(false);
     currentWordIndexRef.current = 0;
     
     if (!text) return;
 
-    // Split text into words
     wordsRef.current = text.split(' ');
     
-    // Clear existing timeout if any
     if (typingTimerRef.current) {
       clearTimeout(typingTimerRef.current);
       typingTimerRef.current = null;
     }
     
-    // Start typing animation
     typeNextWord();
     
-    // Cleanup function
     return () => {
       if (typingTimerRef.current) {
         clearTimeout(typingTimerRef.current);
