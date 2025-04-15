@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { LLMContent } from "@/components/content-comparison/LLMContent";
 import { RAGContent } from "@/components/content-comparison/RAGContent";
 import { llmContent, easyModeContent, mediumModeContent, advancedModeContent } from "@/data/energy-content";
+import { KineticEnergyVisualization } from "@/components/KineticEnergyVisualization";
+import PendulumMotionVisualization from "@/components/PendulumMotionVisualization";
 
 export default function ContentComparison() {
   const [activeTab, setActiveTab] = useState<string>("medium");
@@ -14,7 +16,7 @@ export default function ContentComparison() {
         "What is Kinetic energy and potential energy?"
       </h2>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
         <LLMContent content={llmContent} />
         <RAGContent 
           activeTab={activeTab}
@@ -23,6 +25,18 @@ export default function ContentComparison() {
           mediumModeContent={mediumModeContent}
           advancedModeContent={advancedModeContent}
         />
+      </div>
+      
+      <h2 className="text-2xl font-bold mb-6">Interactive Visualizations</h2>
+      
+      <div className="mb-10">
+        <h3 className="text-xl font-semibold mb-4">Kinetic Energy Visualization</h3>
+        <KineticEnergyVisualization />
+      </div>
+      
+      <div className="mb-10">
+        <h3 className="text-xl font-semibold mb-4">Pendulum Motion Visualization</h3>
+        <PendulumMotionVisualization />
       </div>
     </div>
   );
