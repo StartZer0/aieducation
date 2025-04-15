@@ -42,6 +42,42 @@ The **y-intercept** of a quadratic function occurs at the point (0, c), where th
 The expression b² - 4ac, known as the **discriminant**, reveals important information about the nature of these x-intercepts. When the discriminant is positive, the quadratic equation has two distinct real roots, meaning the parabola crosses the x-axis at two different points. When the discriminant equals zero, there is exactly one real root (a repeated root), indicating that the parabola touches the x-axis at precisely one point. When the discriminant is negative, there are no real roots, signifying that the parabola never intersects the x-axis.
 `;
 
+  const formattedOverviewContent = `
+📘 <span class="text-lg font-semibold">Overview of Quadratic Functions</span>
+<p>A quadratic function is a polynomial of degree 2, written in standard form:
+f(x) = ax² + bx + c, where a ≠ 0.</p>
+
+<p>The graph forms a curve called a parabola:</p>
+<ul class="space-y-1 list-inside">
+  <li>If a > 0, it opens upward (U-shape) with a minimum value.</li>
+  <li>If a < 0, it opens downward (inverted U-shape) with a maximum value.</li>
+</ul>
+
+<p class="mt-3"><span class="font-semibold">📌 Steepness:</span><br/>
+The value of |a| controls how "tight" or "wide" the parabola is. Larger |a| → narrower; smaller |a| → wider.</p>
+
+<p class="mt-3"><span class="font-semibold">✏️ Vertex (Turning Point):</span><br/>
+The vertex is at (-b/2a, f(-b/2a)) or (-b/2a, c - b²/4a). This is where the function hits its highest or lowest value.</p>
+
+<p class="mt-3"><span class="font-semibold">📏 Axis of Symmetry:</span><br/>
+The vertical line x = -b/2a splits the parabola into two symmetrical halves.</p>
+
+<p class="mt-3"><span class="font-semibold">🔍 Intercepts:</span></p>
+<ul class="space-y-1 list-inside">
+  <li>Y-intercept: at (0, c)</li>
+  <li>X-intercepts: found by solving ax² + bx + c = 0 using the quadratic formula:<br/>
+  x = (-b ± √(b² - 4ac)) / 2a</li>
+</ul>
+
+<p class="mt-3"><span class="font-semibold">📊 Discriminant Insight:</span><br/>
+The term b² - 4ac tells us about the number of x-intercepts:</p>
+<ul class="space-y-1 list-inside">
+  <li>If positive → 2 real roots</li>
+  <li>If zero → 1 real root (repeated)</li>
+  <li>If negative → no real roots</li>
+</ul>
+`;
+
   const learningOutcomesContent = `
 # Learning Outcomes and Relevance in A-Levels
 
@@ -224,12 +260,13 @@ This is the minimum point of the parabola since a > 0.`
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <ContentCard 
                 title="Overview" 
-                content={overviewContent}
+                content={formattedOverviewContent}
                 icon={<BookOpen className="w-6 h-6" />}
                 delay={0.2}
-                bgColor="#E8ECF7"
+                bgColor="#E5DEFF"
                 titleColor="#2563EB"
                 visualMode={true}
+                isFormatted={true}
               />
               
               <ContentCard 
@@ -268,6 +305,7 @@ interface ContentCardProps {
   bgColor: string;
   titleColor: string;
   visualMode?: boolean;
+  isFormatted?: boolean;
 }
 
 const ContentCard: React.FC<ContentCardProps> = ({ 
@@ -277,7 +315,8 @@ const ContentCard: React.FC<ContentCardProps> = ({
   delay, 
   bgColor, 
   titleColor, 
-  visualMode = false 
+  visualMode = false,
+  isFormatted = false
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -302,15 +341,24 @@ const ContentCard: React.FC<ContentCardProps> = ({
                 {icon && <span className="mr-2">{icon}</span>}
                 {title}
               </h2>
-              <div className="prose max-w-none">
-                <TypewriterText
-                  text={content}
-                  speed={20}
-                  highlightTerms={true}
-                  visualMode={visualMode}
-                  animate={true}
+              
+              {isFormatted ? (
+                <div 
+                  className="prose max-w-none bg-[#E8ECF7] p-5 rounded-lg"
+                  dangerouslySetInnerHTML={{ __html: content }}
                 />
-              </div>
+              ) : (
+                <div className="prose max-w-none">
+                  <TypewriterText
+                    text={content}
+                    speed={20}
+                    highlightTerms={true}
+                    visualMode={visualMode}
+                    animate={true}
+                  />
+                </div>
+              )}
+              
               <div className="mt-4 flex justify-center">
                 <Button variant="outline" onClick={() => setIsExpanded(false)}>
                   Close
