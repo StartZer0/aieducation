@@ -9,7 +9,7 @@ interface TypewriterTextProps {
 
 const TypewriterText: React.FC<TypewriterTextProps> = ({ 
   text, 
-  speed = 6 // Default speed of 6 words per second
+  speed = 12 // Updated default speed to 12 words per second
 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [isComplete, setIsComplete] = useState(false);

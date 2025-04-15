@@ -152,36 +152,89 @@ There are limitations to these formulas:
 
 By understanding these energy concepts, we can analyze and predict the behavior of mechanical systems, from bouncing balls to complex machines, using the principle that energy is conserved but can change from one form to another.`;
 
-export const advancedModeContent = `I'll create an interactive visualization that demonstrates how kinetic energy is gained when a force acts on an object. This will allow you to see the relationship between force, distance, and kinetic energy by adjusting different parameters.
+export const advancedModeContent = `# Advanced Analysis of Kinetic and Potential Energy
 
-I've created an interactive visualization that demonstrates how kinetic energy is gained when a force acts on an object over a distance, just like in the diagram you shared.
+Kinetic and potential energy represent the two primary manifestations of mechanical energy, mathematically formalized through the work-energy theorem and conservative force fields.
 
-This interactive HTML and D3.js visualization allows you to:
+### Kinetic Energy: Rigorous Derivation
 
-1. **Adjust parameters**:
-   - Change the mass of the object
-   - Modify the force applied
-   - Control the time duration
+Kinetic energy quantifies the energy possessed by an object due to its motion. Beginning with Newton's second law, F = ma, we can derive the precise mathematical form through the work-energy relationship.
 
-2. **See the calculations in real-time**:
-   - Acceleration (a = F/m)
-   - Velocity (v = at)
-   - Distance traveled (s = ½at²)
-   - Work done (W = Fs)
-   - Kinetic energy (Ek = ½mv²)
+For an object of mass m experiencing a constant force F for time t, starting from rest:
+- Acceleration a = v/t (where v is final velocity)
+- By Newton's second law: F = ma = m(v/t)
+- Distance traveled: s = ½(0 + v)t = ½vt
+- Work done: W = Fs = F × ½vt
+- Substituting F = m(v/t): W = m(v/t) × ½vt = ½mv²
 
-3. **Visualize the physics**:
-   - Watch the object move along a path
-   - See the force arrow pushing the object
-   - Observe the distance increasing
-   - View energy bars that show how work done equals kinetic energy gained
+Thus, the kinetic energy is rigorously defined as **E_k = ½mv²**
 
-4. **Control the animation**:
-   - Play/pause to see the motion in action
-   - Reset to start over
+This formula emerges naturally from the fundamental laws of mechanics, demonstrating that kinetic energy is a scalar quantity proportional to both mass and the square of velocity. The dimensional analysis confirms this as [M][L²][T⁻²], consistent with the units of energy.
 
-The visualization directly represents the concepts from the diagram, showing how a constant force (F) acts on an object of mass (m) initially at rest, causing it to move a distance (s) and gain speed (v) after time (t).
+### Potential Energy: Theoretical Underpinnings
 
-This demonstrates the core principle that the work done on an object (Fs) becomes kinetic energy (½mv²), which is exactly what your textbook diagram is illustrating.
+Gravitational potential energy represents stored energy in a conservative force field. The formal definition derives from the line integral of force:
 
-You can interact with the sliders to explore how changing mass, force, and time affects the motion and energy of the object.`;
+For a conservative force F, potential energy is defined by:
+ΔE_p = -∫F·ds
+
+For the specific case of Earth's gravitational field near the surface, where F = mg:
+ΔE_p = -∫mg·ds = -mg·Δh = mgh
+
+Thus, **E_p = mgh** represents the change in potential energy for small height variations.
+
+Critically, this formula assumes a uniform gravitational field, which is only approximately true near Earth's surface. For heights that are non-negligible compared to Earth's radius (R), the gravitational field strength varies according to the inverse square law:
+g(r) = G·M_earth/r² 
+
+This necessitates integration to calculate potential energy changes over significant height variations:
+ΔE_p = GMm(1/r₁ - 1/r₂)
+
+## Energy Conservation and Transformations
+
+The principle of conservation of mechanical energy in absence of non-conservative forces yields:
+E_k + E_p = constant
+
+This gives rise to the fundamental relationship for falling bodies:
+**½mv² = mgh**
+
+For systems with varying height, such as pendulums, this extends to:
+**½mv² = mgh₀ - mgh**
+
+This equation provides a means to determine velocity at any position in the pendulum's trajectory without needing to solve differential equations of motion directly.
+
+## Analysis of Non-Conservative Systems
+
+In practical applications, non-conservative forces like friction necessitate an expanded analysis. For a system like the fairground vehicle described in the PDF:
+
+- Total mechanical energy at start: E_initial = mgh
+- Total mechanical energy at end: E_final = ½mv²
+- Work done against friction: W_friction = E_initial - E_final = mgh - ½mv²
+
+The average frictional force can be determined through:
+F_friction = W_friction/d
+
+Where d is the distance traveled along the path. This yields:
+F_friction = (mgh - ½mv²)/d
+
+This analysis demonstrates how energy dissipation can be quantified and related to macroscopic observables.
+
+## Relativistic Considerations
+
+The classical expressions for kinetic energy break down at relativistic velocities. As Einstein's special relativity elucidates, the correct expression becomes:
+E = γmc² = mc²/√(1-v²/c²)
+
+Where γ is the Lorentz factor. The classical expression E_k = ½mv² emerges as the first-order term in the binomial expansion of this relativistic formula for v << c.
+
+## Mathematical Analysis of Energy Transformations
+
+For a mechanical system undergoing energy transformation, the instantaneous rate of change satisfies:
+dE_k/dt + dE_p/dt = P_external
+
+Where P_external is the power delivered by external forces. For conservative systems with no external power input, this reduces to:
+dE_k/dt = -dE_p/dt
+
+This differential relationship demonstrates that the rate of kinetic energy gain equals the rate of potential energy loss at each instant.
+
+The mathematical structure of these energy principles forms the foundation for analyzing complex mechanical systems, from simple harmonic oscillators to multi-body dynamics, providing a powerful analytical framework that transcends the need to solve explicitly for forces and accelerations in many applications.
+
+Through this theoretical framework, we gain not merely computational tools for solving problems but profound insight into the fundamental nature of mechanical systems and the invariant quantities that govern their behavior across diverse physical contexts.`;
