@@ -43,39 +43,54 @@ The expression b² - 4ac, known as the **discriminant**, reveals important infor
 `;
 
   const formattedOverviewContent = `
-📘 <span class="text-lg font-semibold">Overview of Quadratic Functions</span>
-<p>A quadratic function is a polynomial of degree 2, written in standard form:
-f(x) = ax² + bx + c, where a ≠ 0.</p>
+<div class="flex flex-col space-y-5">
+  <h2 class="text-xl font-bold text-center text-indigo-700 mb-2">QuadraLearn — Visual Guide to Quadratic Functions</h2>
+  
+  <div class="bg-white rounded-lg p-4 shadow-sm">
+    <p class="font-medium mb-1">Source:</p>
+    <p>KS4 Mathematics Curriculum – Term 2 Algebra Module</p>
+  </div>
 
-<p>The graph forms a curve called a parabola:</p>
-<ul class="space-y-1 list-inside">
-  <li>If a > 0, it opens upward (U-shape) with a minimum value.</li>
-  <li>If a < 0, it opens downward (inverted U-shape) with a maximum value.</li>
-</ul>
+  <div class="bg-white rounded-lg p-4 shadow-sm">
+    <p class="font-medium mb-2">Exam Learning Objective in Unit 2.3 Quadratic Functions:</p>
+    <ol class="list-decimal list-inside pl-2 space-y-1">
+      <li>Recognize and interpret quadratic functions in standard form</li>
+      <li>Identify and sketch key features such as vertex, axis of symmetry, and intercepts</li>
+      <li>Solve quadratic equations using factorization and the quadratic formula</li>
+      <li>Analyze the effect of changing coefficients on the shape and position of the graph</li>
+    </ol>
+  </div>
 
-<p class="mt-3"><span class="font-semibold">📌 Steepness:</span><br/>
-The value of |a| controls how "tight" or "wide" the parabola is. Larger |a| → narrower; smaller |a| → wider.</p>
-
-<p class="mt-3"><span class="font-semibold">✏️ Vertex (Turning Point):</span><br/>
-The vertex is at (-b/2a, f(-b/2a)) or (-b/2a, c - b²/4a). This is where the function hits its highest or lowest value.</p>
-
-<p class="mt-3"><span class="font-semibold">📏 Axis of Symmetry:</span><br/>
-The vertical line x = -b/2a splits the parabola into two symmetrical halves.</p>
-
-<p class="mt-3"><span class="font-semibold">🔍 Intercepts:</span></p>
-<ul class="space-y-1 list-inside">
-  <li>Y-intercept: at (0, c)</li>
-  <li>X-intercepts: found by solving ax² + bx + c = 0 using the quadratic formula:<br/>
-  x = (-b ± √(b² - 4ac)) / 2a</li>
-</ul>
-
-<p class="mt-3"><span class="font-semibold">📊 Discriminant Insight:</span><br/>
-The term b² - 4ac tells us about the number of x-intercepts:</p>
-<ul class="space-y-1 list-inside">
-  <li>If positive → 2 real roots</li>
-  <li>If zero → 1 real root (repeated)</li>
-  <li>If negative → no real roots</li>
-</ul>
+  <div class="bg-white rounded-lg p-4 shadow-sm">
+    <p class="font-medium mb-2">Practice Question Derived from Source</p>
+    <p class="mb-3">The function is defined as:</p>
+    <p class="bg-gray-50 px-4 py-2 rounded text-center font-medium mb-4">f(x) = -2x² + 8x - 5</p>
+    
+    <div class="space-y-4">
+      <div>
+        <p class="mb-1"><span class="font-semibold">📌 (a)</span> Identify the vertex of the function.</p>
+        <p class="text-sm text-indigo-600">(2 marks)</p>
+      </div>
+      
+      <div>
+        <p class="mb-1"><span class="font-semibold">📌 (b)</span> State the axis of symmetry and determine whether the vertex is a maximum or minimum.</p>
+        <p class="text-sm text-indigo-600">(2 marks)</p>
+      </div>
+      
+      <div>
+        <p class="mb-1"><span class="font-semibold">📌 (c)</span> Find the x-intercepts of the function using the quadratic formula.</p>
+        <p class="text-sm text-indigo-600">(3 marks)</p>
+      </div>
+      
+      <div>
+        <p class="mb-1"><span class="font-semibold">📌 (d)</span> Sketch the graph, clearly showing the intercepts, axis of symmetry, and vertex.</p>
+        <p class="text-sm text-indigo-600">(3 marks)</p>
+      </div>
+    </div>
+    
+    <p class="text-xs text-gray-500 mt-4 italic">(Generated from KS4 Mathematics Exam Materials, Algebra Track)</p>
+  </div>
+</div>
 `;
 
   const learningOutcomesContent = `
@@ -344,7 +359,7 @@ const ContentCard: React.FC<ContentCardProps> = ({
               
               {isFormatted ? (
                 <div 
-                  className="prose max-w-none bg-[#E8ECF7] p-5 rounded-lg"
+                  className="prose max-w-none bg-[#E5DEFF] p-5 rounded-lg"
                   dangerouslySetInnerHTML={{ __html: content }}
                 />
               ) : (
