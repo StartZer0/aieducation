@@ -25,7 +25,7 @@ const ConceptExplorer = () => {
   });
 
   const overviewContent = `
-# Quadratic Essentials and Implementation
+# Overview of Quadratic Functions
 
 A **quadratic function** is a polynomial function of degree 2, expressed in the standard form f(x) = ax² + bx + c, where a, b, and c are constants, and a must not equal zero. 
 
@@ -307,7 +307,7 @@ This is the minimum point of the parabola since a > 0.`
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <ContentCard 
-                title="Quadratic Essentials" 
+                title="Overview" 
                 content={formattedOverviewContent}
                 icon={<BookOpen className="w-6 h-6" />}
                 delay={0.2}
@@ -318,7 +318,7 @@ This is the minimum point of the parabola since a > 0.`
               />
               
               <ContentCard 
-                title="Curriculum Applications" 
+                title="Learning Outcomes and Relevance" 
                 content={learningOutcomesContent}
                 icon={<GraduationCap className="w-6 h-6" />} 
                 delay={0.4}
