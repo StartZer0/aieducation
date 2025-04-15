@@ -168,21 +168,20 @@ const EnergyPracticeProblems: React.FC = () => {
       return;
     }
     
-    // Next frame
+    // Next frame - using a fixed small increment for smooth animation
     const newPos = diverPosition1 + 0.005;
-    setDiverPosition1(Math.min(newPos, 1));
     
     // Calculate current position
     const visHeight = visualization1Ref.current.clientHeight;
     const platformTop = 50;
     const waterTop = visHeight - 80;
-    const diverTop = platformTop + diverPosition1 * (waterTop - platformTop);
+    const diverTop = platformTop + newPos * (waterTop - platformTop);
     
     // Update diver position
     diver1Ref.current.style.top = diverTop + 'px';
     
     // Calculate current energy values
-    const currentHeight = height1 * (1 - diverPosition1);
+    const currentHeight = height1 * (1 - newPos);
     const potential = mass1 * GRAVITY * currentHeight;
     const total = mass1 * GRAVITY * height1;
     const kinetic = total - potential;
@@ -195,7 +194,7 @@ const EnergyPracticeProblems: React.FC = () => {
     kineticEnergy1Ref.current.style.width = (kinetic / total * 100) + '%';
     
     // Update velocity vector
-    if (diverPosition1 > 0.1) {
+    if (newPos > 0.1) {
       const maxVelocity = Math.sqrt(2 * GRAVITY * height1);
       const vectorLength = (currentVelocity / maxVelocity) * 50;
       
@@ -205,6 +204,9 @@ const EnergyPracticeProblems: React.FC = () => {
       velocityVector1Ref.current.style.top = (diverTop + 20) + 'px';
       velocityVector1Ref.current.style.transform = 'rotate(90deg)';
     }
+    
+    // Update position state for next frame
+    setDiverPosition1(newPos);
     
     // Continue animation
     const id = requestAnimationFrame(animateDiver);
@@ -344,24 +346,24 @@ const EnergyPracticeProblems: React.FC = () => {
       return;
     }
     
-    // Next frame
+    // Next frame - using a small fixed increment for smooth animation
     const deltaPosition = 0.005 * (objectPosition2 < 1 ? 1 : 1.5); // Move faster on the way down
     const newPos = objectPosition2 + deltaPosition;
-    setObjectPosition2(newPos);
     
-    // Handle reaching max height
-    if (objectPosition2 >= 1 && objectDirection2 === 1) {
-      setObjectDirection2(-1); // Change direction to down
+    // Check for direction change at max height
+    let newDirection = objectDirection2;
+    if (newPos >= 1 && objectDirection2 === 1) {
+      newDirection = -1; // Change direction to down
     }
     
     // Calculate current height
     let currentHeight;
-    if (objectPosition2 <= 1) {
+    if (newPos <= 1) {
       // Going up
-      currentHeight = maxHeight2 * objectPosition2;
+      currentHeight = maxHeight2 * newPos;
     } else {
       // Coming down
-      currentHeight = maxHeight2 * (2 - objectPosition2);
+      currentHeight = maxHeight2 * (2 - newPos);
     }
     
     // Calculate visual position
@@ -383,7 +385,7 @@ const EnergyPracticeProblems: React.FC = () => {
     
     // Calculate how much energy has been lost so far
     // More loss as we get closer to the peak
-    const peakRatio = objectPosition2 <= 1 ? objectPosition2 : 2 - objectPosition2;
+    const peakRatio = newPos <= 1 ? newPos : 2 - newPos;
     const lossRatio = Math.pow(peakRatio, resistance2); // More loss with higher resistance
     
     const totalLoss = initialKE - mass2 * GRAVITY * maxHeight2;
@@ -395,8 +397,8 @@ const EnergyPracticeProblems: React.FC = () => {
     const kinetic = available - potential;
     
     // Calculate current velocity based on kinetic energy
-    let currentVelocity = Math.sqrt(2 * kinetic / mass2) * (objectDirection2 === 1 ? 1 : -1);
-    if (objectPosition2 > 0.98 && objectPosition2 < 1.02) {
+    let currentVelocity = Math.sqrt(2 * kinetic / mass2) * (newDirection === 1 ? 1 : -1);
+    if (newPos > 0.98 && newPos < 1.02) {
       currentVelocity = 0; // Exactly at the peak
     }
     
@@ -412,9 +414,13 @@ const EnergyPracticeProblems: React.FC = () => {
     
     velocityVector2Ref.current.style.opacity = absVelocity > 0.5 ? '1' : '0';
     velocityVector2Ref.current.style.width = vectorLength + 'px';
-    velocityVector2Ref.current.style.left = object2Ref.current.offsetLeft + (objectDirection2 === 1 ? 15 : -vectorLength) + 'px';
+    velocityVector2Ref.current.style.left = object2Ref.current.offsetLeft + (newDirection === 1 ? 15 : -vectorLength) + 'px';
     velocityVector2Ref.current.style.bottom = objectY + 'px';
-    velocityVector2Ref.current.style.transform = `rotate(${objectDirection2 === 1 ? -90 : 90}deg)`;
+    velocityVector2Ref.current.style.transform = `rotate(${newDirection === 1 ? -90 : 90}deg)`;
+    
+    // Update state for next frame
+    setObjectPosition2(newPos);
+    setObjectDirection2(newDirection);
     
     // Continue animation
     const id = requestAnimationFrame(animateObject2);
@@ -587,30 +593,30 @@ const EnergyPracticeProblems: React.FC = () => {
       return;
     }
     
-    // Next frame
+    // Next frame - using a small fixed increment for smooth animation
     const newPos = ballPosition3 + 0.01;
-    setBallPosition3(newPos);
     
-    // Handle impact and peak rebound
-    if (ballPosition3 >= 1 && ballPosition3 < 1.05 && ballDirection3 === 1) {
+    // Handle direction changes
+    let newDirection = ballDirection3;
+    if (newPos >= 1 && newPos < 1.05 && ballDirection3 === 1) {
       // Impact
-      setBallDirection3(-1); // Change direction to up
-    } else if (ballPosition3 >= 2 && ballDirection3 === -1) {
+      newDirection = -1; // Change direction to up
+    } else if (newPos >= 2 && ballDirection3 === -1) {
       // Peak of rebound
-      setBallDirection3(1); // Change direction to down
+      newDirection = 1; // Change direction to down
     }
     
     // Calculate current height
     let currentHeight;
-    if (ballPosition3 < 1) {
+    if (newPos < 1) {
       // Initial fall
-      currentHeight = initialHeight3 * (1 - ballPosition3);
-    } else if (ballPosition3 < 2) {
+      currentHeight = initialHeight3 * (1 - newPos);
+    } else if (newPos < 2) {
       // Rebound up
-      currentHeight = reboundHeight3 * (ballPosition3 - 1);
+      currentHeight = reboundHeight3 * (newPos - 1);
     } else {
       // Rebound down
-      currentHeight = reboundHeight3 * (3 - ballPosition3);
+      currentHeight = reboundHeight3 * (3 - newPos);
     }
     
     // Calculate visual position
@@ -636,7 +642,7 @@ const EnergyPracticeProblems: React.FC = () => {
     let energyLoss = 0;
     let availableEnergy = initialPE;
     
-    if (ballPosition3 >= 1) {
+    if (newPos >= 1) {
       // After impact, some energy is lost
       energyLoss = initialPE - mass3 * GRAVITY * reboundHeight3;
       availableEnergy = initialPE - energyLoss;
@@ -645,7 +651,7 @@ const EnergyPracticeProblems: React.FC = () => {
     const kinetic = availableEnergy - currentPE;
     
     // Calculate current velocity based on kinetic energy
-    const currentVelocity = Math.sqrt(2 * kinetic / mass3) * (ballDirection3 === 1 ? 1 : -1);
+    const currentVelocity = Math.sqrt(2 * kinetic / mass3) * (newDirection === 1 ? 1 : -1);
     
     // Update energy bars
     potentialEnergy3Ref.current.style.width = (currentPE / initialPE * 100) + '%';
@@ -662,10 +668,14 @@ const EnergyPracticeProblems: React.FC = () => {
       velocityVector3Ref.current.style.width = vectorLength + 'px';
       velocityVector3Ref.current.style.left = ball3Ref.current.offsetLeft + 20 + 'px';
       velocityVector3Ref.current.style.top = ballY + 'px';
-      velocityVector3Ref.current.style.transform = `rotate(${ballDirection3 === 1 ? 90 : -90}deg)`;
+      velocityVector3Ref.current.style.transform = `rotate(${newDirection === 1 ? 90 : -90}deg)`;
     } else {
       velocityVector3Ref.current.style.opacity = '0';
     }
+    
+    // Update state for next frame
+    setBallPosition3(newPos);
+    setBallDirection3(newDirection);
     
     // Continue animation
     const id = requestAnimationFrame(animateBall3);
@@ -706,11 +716,11 @@ const EnergyPracticeProblems: React.FC = () => {
     // Update results
     const initialPE = mass3 * GRAVITY * newHeight;
     const impactKE = initialPE; // Conservation of energy
-    const reboundPE = mass3 * GRAVITY * reboundHeight3;
+    const reboundPE = mass3 * GRAVITY * Math.min(reboundHeight3, newHeight);
     
     // Calculate velocities
     const impactVelocity = Math.sqrt(2 * GRAVITY * newHeight);
-    const reboundVelocity = Math.sqrt(2 * GRAVITY * reboundHeight3);
+    const reboundVelocity = Math.sqrt(2 * GRAVITY * Math.min(reboundHeight3, newHeight));
     
     if (energyLost3aRef.current) energyLost3aRef.current.textContent = (initialPE - reboundPE).toFixed(4);
     if (kineticBeforeImpact3Ref.current) kineticBeforeImpact3Ref.current.textContent = impactKE.toFixed(4);
