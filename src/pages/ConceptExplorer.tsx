@@ -24,7 +24,6 @@ const ConceptExplorer = () => {
     q3: false
   });
 
-  // Content sections
   const overviewContent = `
 # Overview of Quadratic Functions
 
@@ -76,7 +75,6 @@ Quadratic functions form the foundation for many advanced mathematical concepts 
 * Applications to rates of change and area problems
 `;
 
-  // Sample questions
   const questions = [
     {
       id: 'q1',
@@ -156,7 +154,6 @@ This is the minimum point of the parabola since a > 0.`
     
     setIsLoading(true);
     
-    // Simulate loading
     setTimeout(() => {
       setShowPrompt(false);
       setIsLoading(false);
@@ -307,10 +304,11 @@ const ContentCard: React.FC<ContentCardProps> = ({
               </h2>
               <div className="prose max-w-none">
                 <TypewriterText
-                  markdown={content}
+                  text={content}
                   speed={20}
                   highlightTerms={true}
                   visualMode={visualMode}
+                  animate={true}
                 />
               </div>
               <div className="mt-4 flex justify-center">
@@ -571,7 +569,6 @@ const VisualizationCard: React.FC<{ delay: number }> = ({ delay }) => {
 };
 
 function checkAnswer(questionId: string, userAnswer: string, correctAnswer: string) {
-  // Very simple check - could be made more sophisticated
   return userAnswer.toLowerCase().includes(correctAnswer.toLowerCase());
 }
 

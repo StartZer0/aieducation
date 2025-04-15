@@ -152,7 +152,7 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
       
       if (highlightTerms) {
         for (const [term, color] of Object.entries(mathTerms)) {
-          if (new RegExp(`\\b${term}\\b`, 'i').test(word.replace(/[.,;!?]$/, ''))) {
+          if (new RegExp(`\\b${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, 'i').test(word.replace(/[.,;!?]$/, ''))) {
             isHighlighted = true;
             highlightColor = color;
             break;
