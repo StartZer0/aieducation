@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 interface AnimatedContentProps {
   content: string;
@@ -12,7 +13,7 @@ interface AnimatedContentProps {
 
 export const AnimatedContent: React.FC<AnimatedContentProps> = ({
   content,
-  speed = 5, // Reduced from 10 to 5 for faster animation
+  speed = 5, // Default speed setting
   highlightTerms = false,
   visualMode = false,
   animate = true,
@@ -21,6 +22,13 @@ export const AnimatedContent: React.FC<AnimatedContentProps> = ({
   const [displayedText, setDisplayedText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isComplete, setIsComplete] = useState(!animate);
+  const location = useLocation();
+
+  // Determine if we're on the AI Explainer page
+  const isAIExplainerPage = location.pathname.includes('/ai-explainer');
+  
+  // Set faster speed for AI Explainer page
+  const effectiveSpeed = isAIExplainerPage ? 1 : speed; // 1ms is very fast
 
   useEffect(() => {
     // If animation is disabled, display all content immediately
@@ -30,17 +38,37 @@ export const AnimatedContent: React.FC<AnimatedContentProps> = ({
       return;
     }
 
-    if (currentIndex < content.length) {
-      const timer = setTimeout(() => {
-        setDisplayedText(prev => prev + content[currentIndex]);
-        setCurrentIndex(prev => prev + 1);
-      }, speed);
+    // For AI Explainer page, we can further optimize by using a chunk-based approach
+    if (isAIExplainerPage && content.length > 100) {
+      // Display content in larger chunks for faster rendering
+      const chunkSize = 25; // Process 25 characters at a time for AI Explainer
       
-      return () => clearTimeout(timer);
+      if (currentIndex < content.length) {
+        const timer = setTimeout(() => {
+          const end = Math.min(currentIndex + chunkSize, content.length);
+          const nextChunk = content.substring(currentIndex, end);
+          setDisplayedText(prev => prev + nextChunk);
+          setCurrentIndex(end);
+        }, effectiveSpeed);
+        
+        return () => clearTimeout(timer);
+      } else {
+        setIsComplete(true);
+      }
     } else {
-      setIsComplete(true);
+      // Standard character-by-character animation for other pages
+      if (currentIndex < content.length) {
+        const timer = setTimeout(() => {
+          setDisplayedText(prev => prev + content[currentIndex]);
+          setCurrentIndex(prev => prev + 1);
+        }, effectiveSpeed);
+        
+        return () => clearTimeout(timer);
+      } else {
+        setIsComplete(true);
+      }
     }
-  }, [currentIndex, content, speed, animate]);
+  }, [currentIndex, content, effectiveSpeed, animate, isAIExplainerPage]);
 
   const formatText = (text: string) => {
     if (!text || isHtml) return text; // Return as-is if empty or already HTML
