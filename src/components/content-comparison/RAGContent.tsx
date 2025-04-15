@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TypewriterText from "@/components/TypewriterText";
@@ -12,7 +12,8 @@ interface RAGContentProps {
   advancedModeContent: string;
 }
 
-export function RAGContent({ 
+// Using memo to prevent unnecessary re-renders
+export const RAGContent = memo(function RAGContent({ 
   activeTab, 
   setActiveTab, 
   easyModeContent, 
@@ -57,4 +58,4 @@ export function RAGContent({
       </CardHeader>
     </Card>
   );
-}
+});

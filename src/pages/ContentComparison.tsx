@@ -1,12 +1,13 @@
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, memo } from 'react';
 import { LLMContent } from "@/components/content-comparison/LLMContent";
 import { RAGContent } from "@/components/content-comparison/RAGContent";
 import { llmContent, easyModeContent, mediumModeContent, advancedModeContent } from "@/data/energy-content";
 import { KineticEnergyVisualization } from "@/components/KineticEnergyVisualization";
 import PendulumMotionVisualization from "@/components/PendulumMotionVisualization";
 
-export default function ContentComparison() {
+// Using memo to prevent unnecessary re-renders
+const ContentComparison = memo(function ContentComparison() {
   const [activeTab, setActiveTab] = useState<string>("medium");
   
   const handleTabChange = useCallback((tab: string) => {
@@ -44,4 +45,6 @@ export default function ContentComparison() {
       </div>
     </div>
   );
-}
+});
+
+export default ContentComparison;

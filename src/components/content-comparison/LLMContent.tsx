@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import TypewriterText from "@/components/TypewriterText";
 
@@ -7,7 +7,8 @@ interface LLMContentProps {
   content: string;
 }
 
-export function LLMContent({ content }: LLMContentProps) {
+// Using memo to prevent unnecessary re-renders
+export const LLMContent = memo(function LLMContent({ content }: LLMContentProps) {
   return (
     <Card className="h-[800px] overflow-hidden shadow-lg">
       <CardHeader className="bg-gradient-to-r from-blue-500 to-blue-600 text-white">
@@ -18,4 +19,4 @@ export function LLMContent({ content }: LLMContentProps) {
       </CardContent>
     </Card>
   );
-}
+});

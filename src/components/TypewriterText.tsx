@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { MarkdownRenderer } from "@/components/study/MarkdownRenderer";
 
 interface TypewriterTextProps {
@@ -17,6 +17,20 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   const wordsRef = useRef<string[]>([]);
   const currentWordIndexRef = useRef<number>(0);
   
+  // Using useCallback to prevent recreation of this function on each render
+  const typeNextWord = useCallback(() => {
+    if (currentWordIndexRef.current < wordsRef.current.length) {
+      const nextWord = wordsRef.current[currentWordIndexRef.current];
+      setDisplayedText(prev => prev + (currentWordIndexRef.current > 0 ? ' ' : '') + nextWord);
+      currentWordIndexRef.current++;
+      
+      // Schedule the next word
+      typingTimerRef.current = setTimeout(typeNextWord, 1000 / speed);
+    } else {
+      setIsComplete(true);
+    }
+  }, [speed]);
+  
   useEffect(() => {
     if (!text) return;
     
@@ -28,23 +42,6 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     // Split text into words
     wordsRef.current = text.split(' ');
     
-    // Calculate delay based on speed (words per second)
-    const delay = 1000 / speed;
-    
-    // Function to add the next word
-    const typeNextWord = () => {
-      if (currentWordIndexRef.current < wordsRef.current.length) {
-        const nextWord = wordsRef.current[currentWordIndexRef.current];
-        setDisplayedText(prev => prev + (currentWordIndexRef.current > 0 ? ' ' : '') + nextWord);
-        currentWordIndexRef.current++;
-        
-        // Schedule the next word
-        typingTimerRef.current = setTimeout(typeNextWord, delay);
-      } else {
-        setIsComplete(true);
-      }
-    };
-    
     // Start typing animation
     typeNextWord();
     
@@ -52,9 +49,10 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     return () => {
       if (typingTimerRef.current) {
         clearTimeout(typingTimerRef.current);
+        typingTimerRef.current = null;
       }
     };
-  }, [text, speed]);
+  }, [text, typeNextWord]);
   
   return (
     <div className="relative">

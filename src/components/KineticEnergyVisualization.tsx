@@ -1,11 +1,16 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 
 export const KineticEnergyVisualization: React.FC = () => {
   // Canvas ref
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  
+  // Refs for animation control
+  const isPlayingRef = useRef<boolean>(false);
+  const animationRef = useRef<number | null>(null);
+  const startTimeRef = useRef<number | null>(null);
   
   // State for input values
   const [mass, setMass] = useState(1.0);
@@ -22,12 +27,8 @@ export const KineticEnergyVisualization: React.FC = () => {
     kineticEnergy: 0.0,
   });
   
-  // Animation frame reference
-  const animationRef = useRef<number | null>(null);
-  const startTimeRef = useRef<number | null>(null);
-
   // Calculate physics values based on inputs
-  const calculateValues = () => {
+  const calculateValues = useCallback(() => {
     const acceleration = force / mass;
     const velocity = acceleration * time;
     const distance = 0.5 * acceleration * time * time;
@@ -41,71 +42,10 @@ export const KineticEnergyVisualization: React.FC = () => {
       workDone,
       kineticEnergy
     };
-  };
-  
-  // Update all values when inputs change
-  useEffect(() => {
-    const newValues = calculateValues();
-    setValues(newValues);
-    
-    // Draw the scene whenever values change
-    drawScene();
   }, [mass, force, time]);
   
-  // Animation function
-  const animate = (timestamp: number) => {
-    if (startTimeRef.current === null) {
-      startTimeRef.current = timestamp;
-    }
-    
-    const elapsed = timestamp - startTimeRef.current;
-    const progress = Math.min(elapsed / 5000, 1); // 5 seconds animation
-    
-    // Update time based on progress
-    const newTime = 5 * progress;
-    setTime(newTime);
-    
-    if (progress < 1) {
-      animationRef.current = requestAnimationFrame(animate);
-    } else {
-      setIsPlaying(false);
-      animationRef.current = null;
-      startTimeRef.current = null;
-    }
-  };
-  
-  // Toggle animation
-  const toggleAnimation = () => {
-    if (isPlaying) {
-      // Stop animation
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-        animationRef.current = null;
-      }
-      setIsPlaying(false);
-    } else {
-      // Start animation
-      startTimeRef.current = null;
-      animationRef.current = requestAnimationFrame(animate);
-      setIsPlaying(true);
-    }
-  };
-  
-  // Reset visualization
-  const resetVisualization = () => {
-    // Stop animation if playing
-    if (animationRef.current) {
-      cancelAnimationFrame(animationRef.current);
-      animationRef.current = null;
-    }
-    
-    setTime(0);
-    setIsPlaying(false);
-    startTimeRef.current = null;
-  };
-  
   // Draw the scene on canvas
-  const drawScene = () => {
+  const drawScene = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
@@ -190,7 +130,82 @@ export const KineticEnergyVisualization: React.FC = () => {
     ctx.fillStyle = '#000';
     ctx.font = '10px Arial';
     ctx.fillText('Initial position', initialX - 25, groundY - 40);
-  };
+  }, [values, force]);
+  
+  // Update all values and draw scene
+  const updateVisualization = useCallback(() => {
+    const newValues = calculateValues();
+    setValues(newValues);
+  }, [calculateValues]);
+  
+  // Effect to calculate values when inputs change
+  useEffect(() => {
+    updateVisualization();
+  }, [mass, force, time, updateVisualization]);
+  
+  // Effect to draw scene when values change
+  useEffect(() => {
+    drawScene();
+  }, [values, drawScene]);
+  
+  // Animation function
+  const animate = useCallback((timestamp: number) => {
+    if (startTimeRef.current === null) {
+      startTimeRef.current = timestamp;
+    }
+    
+    const elapsed = timestamp - startTimeRef.current;
+    const progress = Math.min(elapsed / 5000, 1); // 5 seconds animation
+    
+    // Update time based on progress
+    const newTime = 5 * progress;
+    setTime(newTime);
+    
+    if (progress < 1 && isPlayingRef.current) {
+      animationRef.current = requestAnimationFrame(animate);
+    } else if (progress >= 1) {
+      // Animation completed
+      startTimeRef.current = null;
+      animationRef.current = null;
+      isPlayingRef.current = false;
+      setIsPlaying(false);
+    }
+  }, []);
+  
+  // Toggle animation
+  const toggleAnimation = useCallback(() => {
+    const nextIsPlaying = !isPlayingRef.current;
+    isPlayingRef.current = nextIsPlaying;
+    setIsPlaying(nextIsPlaying);
+    
+    if (nextIsPlaying) {
+      // Start animation
+      startTimeRef.current = null;
+      if (animationRef.current === null) {
+        animationRef.current = requestAnimationFrame(animate);
+      }
+    } else {
+      // Stop animation
+      if (animationRef.current !== null) {
+        cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
+      }
+    }
+  }, [animate]);
+  
+  // Reset visualization
+  const resetVisualization = useCallback(() => {
+    // Stop animation if playing
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+      animationRef.current = null;
+    }
+    
+    isPlayingRef.current = false;
+    setIsPlaying(false);
+    startTimeRef.current = null;
+    setTime(0);
+  }, []);
   
   // Set up canvas on component mount
   useEffect(() => {
@@ -208,9 +223,10 @@ export const KineticEnergyVisualization: React.FC = () => {
     return () => {
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
+        animationRef.current = null;
       }
     };
-  }, []);
+  }, [drawScene]);
   
   // Update canvas size on window resize
   useEffect(() => {
@@ -225,7 +241,7 @@ export const KineticEnergyVisualization: React.FC = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [drawScene]);
   
   // Calculate energy percentages for display bars
   const maxEnergy = 100;
@@ -287,6 +303,7 @@ export const KineticEnergyVisualization: React.FC = () => {
                 value={time}
                 onChange={(e) => setTime(parseFloat(e.target.value))}
                 className="w-[90%] block"
+                id="timeSlider"
               />
             </label>
           </div>
@@ -297,6 +314,7 @@ export const KineticEnergyVisualization: React.FC = () => {
           <button 
             onClick={toggleAnimation}
             className="bg-green-500 text-white px-4 py-2 rounded mr-2 hover:bg-green-600"
+            id="startStopBtn"
           >
             {isPlaying ? 'Pause Animation' : 'Play Animation'}
           </button>
@@ -343,4 +361,3 @@ export const KineticEnergyVisualization: React.FC = () => {
     </Card>
   );
 };
-
