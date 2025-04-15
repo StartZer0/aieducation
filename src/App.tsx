@@ -18,7 +18,7 @@ import Analytics from "./pages/Analytics";
 import AboutMe from "./pages/Architecture";
 import GenericGPT from "./pages/GenericGPT";
 import ContentComparison from "./pages/ContentComparison";
-import ConceptExplorer from "./pages/QuadraticExplorer";
+import ConceptExplorer from "./pages/ConceptExplorer";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -102,7 +102,7 @@ const App = () => (
               <ContentComparison />
             </main>
           </>} />
-          <Route path="/quadratic-explorer" element={<>
+          <Route path="/concept-explorer" element={<>
             <Header />
             <main>
               <ConceptExplorer />

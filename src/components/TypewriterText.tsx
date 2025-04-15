@@ -1,15 +1,19 @@
+
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { MarkdownRenderer } from "@/components/study/MarkdownRenderer";
 
 interface TypewriterTextProps {
-  text: string;
+  text?: string;
+  markdown?: string;
   speed?: number; // Words per second
 }
 
 const TypewriterText: React.FC<TypewriterTextProps> = ({ 
   text, 
-  speed = 15 // Default speed to 15 words per second (increased from 12)
+  markdown,
+  speed = 15 // Default speed
 }) => {
+  const content = markdown || text || '';
   const [displayedText, setDisplayedText] = useState('');
   const [isComplete, setIsComplete] = useState(false);
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -34,9 +38,9 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
     setIsComplete(false);
     currentWordIndexRef.current = 0;
     
-    if (!text) return;
+    if (!content) return;
 
-    wordsRef.current = text.split(' ');
+    wordsRef.current = content.split(' ');
     
     if (typingTimerRef.current) {
       clearTimeout(typingTimerRef.current);
@@ -51,11 +55,15 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
         typingTimerRef.current = null;
       }
     };
-  }, [text, typeNextWord]);
+  }, [content, typeNextWord]);
   
   return (
     <div className="relative">
-      <MarkdownRenderer markdown={displayedText} />
+      {markdown ? (
+        <MarkdownRenderer markdown={displayedText} />
+      ) : (
+        <p>{displayedText}</p>
+      )}
       {!isComplete && (
         <div className="inline-block w-2 h-4 ml-1 bg-blue-500 animate-pulse" />
       )}
