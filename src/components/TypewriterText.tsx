@@ -14,43 +14,46 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
   const [displayedText, setDisplayedText] = useState('');
   const [isComplete, setIsComplete] = useState(false);
   const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const wordsRef = useRef<string[]>([]);
+  const currentWordIndexRef = useRef<number>(0);
   
   useEffect(() => {
-    if (text) {
-      setIsComplete(false);
-      setDisplayedText('');
-      
-      // Split text into words
-      const words = text.split(' ');
-      let currentWordIndex = 0;
-      
-      // Calculate delay based on speed (words per second)
-      const delay = 1000 / speed;
-      
-      // Function to add the next word
-      const typeNextWord = () => {
-        if (currentWordIndex < words.length) {
-          const nextWord = words[currentWordIndex];
-          setDisplayedText(prev => prev + (currentWordIndex > 0 ? ' ' : '') + nextWord);
-          currentWordIndex++;
-          
-          // Schedule the next word
-          typingTimerRef.current = setTimeout(typeNextWord, delay);
-        } else {
-          setIsComplete(true);
-        }
-      };
-      
-      // Start typing animation
-      typeNextWord();
-      
-      // Cleanup function to clear any pending timeouts
-      return () => {
-        if (typingTimerRef.current) {
-          clearTimeout(typingTimerRef.current);
-        }
-      };
-    }
+    if (!text) return;
+    
+    // Reset state when text changes
+    setIsComplete(false);
+    setDisplayedText('');
+    currentWordIndexRef.current = 0;
+    
+    // Split text into words
+    wordsRef.current = text.split(' ');
+    
+    // Calculate delay based on speed (words per second)
+    const delay = 1000 / speed;
+    
+    // Function to add the next word
+    const typeNextWord = () => {
+      if (currentWordIndexRef.current < wordsRef.current.length) {
+        const nextWord = wordsRef.current[currentWordIndexRef.current];
+        setDisplayedText(prev => prev + (currentWordIndexRef.current > 0 ? ' ' : '') + nextWord);
+        currentWordIndexRef.current++;
+        
+        // Schedule the next word
+        typingTimerRef.current = setTimeout(typeNextWord, delay);
+      } else {
+        setIsComplete(true);
+      }
+    };
+    
+    // Start typing animation
+    typeNextWord();
+    
+    // Cleanup function
+    return () => {
+      if (typingTimerRef.current) {
+        clearTimeout(typingTimerRef.current);
+      }
+    };
   }, [text, speed]);
   
   return (

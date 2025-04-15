@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { LLMContent } from "@/components/content-comparison/LLMContent";
 import { RAGContent } from "@/components/content-comparison/RAGContent";
 import { llmContent, easyModeContent, mediumModeContent, advancedModeContent } from "@/data/energy-content";
@@ -8,6 +8,10 @@ import PendulumMotionVisualization from "@/components/PendulumMotionVisualizatio
 
 export default function ContentComparison() {
   const [activeTab, setActiveTab] = useState<string>("medium");
+  
+  const handleTabChange = useCallback((tab: string) => {
+    setActiveTab(tab);
+  }, []);
 
   return (
     <div className="container mx-auto py-12 px-4">
@@ -20,7 +24,7 @@ export default function ContentComparison() {
         <LLMContent content={llmContent} />
         <RAGContent 
           activeTab={activeTab}
-          setActiveTab={setActiveTab}
+          setActiveTab={handleTabChange}
           easyModeContent={easyModeContent}
           mediumModeContent={mediumModeContent}
           advancedModeContent={advancedModeContent}

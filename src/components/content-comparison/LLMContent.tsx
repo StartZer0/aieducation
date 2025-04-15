@@ -14,7 +14,7 @@ export function LLMContent({ content }: LLMContentProps) {
         <CardTitle className="text-center">LLM Generated Content</CardTitle>
       </CardHeader>
       <CardContent className="p-6 h-[730px] overflow-auto">
-        <TypewriterText text={content} speed={0.33} />
+        <TypewriterText text={content} />
       </CardContent>
     </Card>
   );

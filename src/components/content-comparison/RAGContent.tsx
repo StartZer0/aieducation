@@ -3,7 +3,6 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import TypewriterText from "@/components/TypewriterText";
-import { KineticEnergyVisualization } from "@/components/KineticEnergyVisualization";
 
 interface RAGContentProps {
   activeTab: string;
@@ -40,22 +39,17 @@ export function RAGContent({
           <CardContent className="p-6 h-[680px] overflow-auto">
             <TabsContent value="easy">
               {activeTab === "easy" && (
-                <TypewriterText text={easyModeContent} speed={0.33} />
+                <TypewriterText text={easyModeContent} />
               )}
             </TabsContent>
             <TabsContent value="medium">
               {activeTab === "medium" && (
-                <TypewriterText text={mediumModeContent} speed={0.33} />
+                <TypewriterText text={mediumModeContent} />
               )}
             </TabsContent>
             <TabsContent value="advanced">
               {activeTab === "advanced" && (
-                <React.Fragment>
-                  <TypewriterText text={advancedModeContent} speed={0.33} />
-                  <div className="mt-6">
-                    <KineticEnergyVisualization />
-                  </div>
-                </React.Fragment>
+                <TypewriterText text={advancedModeContent} />
               )}
             </TabsContent>
           </CardContent>
