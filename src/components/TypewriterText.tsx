@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { MarkdownRenderer } from "@/components/study/MarkdownRenderer";
 
 interface TypewriterTextProps {
@@ -9,10 +9,11 @@ interface TypewriterTextProps {
 
 const TypewriterText: React.FC<TypewriterTextProps> = ({ 
   text, 
-  speed = 6 // Updated default speed to 6 words per second
+  speed = 6 // Default speed of 6 words per second
 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [isComplete, setIsComplete] = useState(false);
+  const typingTimerRef = useRef<NodeJS.Timeout | null>(null);
   
   useEffect(() => {
     if (text) {
@@ -21,28 +22,33 @@ const TypewriterText: React.FC<TypewriterTextProps> = ({
       
       // Split text into words
       const words = text.split(' ');
-      let currentIndex = 0;
+      let currentWordIndex = 0;
       
-      // Start typing animation
-      const typeWords = () => {
-        if (currentIndex < words.length) {
-          const nextWord = words[currentIndex];
-          setDisplayedText(prev => prev + (currentIndex > 0 ? ' ' : '') + nextWord);
-          currentIndex++;
+      // Calculate delay based on speed (words per second)
+      const delay = 1000 / speed;
+      
+      // Function to add the next word
+      const typeNextWord = () => {
+        if (currentWordIndex < words.length) {
+          const nextWord = words[currentWordIndex];
+          setDisplayedText(prev => prev + (currentWordIndex > 0 ? ' ' : '') + nextWord);
+          currentWordIndex++;
           
-          // Calculate delay based on speed (words per second)
-          const delay = 1000 / speed;
-          setTimeout(typeWords, delay);
+          // Schedule the next word
+          typingTimerRef.current = setTimeout(typeNextWord, delay);
         } else {
           setIsComplete(true);
         }
       };
       
-      typeWords();
+      // Start typing animation
+      typeNextWord();
       
+      // Cleanup function to clear any pending timeouts
       return () => {
-        // Cleanup any pending timeouts when component unmounts
-        setIsComplete(true);
+        if (typingTimerRef.current) {
+          clearTimeout(typingTimerRef.current);
+        }
       };
     }
   }, [text, speed]);

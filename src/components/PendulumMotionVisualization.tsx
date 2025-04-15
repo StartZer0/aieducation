@@ -1,5 +1,5 @@
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Card } from '@/components/ui/card';
 
 export const PendulumMotionVisualization: React.FC = () => {
@@ -41,73 +41,15 @@ export const PendulumMotionVisualization: React.FC = () => {
   // Constants
   const GRAVITY = 9.8; // m/s²
 
-  // Initialize visualization
-  useEffect(() => {
-    if (containerRef.current) {
-      initVisualization();
-    }
-
-    return () => {
-      if (animationIdRef.current) {
-        cancelAnimationFrame(animationIdRef.current);
-      }
-    };
-  }, []);
-
-  // Update visualization on parameter change
-  useEffect(() => {
-    if (containerRef.current) {
-      resetPendulum();
-    }
-  }, [mass, length, initialAngle, damping]);
-
-  // Handle window resize
-  useEffect(() => {
-    const handleResize = () => {
-      initVisualization();
-      updatePendulum();
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Initialize visualization dimensions and positioning
-  const initVisualization = () => {
-    if (!containerRef.current) return;
-
-    const width = containerRef.current.clientWidth;
-    const height = 300; // Fixed height as per the original code
-    const pivotX = width / 2;
-    const pivotY = height / 5;
-    const scale = height / 3; // Scale to fit visualization
-
-    // Set pendulum pivot position
-    if (pendulumPivotRef.current) {
-      pendulumPivotRef.current.style.left = `${pivotX}px`;
-      pendulumPivotRef.current.style.top = `${pivotY}px`;
-    }
-
-    // Set pendulum path
-    if (pendulumPathRef.current) {
-      pendulumPathRef.current.style.left = `${pivotX - scale * 1.2}px`;
-      pendulumPathRef.current.style.top = `${pivotY}px`;
-      pendulumPathRef.current.style.width = `${scale * 2.4}px`;
-      pendulumPathRef.current.style.height = `${scale * 1.2}px`;
-    }
-
-    resetPendulum();
-  };
-
   // Reset pendulum to initial state
-  const resetPendulum = () => {
+  const resetPendulum = useCallback(() => {
     angleRef.current = initialAngle * Math.PI / 180; // Convert to radians
     angularVelocityRef.current = 0;
     updatePendulum();
-  };
+  }, [initialAngle]);
 
   // Update pendulum position and energy
-  const updatePendulum = () => {
+  const updatePendulum = useCallback(() => {
     if (!containerRef.current || 
         !pendulumPivotRef.current || 
         !pendulumStringRef.current || 
@@ -207,8 +149,6 @@ export const PendulumMotionVisualization: React.FC = () => {
     const kineticEnergy = 0.5 * mass * tangentialVelocityValue * tangentialVelocityValue;
     // Total energy (should be constant without damping)
     const totalEnergy = potentialEnergy + kineticEnergy;
-    // Maximum energy (all potential at initial position)
-    const maxEnergy = mass * GRAVITY * h0;
     
     // Update energy values
     setEnergyValues({
@@ -218,6 +158,7 @@ export const PendulumMotionVisualization: React.FC = () => {
     });
 
     // Calculate energy percentages for display bars
+    const maxEnergy = mass * GRAVITY * h0;
     const potentialEnergyPercent = (potentialEnergy / maxEnergy) * 100;
     const kineticEnergyPercent = (kineticEnergy / maxEnergy) * 100;
     const totalEnergyPercent = (totalEnergy / maxEnergy) * 100;
@@ -227,10 +168,37 @@ export const PendulumMotionVisualization: React.FC = () => {
       kineticEnergyPercent,
       totalEnergyPercent
     };
-  };
+  }, [initialAngle, length, mass]);
+
+  // Initialize visualization
+  const initVisualization = useCallback(() => {
+    if (!containerRef.current) return;
+
+    const width = containerRef.current.clientWidth;
+    const height = 300; // Fixed height as per the original code
+    const pivotX = width / 2;
+    const pivotY = height / 5;
+    const scale = height / 3; // Scale to fit visualization
+
+    // Set pendulum pivot position
+    if (pendulumPivotRef.current) {
+      pendulumPivotRef.current.style.left = `${pivotX}px`;
+      pendulumPivotRef.current.style.top = `${pivotY}px`;
+    }
+
+    // Set pendulum path
+    if (pendulumPathRef.current) {
+      pendulumPathRef.current.style.left = `${pivotX - scale * 1.2}px`;
+      pendulumPathRef.current.style.top = `${pivotY}px`;
+      pendulumPathRef.current.style.width = `${scale * 2.4}px`;
+      pendulumPathRef.current.style.height = `${scale * 1.2}px`;
+    }
+
+    resetPendulum();
+  }, [resetPendulum]);
 
   // Animation function
-  const animate = (timestamp: number) => {
+  const animate = useCallback((timestamp: number) => {
     if (!lastTimestampRef.current) {
       lastTimestampRef.current = timestamp;
       animationIdRef.current = requestAnimationFrame(animate);
@@ -254,28 +222,31 @@ export const PendulumMotionVisualization: React.FC = () => {
     if (isRunning) {
       animationIdRef.current = requestAnimationFrame(animate);
     }
-  };
+  }, [isRunning, length, damping, updatePendulum]);
 
   // Toggle animation
-  const toggleAnimation = () => {
-    const newRunningState = !isRunning;
-    setIsRunning(newRunningState);
-    
-    if (newRunningState) {
-      // Start animation
-      lastTimestampRef.current = null;
-      animationIdRef.current = requestAnimationFrame(animate);
-    } else {
-      // Stop animation
-      if (animationIdRef.current) {
-        cancelAnimationFrame(animationIdRef.current);
-        animationIdRef.current = null;
+  const toggleAnimation = useCallback(() => {
+    setIsRunning(prevState => {
+      const newRunningState = !prevState;
+      
+      if (newRunningState) {
+        // Start animation
+        lastTimestampRef.current = null;
+        animationIdRef.current = requestAnimationFrame(animate);
+      } else {
+        // Stop animation
+        if (animationIdRef.current) {
+          cancelAnimationFrame(animationIdRef.current);
+          animationIdRef.current = null;
+        }
       }
-    }
-  };
+      
+      return newRunningState;
+    });
+  }, [animate]);
 
   // Handle reset
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     if (isRunning) {
       // Stop animation if running
       setIsRunning(false);
@@ -285,7 +256,34 @@ export const PendulumMotionVisualization: React.FC = () => {
       }
     }
     resetPendulum();
-  };
+  }, [isRunning, resetPendulum]);
+
+  // Initialize visualization on component mount
+  useEffect(() => {
+    initVisualization();
+    
+    // Clean up on component unmount
+    return () => {
+      if (animationIdRef.current) {
+        cancelAnimationFrame(animationIdRef.current);
+      }
+    };
+  }, [initVisualization]);
+
+  // Update visualization on parameter change
+  useEffect(() => {
+    resetPendulum();
+  }, [mass, length, initialAngle, damping, resetPendulum]);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      initVisualization();
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [initVisualization]);
 
   // Calculate energy percentages for display bars
   const percentages = updatePendulum();
