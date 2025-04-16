@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   Menu, X, Book, GraduationCap, BarChart, Calendar, 
   MessageCircle, School, FileText, Play, BookOpen, FileQuestion,
-  User, ChevronLeft, BookOpenCheck, LineChart
+  User, ChevronLeft, BookOpenCheck, LineChart, BookOpenCheck as AIExplainerIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
@@ -44,6 +45,7 @@ const Header = () => {
     { path: '/essay-analysis', label: 'Essay Feedback', icon: <FileText className="w-5 h-5 mr-2" />, show: true },
     { path: '/content-comparison', label: 'Content Comparison', icon: <BookOpenCheck className="w-5 h-5 mr-2" />, show: true },
     { path: '/concept-explorer', label: 'Concept Explorer', icon: <LineChart className="w-5 h-5 mr-2" />, show: true },
+    { path: '/ai-explainer', label: 'AI Explainer', icon: <AIExplainerIcon className="w-5 h-5 mr-2" />, show: true },
     { path: '/test-chats', label: 'Learning Examples', icon: <Book className="w-5 h-5 mr-2" />, show: false },
     { path: '/test-chats2', label: 'Advanced Examples', icon: <Book className="w-5 h-5 mr-2" />, show: false },
   ];
