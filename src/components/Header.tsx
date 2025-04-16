@@ -66,7 +66,6 @@ const Header = () => {
         <Link to="/" className="flex items-center space-x-2">
           <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-blue to-teal flex items-center justify-center shadow-lg">
             <span className="text-white font-bold text-xl">A+</span>
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-white dark:bg-background rounded-full border-2 border-blue animate-pulse-soft"></div>
           </div>
           <span className="text-xl font-bold text-gradient">AI+ Education</span>
         </Link>
