@@ -4,7 +4,10 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Check, X, Send, Bot, User, PenTool, LineChart, BookOpen, GraduationCap, ExternalLink, ChevronDown, ChevronUp, Brain } from 'lucide-react';
+import { 
+  Check, X, Send, User, PenTool, LineChart, BookOpen, 
+  GraduationCap, ExternalLink, ChevronDown, ChevronUp, 
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import InteractiveQuadraticFunctions from '@/components/study/InteractiveQuadraticFunctions';
 import TypewriterText from '@/components/TypewriterText';
@@ -511,7 +514,7 @@ This is the minimum point of the parabola since a > 0.`
                     {message.type === 'user' ? (
                       <User className="w-4 h-4 text-blue-600" />
                     ) : (
-                      <Brain className="w-4 h-4 text-white" />
+                      
                     )}
                   </div>
                   
