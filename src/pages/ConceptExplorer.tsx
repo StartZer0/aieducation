@@ -1,17 +1,28 @@
-import React, { useState } from 'react';
+
+import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Check, X, BookOpen, GraduationCap, PenTool, LineChart } from 'lucide-react';
+import { Check, X, Send, Bot, User, PenTool, LineChart, BookOpen, GraduationCap, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import InteractiveQuadraticFunctions from '@/components/study/InteractiveQuadraticFunctions';
 import TypewriterText from '@/components/TypewriterText';
+import { ScrollArea } from '@/components/ui/scroll-area';
+
+interface Message {
+  id: string;
+  type: 'user' | 'bot';
+  content: string | React.ReactNode;
+  contentType?: 'text' | 'overview' | 'learning-outcomes' | 'practice' | 'visualization';
+  isTyping?: boolean;
+}
 
 const ConceptExplorer = () => {
-  const [showPrompt, setShowPrompt] = useState(true);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [prompt, setPrompt] = useState('');
+  const [showInputArea, setShowInputArea] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [userAnswers, setUserAnswers] = useState({
     q1: '',
@@ -23,119 +34,386 @@ const ConceptExplorer = () => {
     q2: false,
     q3: false
   });
-
-  const formattedOverviewContent = `
-<div class="flex flex-col space-y-5">
-  <div class="bg-white rounded-lg p-4 shadow-sm">
-    <p class="font-medium mb-1">Source:</p>
-    <p>KS4 Mathematics Curriculum – Term 2 Algebra Module</p>
-  </div>
-
-  <div class="bg-white rounded-lg p-4 shadow-sm">
-    <p class="font-medium mb-2">Curriculum Topics in Unit 2.3 Quadratic Functions:</p>
-    <ol class="list-decimal list-inside pl-2 space-y-1">
-      <li>Recognize and interpret quadratic functions in standard form</li>
-      <li>Identify and sketch key features such as vertex, axis of symmetry, and intercepts</li>
-      <li>Solve quadratic equations using factorization and the quadratic formula</li>
-      <li>Analyze the effect of changing coefficients on the shape and position of the graph</li>
-    </ol>
-  </div>
-
-  <div class="bg-white rounded-lg p-4 shadow-sm">
-    <p class="font-medium mb-2">Practice Question Derived from Source</p>
-    <p class="mb-3">The function is defined as:</p>
-    <p class="bg-gray-50 px-4 py-2 rounded text-center font-medium mb-4">f(x) = -2x² + 8x - 5</p>
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Welcome message when component mounts
+  useEffect(() => {
+    const welcomeMessage: Message = {
+      id: 'welcome',
+      type: 'bot',
+      content: 'Welcome to Concept Explorer! I can help you learn about different academic concepts. What topic would you like to explore today?',
+      isTyping: true,
+    };
     
-    <div class="space-y-4">
-      <div>
-        <p class="mb-1"><span class="font-semibold">📌 (a)</span> Identify the vertex of the function.</p>
-        <p class="text-sm text-indigo-600">(2 marks)</p>
-      </div>
+    setTimeout(() => {
+      setMessages([welcomeMessage]);
+      // Remove typing indicator after 1 second
+      setTimeout(() => {
+        setMessages(msgs => 
+          msgs.map(m => m.id === 'welcome' ? {...m, isTyping: false} : m)
+        );
+      }, 1000);
+    }, 500);
+  }, []);
+
+  // Scroll to bottom whenever messages change
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages]);
+
+  const handleSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!prompt.trim()) return;
+    
+    const userMessage: Message = {
+      id: `user-${Date.now()}`,
+      type: 'user',
+      content: prompt,
+      contentType: 'text'
+    };
+    
+    setMessages(m => [...m, userMessage]);
+    setIsLoading(true);
+    
+    // Simulate bot typing
+    const botTypingMessage: Message = {
+      id: `bot-typing-${Date.now()}`,
+      type: 'bot',
+      content: '',
+      isTyping: true
+    };
+    
+    setTimeout(() => {
+      setMessages(m => [...m, botTypingMessage]);
       
-      <div>
-        <p class="mb-1"><span class="font-semibold">📌 (b)</span> State the axis of symmetry and determine whether the vertex is a maximum or minimum.</p>
-        <p class="text-sm text-indigo-600">(2 marks)</p>
-      </div>
+      // After 1.5 seconds, replace typing indicator with response
+      setTimeout(() => {
+        setMessages(msgs => {
+          const newMsgs = msgs.filter(m => m.id !== botTypingMessage.id);
+          return [
+            ...newMsgs,
+            {
+              id: `bot-${Date.now()}`,
+              type: 'bot',
+              content: "I'll help you understand quadratic functions. Let me provide a comprehensive overview, learning outcomes, practice questions, and interactive visualizations.",
+              contentType: 'text'
+            }
+          ];
+        });
+        
+        // Send content sections as separate messages
+        sendContentSections();
+        setIsLoading(false);
+        setPrompt('');
+      }, 1500);
+    }, 500);
+  };
+  
+  const sendContentSections = () => {
+    // Send overview content
+    setTimeout(() => {
+      setMessages(msgs => [
+        ...msgs, 
+        {
+          id: `bot-overview-${Date.now()}`,
+          type: 'bot',
+          content: renderOverviewContent(),
+          contentType: 'overview'
+        }
+      ]);
       
-      <div>
-        <p class="mb-1"><span class="font-semibold">📌 (c)</span> Find the x-intercepts of the function using the quadratic formula.</p>
-        <p class="text-sm text-indigo-600">(3 marks)</p>
-      </div>
-      
-      <div>
-        <p class="mb-1"><span class="font-semibold">📌 (d)</span> Sketch the graph, clearly showing the intercepts, axis of symmetry, and vertex.</p>
-        <p class="text-sm text-indigo-600">(3 marks)</p>
-      </div>
-    </div>
-    
-    <p class="text-xs text-gray-500 mt-4 italic">(Generated from KS4 Mathematics Exam Materials, Algebra Track)</p>
-  </div>
-</div>
-`;
+      // Send learning outcomes
+      setTimeout(() => {
+        setMessages(msgs => [
+          ...msgs, 
+          {
+            id: `bot-learning-${Date.now()}`,
+            type: 'bot',
+            content: renderLearningOutcomesContent(),
+            contentType: 'learning-outcomes'
+          }
+        ]);
+        
+        // Send practice questions
+        setTimeout(() => {
+          setMessages(msgs => [
+            ...msgs, 
+            {
+              id: `bot-practice-${Date.now()}`,
+              type: 'bot',
+              content: renderPracticeQuestionsContent(),
+              contentType: 'practice'
+            }
+          ]);
+          
+          // Send visualization
+          setTimeout(() => {
+            setMessages(msgs => [
+              ...msgs, 
+              {
+                id: `bot-visual-${Date.now()}`,
+                type: 'bot',
+                content: renderVisualizationContent(),
+                contentType: 'visualization'
+              }
+            ]);
+          }, 1000);
+        }, 1000);
+      }, 1000);
+    }, 1000);
+  };
 
-  const learningOutcomesContent = `
-<div class="flex flex-col space-y-5">
-  <div class="bg-white rounded-lg p-4 shadow-sm">
-    <p class="font-medium mb-1">Source:</p>
-    <p>KS4 Mathematics Curriculum – Term 2 Algebra Module</p>
-  </div>
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+  
+  const renderOverviewContent = () => {
+    return (
+      <Card className="w-full shadow-sm overflow-hidden border border-blue-100">
+        <CardContent className="p-0">
+          <div className="bg-blue-50 p-3 border-b border-blue-100 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <BookOpen className="h-4 w-4 text-blue-600" />
+              <h3 className="font-semibold text-blue-800">Overview</h3>
+            </div>
+            <ExternalLink className="h-4 w-4 text-blue-600" />
+          </div>
+          <div className="p-4 space-y-4 text-sm">
+            <div>
+              <p className="font-medium mb-1">Source:</p>
+              <p>KS4 Mathematics Curriculum – Term 2 Algebra Module</p>
+            </div>
 
-  <div class="bg-white rounded-lg p-4 shadow-sm">
-    <p class="font-medium mb-2">Exam Learning Objective in Quadratic Functions:</p>
-    <ul class="space-y-2 pl-2">
-      <li class="flex items-start">
-        <span class="text-blue-600 mr-2">•</span>
-        <span>Graph quadratic functions and identify their features</span>
-      </li>
-      <li class="flex items-start">
-        <span class="text-blue-600 mr-2">•</span>
-        <span>Solve quadratic equations using factoring, completing the square, and the quadratic formula</span>
-      </li>
-      <li class="flex items-start">
-        <span class="text-blue-600 mr-2">•</span>
-        <span>Interpret and apply the discriminant to classify roots</span>
-      </li>
-      <li class="flex items-start">
-        <span class="text-blue-600 mr-2">•</span>
-        <span>Apply quadratics in real-life modeling: mechanics, economics, and optimization</span>
-      </li>
-      <li class="flex items-start">
-        <span class="text-blue-600 mr-2">•</span>
-        <span>Understand transformations of quadratic graphs and connect them to other functions</span>
-      </li>
-    </ul>
-  </div>
+            <div>
+              <p className="font-medium mb-2">Curriculum Topics in Unit 2.3 Quadratic Functions:</p>
+              <ol className="list-decimal list-inside pl-2 space-y-1">
+                <li>Recognize and interpret quadratic functions in standard form</li>
+                <li>Identify and sketch key features such as vertex, axis of symmetry, and intercepts</li>
+                <li>Solve quadratic equations using factorization and the quadratic formula</li>
+                <li>Analyze the effect of changing coefficients on the shape and position of the graph</li>
+              </ol>
+            </div>
 
-  <div class="bg-white rounded-lg p-4 shadow-sm">
-    <p class="font-medium mb-2">Why This Matters</p>
-    <p class="mb-3">
-      Quadratic functions form a core part of A-Level Mathematics and are essential for understanding more advanced topics.
-      Students learn to graph, transform, and solve quadratics, which builds algebraic fluency and critical thinking.
-    </p>
-    
-    <p class="font-medium mb-2">Real-world applications reinforce relevance:</p>
-    
-    <ul class="space-y-2">
-      <li class="flex items-start">
-        <span class="mr-2">📐</span>
-        <span><strong>In mechanics:</strong> projectile motion and flight calculations</span>
-      </li>
-      <li class="flex items-start">
-        <span class="mr-2">💰</span>
-        <span><strong>In economics:</strong> modeling profit/cost relationships</span>
-      </li>
-      <li class="flex items-start">
-        <span class="mr-2">⚙️</span>
-        <span><strong>In engineering:</strong> structural design of arches and bridges</span>
-      </li>
-    </ul>
-    
-    <p class="mt-3">
-      These skills prepare students for STEM fields and help them see math as a practical, problem-solving tool.
-    </p>
-  </div>
-</div>
-`;
+            <div>
+              <p className="font-medium mb-2">Practice Question Derived from Source</p>
+              <p className="mb-3">The function is defined as:</p>
+              <p className="bg-gray-50 px-4 py-2 rounded text-center font-medium mb-4">f(x) = -2x² + 8x - 5</p>
+              
+              <div className="space-y-2">
+                <div>
+                  <p className="mb-1"><span className="font-semibold">📌 (a)</span> Identify the vertex of the function.</p>
+                  <p className="text-xs text-indigo-600">(2 marks)</p>
+                </div>
+                
+                <div>
+                  <p className="mb-1"><span className="font-semibold">📌 (b)</span> State the axis of symmetry and determine whether the vertex is a maximum or minimum.</p>
+                  <p className="text-xs text-indigo-600">(2 marks)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+  
+  const renderLearningOutcomesContent = () => {
+    return (
+      <Card className="w-full shadow-sm overflow-hidden border border-green-100">
+        <CardContent className="p-0">
+          <div className="bg-green-50 p-3 border-b border-green-100 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <GraduationCap className="h-4 w-4 text-green-600" />
+              <h3 className="font-semibold text-green-800">Learning Outcomes and Relevance</h3>
+            </div>
+            <ExternalLink className="h-4 w-4 text-green-600" />
+          </div>
+          <div className="p-4 space-y-3 text-sm">
+            <div>
+              <p className="font-medium mb-2"><strong>Why Quadratic Functions Matter in A-Level Mathematics</strong></p>
+              <p>In the A-Level curriculum, students are expected to develop a comprehensive understanding of quadratic functions, including their different forms, properties, and applications. This knowledge is assessed through various examination questions that test both theoretical understanding and practical problem-solving skills.
+              The study of quadratics also builds essential algebraic manipulation skills that transfer to other areas of mathematics. When students master techniques such as completing the square or working with the discriminant, they develop analytical thinking that proves valuable across the entire A-Level curriculum. Understanding transformations of quadratic functions also prepares students for more complex function transformations in advanced topics.</p>
+            </div>
+            
+            <div className="bg-green-50 p-3 rounded-lg">
+              <p>Quadratic functions serve as building blocks for more complex mathematical ideas, providing students with fundamental skills in algebraic manipulation, graphical interpretation, and problem-solving that transfer to numerous other areas of the A-Level syllabus.</p>
+            </div>
+            
+            <p>By the end of the A-Level quadratic functions unit, students should be able to:</p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="bg-white p-3 rounded-lg border border-green-100 shadow-sm">
+                <div className="font-medium flex items-center gap-1 text-green-800">
+                  <span>🔍 Analyze Quadratic Structure</span>
+                </div>
+                <p className="text-xs mt-1">Identify and interpret the standard form, vertex form, and factored form, converting between them as needed.</p>
+              </div>
+              
+              <div className="bg-white p-3 rounded-lg border border-green-100 shadow-sm">
+                <div className="font-medium flex items-center gap-1 text-green-800">
+                  <span>📊 Graph Interpretation</span>
+                </div>
+                <p className="text-xs mt-1">Sketch quadratic graphs accurately, identifying key features such as the vertex, axis of symmetry, and intercepts.</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+  
+  const renderPracticeQuestionsContent = () => {
+    return (
+      <Card className="w-full shadow-sm overflow-hidden border border-amber-100">
+        <CardContent className="p-0">
+          <div className="bg-amber-50 p-3 border-b border-amber-100 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <PenTool className="h-4 w-4 text-amber-600" />
+              <h3 className="font-semibold text-amber-800">Practice Questions</h3>
+            </div>
+            <ExternalLink className="h-4 w-4 text-amber-600" />
+          </div>
+          <div className="p-4 text-sm">
+            <div className="border border-amber-200 rounded-lg p-3 mb-2 bg-amber-50">
+              <div className="flex items-start gap-2">
+                <span className="bg-amber-100 text-amber-800 font-semibold rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0">
+                  1
+                </span>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-800">How would the graph of f(x) = 2x² - 4x + 5 differ from the graph of g(x) = -2x² - 4x + 5?</h4>
+                  
+                  <div className="mt-3">
+                    <Input
+                      placeholder="Enter your answer here"
+                      value={userAnswers.q1}
+                      onChange={(e) => setUserAnswers(prev => ({...prev, q1: e.target.value}))}
+                      className="border-gray-200 text-sm"
+                    />
+                    
+                    <div className="flex justify-between items-center mt-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setShowAnswers(prev => ({...prev, q1: !prev.q1}))}
+                        className="text-xs flex items-center gap-1"
+                      >
+                        {showAnswers.q1 ? "Hide Solution" : "Check Answer"}
+                        {showAnswers.q1 ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                      </Button>
+                      
+                      {userAnswers.q1 && (
+                        <div className="flex items-center">
+                          {checkAnswer('q1', userAnswers.q1, 'orientation') ? (
+                            <div className="flex items-center text-green-500 text-xs">
+                              <Check className="w-3 h-3 mr-1" />
+                              <span>Correct!</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center text-red-500 text-xs">
+                              <X className="w-3 h-3 mr-1" />
+                              <span>Try again</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    
+                    {showAnswers.q1 && (
+                      <div className="mt-2 p-3 bg-white border border-amber-200 rounded-md text-xs">
+                        <TypewriterText markdown={questions[0].explanation} speed={20} highlightTerms={true} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="border border-amber-200 rounded-lg p-3 bg-amber-50">
+              <div className="flex items-start gap-2">
+                <span className="bg-amber-100 text-amber-800 font-semibold rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0">
+                  2
+                </span>
+                <div>
+                  <h4 className="text-sm font-medium text-gray-800">If you change the value of c in a quadratic function, how does it affect the graph?</h4>
+                  
+                  <div className="mt-3">
+                    <Input
+                      placeholder="Enter your answer here"
+                      value={userAnswers.q2}
+                      onChange={(e) => setUserAnswers(prev => ({...prev, q2: e.target.value}))}
+                      className="border-gray-200 text-sm"
+                    />
+                    
+                    <div className="flex justify-between items-center mt-2">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setShowAnswers(prev => ({...prev, q2: !prev.q2}))}
+                        className="text-xs flex items-center gap-1"
+                      >
+                        {showAnswers.q2 ? "Hide Solution" : "Check Answer"}
+                        {showAnswers.q2 ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                      </Button>
+                      
+                      {userAnswers.q2 && (
+                        <div className="flex items-center">
+                          {checkAnswer('q2', userAnswers.q2, 'vertical shift') ? (
+                            <div className="flex items-center text-green-500 text-xs">
+                              <Check className="w-3 h-3 mr-1" />
+                              <span>Correct!</span>
+                            </div>
+                          ) : (
+                            <div className="flex items-center text-red-500 text-xs">
+                              <X className="w-3 h-3 mr-1" />
+                              <span>Try again</span>
+                            </div>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    
+                    {showAnswers.q2 && (
+                      <div className="mt-2 p-3 bg-white border border-amber-200 rounded-md text-xs">
+                        <TypewriterText markdown={questions[1].explanation} speed={20} highlightTerms={true} />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
+  
+  const renderVisualizationContent = () => {
+    return (
+      <Card className="w-full shadow-sm overflow-hidden border border-purple-100">
+        <CardContent className="p-0">
+          <div className="bg-purple-50 p-3 border-b border-purple-100 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <LineChart className="h-4 w-4 text-purple-600" />
+              <h3 className="font-semibold text-purple-800">Interactive Visualization</h3>
+            </div>
+          </div>
+          <div className="p-4">
+            <p className="mb-3 text-sm">
+              Explore how changing parameters affects quadratic functions:
+            </p>
+            <div className="bg-white p-3 rounded-lg shadow-sm border border-purple-100">
+              <InteractiveQuadraticFunctions />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
   const questions = [
     {
@@ -210,441 +488,106 @@ This is the minimum point of the parabola since a > 0.`
     }
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!prompt.trim()) return;
-    
-    setIsLoading(true);
-    
-    setTimeout(() => {
-      setShowPrompt(false);
-      setIsLoading(false);
-    }, 1500);
-  };
+  function checkAnswer(questionId: string, userAnswer: string, correctAnswer: string) {
+    return userAnswer.toLowerCase().includes(correctAnswer.toLowerCase());
+  }
 
   return (
-    <div className="container max-w-6xl mx-auto pt-16 pb-12 px-4 min-h-screen bg-white">
-      <AnimatePresence mode="wait">
-        {showPrompt ? (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="max-w-2xl mx-auto mt-12"
-          >
-            <h1 className="text-3xl font-bold text-center mb-8 text-[#1A1A2E]">
-              Concept Explorer
-            </h1>
-            
-            <Card className="shadow-sm rounded-lg overflow-hidden border-0">
-              <CardContent className="p-6">
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <label className="block text-lg font-medium text-[#333333]">
-                    Enter a topic or concept you'd like to explore:
-                  </label>
-                  
-                  <Textarea
-                    placeholder="E.g., 'I want to understand quadratic functions' or 'Explain the principles of quantum mechanics'"
-                    className="min-h-[120px] border-gray-200"
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                  />
-                  
-                  <div className="pt-2">
-                    <Button
-                      type="submit"
-                      disabled={isLoading}
-                      className="w-full bg-blue-600 hover:bg-blue-700"
-                    >
-                      {isLoading ? 'Processing...' : 'Explore Concept'}
-                    </Button>
+    <div className="h-screen flex flex-col bg-gray-50">
+      <div className="bg-white border-b p-4 flex justify-between items-center">
+        <h1 className="text-xl font-semibold text-gray-800">Concept Explorer</h1>
+        <div className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+          Quadratic Functions
+        </div>
+      </div>
+      
+      <div className="flex-1 overflow-hidden flex flex-col">
+        <ScrollArea className="flex-1 p-4">
+          <div className="max-w-3xl mx-auto space-y-6">
+            {messages.map((message) => (
+              <motion.div 
+                key={message.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={cn(
+                  "flex", 
+                  message.type === 'user' ? 'justify-end' : 'justify-start'
+                )}
+              >
+                <div className={cn(
+                  "flex gap-3 max-w-[85%]",
+                  message.type === 'user' ? 'flex-row-reverse' : 'flex-row'
+                )}>
+                  <div className={cn(
+                    "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
+                    message.type === 'user' ? 'bg-blue-100' : 'bg-gray-100'
+                  )}>
+                    {message.type === 'user' ? (
+                      <User className="w-4 h-4 text-blue-600" />
+                    ) : (
+                      <Bot className="w-4 h-4 text-gray-600" />
+                    )}
                   </div>
-                </form>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5 }}
-            className="space-y-6"
-          >
-            <div className="bg-blue-50 rounded-xl p-6 mb-8">
-              <h1 className="text-3xl font-bold text-center mb-3 text-[#1A1A2E]">
-                {prompt ? prompt : 'Concept Explorer'}
-              </h1>
-              
-              <div className="text-center mb-2">
-                <span className="bg-white px-3 py-1 rounded-full text-blue-800 text-sm font-medium">
-                  Source: Pearson A-Level Pure Mathematics 2, Summer 2022/23 Pure Mathematics 2 Exam
-                </span>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <ContentCard 
-                title="Overview" 
-                content={formattedOverviewContent}
-                icon={<BookOpen className="w-6 h-6" />}
-                delay={0.2}
-                bgColor="#E5DEFF"
-                titleColor="#2563EB"
-                visualMode={true}
-                isFormatted={true}
+                  
+                  <div>
+                    {message.isTyping ? (
+                      <div className="px-4 py-3 bg-gray-100 rounded-2xl text-gray-700">
+                        <span className="flex gap-1 items-center">
+                          <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                          <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                          <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                        </span>
+                      </div>
+                    ) : (
+                      <div className={cn(
+                        "px-4 py-3 rounded-2xl",
+                        message.type === 'user' 
+                          ? 'bg-blue-600 text-white rounded-tr-none' 
+                          : 'bg-gray-100 text-gray-700 rounded-tl-none'
+                      )}>
+                        {typeof message.content === 'string' ? (
+                          <p>{message.content}</p>
+                        ) : (
+                          <div className="max-w-full">{message.content}</div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+            <div ref={messagesEndRef} />
+          </div>
+        </ScrollArea>
+        
+        <div className="p-4 bg-white border-t">
+          <div className="max-w-3xl mx-auto">
+            <form onSubmit={handleSubmit} className="flex gap-2">
+              <Textarea
+                value={prompt}
+                onChange={(e) => setPrompt(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Ask about quadratic functions..."
+                className="min-h-12 resize-none flex-1"
+                disabled={isLoading}
               />
-              
-              <ContentCard 
-                title="Learning Outcomes and Relevance" 
-                content={learningOutcomesContent}
-                icon={<GraduationCap className="w-6 h-6" />} 
-                delay={0.4}
-                bgColor="#F2FCE2"
-                titleColor="#16A34A"
-                isFormatted={true}
-              />
-              
-              <QuestionsCard 
-                questions={questions}
-                userAnswers={userAnswers}
-                setUserAnswers={setUserAnswers}
-                showAnswers={showAnswers}
-                setShowAnswers={setShowAnswers}
-                checkAnswer={checkAnswer}
-                delay={0.6}
-              />
-              
-              <VisualizationCard delay={0.8} />
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+              <Button 
+                type="submit" 
+                size="icon" 
+                className="shrink-0 h-[42px]"
+                disabled={!prompt.trim() || isLoading}
+              >
+                <Send className="h-5 w-5" />
+              </Button>
+            </form>
+            <p className="text-xs text-center text-gray-500 mt-2">
+              Try: "Explain quadratic functions" or "Show me practice problems"
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
-
-interface ContentCardProps {
-  title: string;
-  content: string;
-  icon?: React.ReactNode;
-  delay: number;
-  bgColor: string;
-  titleColor: string;
-  visualMode?: boolean;
-  isFormatted?: boolean;
-}
-
-const ContentCard: React.FC<ContentCardProps> = ({ 
-  title, 
-  content, 
-  icon, 
-  delay, 
-  bgColor, 
-  titleColor, 
-  visualMode = false,
-  isFormatted = false
-}) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay }}
-      className="h-full"
-    >
-      <Card 
-        className={cn(
-          "overflow-hidden h-full shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col rounded-lg border-0",
-          !isExpanded && `bg-[${bgColor}]`
-        )}
-        style={{ backgroundColor: !isExpanded ? bgColor : undefined }}
-      >
-        <CardContent className="p-0 flex flex-col h-full">
-          {isExpanded ? (
-            <div className="p-6 overflow-auto flex-grow">
-              <h2 className="text-2xl font-bold mb-4 text-[#1A1A2E] flex items-center">
-                {icon && <span className="mr-2">{icon}</span>}
-                {title}
-              </h2>
-              
-              {isFormatted ? (
-                <div 
-                  className="prose max-w-none bg-[#E5DEFF] p-5 rounded-lg"
-                  dangerouslySetInnerHTML={{ __html: content }}
-                />
-              ) : (
-                <div className="prose max-w-none">
-                  <TypewriterText
-                    text={content}
-                    speed={20}
-                    highlightTerms={true}
-                    visualMode={visualMode}
-                    animate={true}
-                  />
-                </div>
-              )}
-              
-              <div className="mt-4 flex justify-center">
-                <Button variant="outline" onClick={() => setIsExpanded(false)}>
-                  Close
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <motion.div
-              className="p-6 flex flex-col items-center justify-center h-full text-center cursor-pointer"
-              onClick={() => setIsExpanded(true)}
-              whileHover={{ scale: 1.03 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
-              <div 
-                className="flex items-center justify-center w-12 h-12 mb-4 rounded-full"
-                style={{ backgroundColor: `${titleColor}20` }} // 20% opacity of title color
-              >
-                {icon && <span style={{ color: titleColor }}>{icon}</span>}
-              </div>
-              <h2 
-                className="text-2xl font-bold mb-2" 
-                style={{ color: titleColor }}
-              >
-                {title}
-              </h2>
-              <p className="text-[#333333]">Click to expand</p>
-              
-              <div className="absolute bottom-4 right-4 animate-pulse">
-                <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 13l-7 7-7-7m14-8l-7 7-7-7" />
-                </svg>
-              </div>
-            </motion.div>
-          )}
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-};
-
-interface QuestionsCardProps {
-  questions: Array<{
-    id: string;
-    question: string;
-    correctAnswer: string;
-    explanation: string;
-  }>;
-  userAnswers: Record<string, string>;
-  setUserAnswers: React.Dispatch<React.SetStateAction<Record<string, string>>>;
-  showAnswers: Record<string, boolean>;
-  setShowAnswers: React.Dispatch<React.SetStateAction<Record<string, boolean>>>;
-  checkAnswer: (questionId: string, userAnswer: string, correctAnswer: string) => boolean;
-  delay: number;
-}
-
-const QuestionsCard: React.FC<QuestionsCardProps> = ({ 
-  questions, 
-  userAnswers, 
-  setUserAnswers,
-  showAnswers,
-  setShowAnswers,
-  checkAnswer,
-  delay 
-}) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const handleAnswerChange = (questionId: string, value: string) => {
-    setUserAnswers(prev => ({
-      ...prev,
-      [questionId]: value
-    }));
-  };
-
-  const toggleShowAnswer = (questionId: string) => {
-    setShowAnswers(prev => ({
-      ...prev,
-      [questionId]: !prev[questionId]
-    }));
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay }}
-      className="h-full"
-    >
-      <Card 
-        className="overflow-hidden h-full shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col rounded-lg border-0"
-        style={{ backgroundColor: !isExpanded ? "#FEF9E7" : undefined }}
-      >
-        <CardContent className="p-0 flex flex-col h-full">
-          {isExpanded ? (
-            <div className="p-6 overflow-auto flex-grow">
-              <h2 className="text-2xl font-bold mb-4 text-[#1A1A2E] flex items-center">
-                <PenTool className="mr-2 w-6 h-6" />
-                Practice Questions
-              </h2>
-              <div className="space-y-6">
-                {questions.map((q, index) => (
-                  <div key={q.id} className="border border-amber-200 rounded-lg p-4 bg-amber-50">
-                    <div className="flex items-start gap-3 mb-3">
-                      <span className="bg-amber-100 text-amber-800 font-semibold rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
-                        {index + 1}
-                      </span>
-                      <h3 className="text-lg font-medium text-[#1A1A2E]">{q.question}</h3>
-                    </div>
-                    
-                    <div className="flex flex-col gap-3 pl-9">
-                      <Input
-                        placeholder="Enter your answer here"
-                        value={userAnswers[q.id] || ''}
-                        onChange={(e) => handleAnswerChange(q.id, e.target.value)}
-                        className="border-gray-200"
-                      />
-                      
-                      <div className="flex justify-between items-center">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => toggleShowAnswer(q.id)}
-                          className="flex items-center"
-                        >
-                          {showAnswers[q.id] ? "Hide Solution" : "Check Answer"}
-                          {showAnswers[q.id] ? (
-                            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                            </svg>
-                          ) : (
-                            <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                            </svg>
-                          )}
-                        </Button>
-                        
-                        {userAnswers[q.id] && (
-                          <div className="flex items-center">
-                            {checkAnswer(q.id, userAnswers[q.id], q.correctAnswer) ? (
-                              <div className="flex items-center text-green-500">
-                                <Check className="w-5 h-5 mr-1" />
-                                <span>Correct!</span>
-                              </div>
-                            ) : (
-                              <div className="flex items-center text-red-500">
-                                <X className="w-5 h-5 mr-1" />
-                                <span>Try again</span>
-                              </div>
-                            )}
-                          </div>
-                        )}
-                      </div>
-                      
-                      {showAnswers[q.id] && (
-                        <div className="mt-3 p-4 bg-white border border-amber-200 rounded-lg shadow-sm">
-                          <TypewriterText markdown={q.explanation} speed={20} highlightTerms={true} />
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-4 flex justify-center">
-                <Button variant="outline" onClick={() => setIsExpanded(false)}>
-                  Close
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <motion.div
-              className="p-6 flex flex-col items-center justify-center h-full text-center cursor-pointer"
-              onClick={() => setIsExpanded(true)}
-              whileHover={{ scale: 1.03 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
-              <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-amber-100">
-                <PenTool className="w-6 h-6 text-amber-700" />
-              </div>
-              <h2 className="text-2xl font-bold mb-2 text-[#F59E0B]">
-                Practice Questions
-              </h2>
-              <p className="text-[#333333]">Click to explore</p>
-              
-              <div className="absolute bottom-4 right-4 animate-pulse">
-                <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 13l-7 7-7-7m14-8l-7 7-7-7" />
-                </svg>
-              </div>
-            </motion.div>
-          )}
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-};
-
-const VisualizationCard: React.FC<{ delay: number }> = ({ delay }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay }}
-      className="h-full"
-    >
-      <Card 
-        className="overflow-hidden h-full shadow-sm hover:shadow-md transition-shadow duration-300 flex flex-col rounded-lg border-0"
-        style={{ backgroundColor: !isExpanded ? "#E5DEFF" : undefined }}
-      >
-        <CardContent className="p-0 flex flex-col h-full">
-          {isExpanded ? (
-            <div className="p-6 overflow-auto flex-grow">
-              <h2 className="text-2xl font-bold mb-4 text-[#1A1A2E] flex items-center">
-                <LineChart className="mr-2 w-6 h-6" />
-                Interactive Visualization
-              </h2>
-              <p className="mb-4 text-[#333333]">
-                Explore how quadratic functions behave by adjusting the parameters below.
-                See how changing values affects the shape and position of the parabola.
-              </p>
-              <div className="bg-white p-4 rounded-lg shadow-sm border border-purple-100">
-                <InteractiveQuadraticFunctions />
-              </div>
-              <div className="mt-4 flex justify-center">
-                <Button variant="outline" onClick={() => setIsExpanded(false)}>
-                  Close
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <motion.div
-              className="p-6 flex flex-col items-center justify-center h-full text-center cursor-pointer"
-              onClick={() => setIsExpanded(true)}
-              whileHover={{ scale: 1.03 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
-            >
-              <div className="flex items-center justify-center w-12 h-12 mb-4 rounded-full bg-purple-100">
-                <LineChart className="w-6 h-6 text-purple-700" />
-              </div>
-              <h2 className="text-2xl font-bold mb-2 text-[#9333EA]">
-                Interactive Visualization
-              </h2>
-              <p className="text-[#333333]">Click to explore the interactive elements</p>
-              
-              <div className="absolute bottom-4 right-4 animate-pulse">
-                <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 13l-7 7-7-7m14-8l-7 7-7-7" />
-                </svg>
-              </div>
-            </motion.div>
-          )}
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-};
-
-function checkAnswer(questionId: string, userAnswer: string, correctAnswer: string) {
-  return userAnswer.toLowerCase().includes(correctAnswer.toLowerCase());
-}
 
 export default ConceptExplorer;
