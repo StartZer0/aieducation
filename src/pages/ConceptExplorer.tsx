@@ -35,7 +35,6 @@ const ConceptExplorer = () => {
   });
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
-  // Welcome message when component mounts
   useEffect(() => {
     const welcomeMessage: Message = {
       id: 'welcome',
@@ -46,7 +45,6 @@ const ConceptExplorer = () => {
     
     setTimeout(() => {
       setMessages([welcomeMessage]);
-      // Remove typing indicator after 1 second
       setTimeout(() => {
         setMessages(msgs => 
           msgs.map(m => m.id === 'welcome' ? {...m, isTyping: false} : m)
@@ -55,7 +53,6 @@ const ConceptExplorer = () => {
     }, 500);
   }, []);
 
-  // Scroll to bottom whenever messages change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
@@ -76,7 +73,6 @@ const ConceptExplorer = () => {
     setMessages(m => [...m, userMessage]);
     setIsLoading(true);
     
-    // Simulate bot typing
     const botTypingMessage: Message = {
       id: `bot-typing-${Date.now()}`,
       type: 'bot',
@@ -87,7 +83,6 @@ const ConceptExplorer = () => {
     setTimeout(() => {
       setMessages(m => [...m, botTypingMessage]);
       
-      // After 1.5 seconds, replace typing indicator with response
       setTimeout(() => {
         setMessages(msgs => {
           const newMsgs = msgs.filter(m => m.id !== botTypingMessage.id);
@@ -102,7 +97,6 @@ const ConceptExplorer = () => {
           ];
         });
         
-        // Send content sections as separate messages
         sendContentSections();
         setIsLoading(false);
         setPrompt('');
@@ -111,7 +105,6 @@ const ConceptExplorer = () => {
   };
   
   const sendContentSections = () => {
-    // Send overview content
     setTimeout(() => {
       setMessages(msgs => [
         ...msgs, 
@@ -123,7 +116,6 @@ const ConceptExplorer = () => {
         }
       ]);
       
-      // Send learning outcomes
       setTimeout(() => {
         setMessages(msgs => [
           ...msgs, 
@@ -135,7 +127,6 @@ const ConceptExplorer = () => {
           }
         ]);
         
-        // Send practice questions
         setTimeout(() => {
           setMessages(msgs => [
             ...msgs, 
@@ -147,7 +138,6 @@ const ConceptExplorer = () => {
             }
           ]);
           
-          // Send visualization
           setTimeout(() => {
             setMessages(msgs => [
               ...msgs, 
@@ -494,11 +484,6 @@ This is the minimum point of the parabola since a > 0.`
   return (
     <div className="h-screen flex flex-col bg-gray-50">
       <div className="bg-white border-b p-4 flex justify-center items-center relative">
-        <div className="absolute left-4 flex items-center">
-          <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center mr-2">
-            <Brain className="w-5 h-5" />
-          </div>
-        </div>
         <h1 className="text-xl font-semibold text-gray-800">Aiducation</h1>
       </div>
       
