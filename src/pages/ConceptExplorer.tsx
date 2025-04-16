@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { 
   Check, X, Send, User, PenTool, LineChart, BookOpen, 
-  GraduationCap, ExternalLink, ChevronDown, ChevronUp, 
+  GraduationCap, ExternalLink, ChevronDown, ChevronUp, MessageCircle
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import InteractiveQuadraticFunctions from '@/components/study/InteractiveQuadraticFunctions';
@@ -514,7 +514,7 @@ This is the minimum point of the parabola since a > 0.`
                     {message.type === 'user' ? (
                       <User className="w-4 h-4 text-blue-600" />
                     ) : (
-                      
+                      <MessageCircle className="w-4 h-4 text-white" />
                     )}
                   </div>
                   
