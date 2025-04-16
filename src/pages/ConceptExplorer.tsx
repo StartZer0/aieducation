@@ -1,11 +1,10 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Check, X, Send, Bot, User, PenTool, LineChart, BookOpen, GraduationCap, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { Check, X, Send, Bot, User, PenTool, LineChart, BookOpen, GraduationCap, ExternalLink, ChevronDown, ChevronUp, Brain } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import InteractiveQuadraticFunctions from '@/components/study/InteractiveQuadraticFunctions';
 import TypewriterText from '@/components/TypewriterText';
@@ -41,7 +40,7 @@ const ConceptExplorer = () => {
     const welcomeMessage: Message = {
       id: 'welcome',
       type: 'bot',
-      content: 'Welcome to Concept Explorer! I can help you learn about different academic concepts. What topic would you like to explore today?',
+      content: 'Hi, I\'m Aiducation! What would you like to learn today? I\'m here to help with any academic concept you\'re curious about.',
       isTyping: true,
     };
     
@@ -494,11 +493,13 @@ This is the minimum point of the parabola since a > 0.`
 
   return (
     <div className="h-screen flex flex-col bg-gray-50">
-      <div className="bg-white border-b p-4 flex justify-between items-center">
-        <h1 className="text-xl font-semibold text-gray-800">Concept Explorer</h1>
-        <div className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-          Quadratic Functions
+      <div className="bg-white border-b p-4 flex justify-center items-center relative">
+        <div className="absolute left-4 flex items-center">
+          <div className="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center mr-2">
+            <Brain className="w-5 h-5" />
+          </div>
         </div>
+        <h1 className="text-xl font-semibold text-gray-800">Aiducation</h1>
       </div>
       
       <div className="flex-1 overflow-hidden flex flex-col">
@@ -520,12 +521,12 @@ This is the minimum point of the parabola since a > 0.`
                 )}>
                   <div className={cn(
                     "w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0",
-                    message.type === 'user' ? 'bg-blue-100' : 'bg-gray-100'
+                    message.type === 'user' ? 'bg-blue-100' : 'bg-blue-600'
                   )}>
                     {message.type === 'user' ? (
                       <User className="w-4 h-4 text-blue-600" />
                     ) : (
-                      <Bot className="w-4 h-4 text-gray-600" />
+                      <Brain className="w-4 h-4 text-white" />
                     )}
                   </div>
                   
@@ -567,7 +568,7 @@ This is the minimum point of the parabola since a > 0.`
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Ask about quadratic functions..."
+                placeholder="Ask anything you want to learn..."
                 className="min-h-12 resize-none flex-1"
                 disabled={isLoading}
               />
@@ -581,7 +582,7 @@ This is the minimum point of the parabola since a > 0.`
               </Button>
             </form>
             <p className="text-xs text-center text-gray-500 mt-2">
-              Try: "Explain quadratic functions" or "Show me practice problems"
+              Try: "Help me understand quadratic functions" or "Show me practice problems"
             </p>
           </div>
         </div>
